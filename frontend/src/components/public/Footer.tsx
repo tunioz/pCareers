@@ -22,10 +22,10 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { name: 'LinkedIn', icon: Linkedin, href: '#' },
-    { name: 'Twitter', icon: Twitter, href: '#' },
-    { name: 'Instagram', icon: Instagram, href: '#' },
-    { name: 'GitHub', icon: Github, href: '#' },
+    { name: 'LinkedIn', icon: Linkedin, href: 'https://www.linkedin.com/company/pcloud/' },
+    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/paborcloud' },
+    { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/pcloud/' },
+    { name: 'GitHub', icon: Github, href: 'https://github.com/pcloud' },
   ];
 
   function handleCookieSettings() {
@@ -91,6 +91,8 @@ export function Footer() {
                 <a
                   key={social.name}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={styles.socialLink}
                   aria-label={social.name}
                 >

@@ -29,14 +29,14 @@ const BENEFITS = [
     icon: DollarSign,
     title: 'Top 1% Compensation',
     description:
-      'Competitive salary, equity, and benefits that put you in the top percentile.',
+      'Competitive salary, bonuses, and benefits that put you in the top percentile.',
     color: 'blue' as const,
   },
   {
     icon: Zap,
     title: 'Real Impact',
     description:
-      'Your work reaches 22M+ users worldwide. Every line of code matters.',
+      'Your work reaches 24M+ users worldwide. Every line of code matters.',
     color: 'yellow' as const,
   },
   {
@@ -132,7 +132,7 @@ export function CareersPage({
             transition={{ duration: 0.7 }}
           >
             What will you build for{' '}
-            <span className={styles.heroHighlight}>22M+</span> people?
+            <span className={styles.heroHighlight}>24M+</span> people?
           </motion.h1>
           <motion.p
             className={styles.heroSubtitle}
@@ -140,7 +140,7 @@ export function CareersPage({
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2, duration: 0.7 }}
           >
-            Join our world-class team of builders
+            9 open roles. 500+ petabytes of responsibility. Zero tolerance for mediocrity.
           </motion.p>
         </div>
       </section>

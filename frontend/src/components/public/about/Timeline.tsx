@@ -12,7 +12,7 @@ const milestones = [
   { year: '2019', milestone: 'Expanded to 10M+ users and opened data centers in Luxembourg and Dallas' },
   { year: '2021', milestone: 'Achieved 99.92% uptime and launched pCloud Pass password manager' },
   { year: '2023', milestone: 'Surpassed 20M users and 400 petabytes of stored data worldwide' },
-  { year: '2026', milestone: 'Serving 22M+ users across 195 countries with 500+ petabytes capacity' },
+  { year: '2026', milestone: 'Serving 24M+ users across 175+ countries with 500+ petabytes capacity' },
 ];
 
 export function Timeline() {

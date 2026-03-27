@@ -16,7 +16,7 @@ const employees = [
     name: 'Marcus Johnson',
     role: 'Principal Backend Engineer',
     photo: 'https://images.unsplash.com/photo-1769636930047-4478f12cf430?w=600',
-    quote: 'Building infrastructure that stores 500+ petabytes of data across 195 countries is incredibly challenging and rewarding. What I love most is the engineering culture.',
+    quote: 'Building infrastructure that stores 500+ petabytes of data across 175+ countries is incredibly challenging and rewarding. What I love most is the engineering culture.',
   },
   {
     name: 'Yuki Tanaka',

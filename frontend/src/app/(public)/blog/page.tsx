@@ -4,7 +4,7 @@ import type { Post, Job } from '@/types';
 import { BlogPageClient } from '@/components/public/blog/BlogPageClient';
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Engineering Blog',
 };
 
 export default function BlogPage() {

@@ -9,12 +9,19 @@ const COOKIE_CONSENT_KEY = 'cookie-consent';
 export type CookieConsent = 'accepted' | 'rejected';
 
 export function CookieBanner() {
+  const [consentGiven, setConsentGiven] = useState(true);
   const [visible, setVisible] = useState(false);
 
+  // Check localStorage on mount to determine if consent has been given
   useEffect(() => {
     const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!stored) {
-      // Small delay so the banner slides in rather than appearing instantly
+    if (stored) {
+      // Consent already recorded -- keep banner hidden
+      setConsentGiven(true);
+      setVisible(false);
+    } else {
+      // No consent recorded -- show banner after a short delay
+      setConsentGiven(false);
       const timer = setTimeout(() => setVisible(true), 500);
       return () => clearTimeout(timer);
     }
@@ -24,6 +31,7 @@ export function CookieBanner() {
   useEffect(() => {
     function handleReset() {
       localStorage.removeItem(COOKIE_CONSENT_KEY);
+      setConsentGiven(false);
       setVisible(true);
     }
     window.addEventListener('reset-cookie-consent', handleReset);
@@ -32,8 +40,14 @@ export function CookieBanner() {
 
   const handleChoice = useCallback((choice: CookieConsent) => {
     localStorage.setItem(COOKIE_CONSENT_KEY, choice);
+    setConsentGiven(true);
     setVisible(false);
   }, []);
+
+  // Do not render the banner at all when consent has already been given
+  if (consentGiven && !visible) {
+    return null;
+  }
 
   return (
     <div

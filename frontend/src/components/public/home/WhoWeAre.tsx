@@ -25,7 +25,7 @@ export function WhoWeAre() {
               Who We Are
             </h2>
             <Link href="/about" className={styles.readMoreLink}>
-              Learn more
+              See how we build
               <motion.span
                 animate={{ x: [0, 5, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -70,7 +70,7 @@ export function WhoWeAre() {
                 Our Mission
               </h3>
               <p className={styles.boxText}>
-                To provide everyone with access to secure and easy-to-use cloud storage.
+                We build the vault where 24 million people keep their most important data &mdash; family photos, business documents, passwords, memories. Every line of code either earns that trust or breaks it.
               </p>
             </div>
           </motion.div>
@@ -101,7 +101,7 @@ export function WhoWeAre() {
                   Our Vision
                 </h3>
                 <p className={styles.boxText}>
-                  A world where everyone&apos;s personal data is protected and accessible from anywhere.
+                  Make private, secure cloud storage so good that people choose it over Google and Apple. Not because it&apos;s cheaper &mdash; because it&apos;s better and because their data belongs to them.
                 </p>
               </div>
             </div>
@@ -120,7 +120,7 @@ export function WhoWeAre() {
                   Our Goals
                 </h3>
                 <p className={styles.boxText}>
-                  Continuously improving our product and expanding our global presence.
+                  Zero-knowledge encryption by default. 99.9% uptime as the minimum, not the target. Infrastructure so reliable that our users never think about it.
                 </p>
               </div>
             </div>

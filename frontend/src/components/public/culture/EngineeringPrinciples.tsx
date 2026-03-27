@@ -27,7 +27,7 @@ const principles = [
     number: '04',
     title: 'Reliability at scale',
     description:
-      'Build systems that work flawlessly for one user and 22 million users alike.',
+      'Build systems that work flawlessly for one user and 24 million users alike.',
   },
   {
     number: '05',
@@ -74,7 +74,6 @@ export function EngineeringPrinciples() {
                 <span className={styles.number}>{principle.number}</span>
               </div>
               <div className={styles.content}>
-                <span className={styles.mobileNumber}>{principle.number}</span>
                 <h3 className={styles.title}>{principle.title}</h3>
                 <p className={styles.description}>{principle.description}</p>
               </div>

@@ -50,6 +50,12 @@
   }
 }
 
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .card {
   background: $color-white;
   border-radius: $border-radius-xl;
@@ -60,11 +66,18 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: box-shadow $transition-base;
-  cursor: default;
+  transition: box-shadow $transition-base, border-color $transition-base;
+  cursor: pointer;
+  height: 100%;
 
   &:hover {
     box-shadow: $shadow-lg;
+    border-color: $color-primary-cyan;
+
+    .viewRole {
+      color: $color-primary-cyan;
+      opacity: 1;
+    }
   }
 }
 
@@ -82,4 +95,16 @@
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: $color-dark-blue;
+  margin-bottom: $spacing-3;
+}
+
+.viewRole {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-neutral-500;
+  opacity: 0.7;
+  transition: color $transition-base, opacity $transition-base;
 }

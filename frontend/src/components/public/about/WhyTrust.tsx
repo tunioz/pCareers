@@ -6,12 +6,12 @@ import { Shield, Share2, History, RefreshCw, Download, KeyRound } from 'lucide-r
 import styles from './WhyTrust.module.scss';
 
 const features = [
-  { title: 'Zero-Knowledge Encryption', description: 'Your files are encrypted end-to-end. Only you hold the encryption keys - not even pCloud can access your data.', icon: Shield },
-  { title: 'Secure File Sharing', description: 'Control who accesses your files. Set password protection, expiration dates, and download limits.', icon: Share2 },
-  { title: 'File Versioning', description: 'Accidentally deleted something? Restore previous versions of any file from your revision history.', icon: History },
-  { title: 'Auto Sync', description: 'Changes sync automatically across all your devices - phone, tablet, desktop. Work seamlessly from anywhere.', icon: RefreshCw },
-  { title: 'Offline Access', description: "Download files for offline access. Work without internet and sync automatically when you're back online.", icon: Download },
-  { title: 'Two-Factor Authentication', description: 'Add an extra layer of security to your account. Require a second verification method to prevent unauthorized access.', icon: KeyRound },
+  { title: 'Zero-Knowledge Encryption', description: "You'll work with real cryptography \u2014 not API wrappers. AES-256, RSA-4096, and encryption architectures that even we can't decrypt.", icon: Shield },
+  { title: 'Code Review Culture', description: "Code review is mandatory. Every PR gets at least two sets of eyes. We learn from each other's code, not just review it.", icon: Share2 },
+  { title: 'Tech Debt Investment', description: '20% of every sprint is reserved for tech debt. Non-negotiable. We invest in the codebase because we\'ll be maintaining it for decades.', icon: History },
+  { title: 'Ship Fast, Ship Safely', description: 'Deploy 200+ times per day with confidence. Automated testing, staged rollouts, and instant rollback. Ship fast, ship safely.', icon: RefreshCw },
+  { title: 'Deep Work Culture', description: 'No micromanagement. Deep work blocks are protected. Async-first communication. You own your schedule and your output.', icon: Download },
+  { title: 'End-to-End Ownership', description: 'You design it, build it, ship it, and monitor it. No throwing code over the wall.', icon: KeyRound },
 ];
 
 export function WhyTrust() {
@@ -22,7 +22,7 @@ export function WhyTrust() {
     <section ref={ref} className={styles.section}>
       <div className={styles.container}>
         <motion.div className={styles.header} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
-          <h2 className={styles.heading}>Why users trust pCloud</h2>
+          <h2 className={styles.heading}>Why engineers trust pCloud</h2>
         </motion.div>
         <div className={styles.grid}>
           {features.map((feature, index) => {

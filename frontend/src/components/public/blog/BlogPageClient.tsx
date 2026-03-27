@@ -51,7 +51,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
         <div className={styles.heroContainer}>
           <motion.div className={styles.heroContent} initial={{ opacity: 0, y: 30 }} animate={isHeroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
             <h1 className={styles.heroTitle}>Under the hood</h1>
-            <p className={styles.heroSubtitle}>Engineering insights from the pCloud team</p>
+            <p className={styles.heroSubtitle}>How we build infrastructure for 24 million users. No fluff. Real engineering.</p>
           </motion.div>
         </div>
       </section>
@@ -160,7 +160,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
                 </h2>
                 <div className={styles.relatedJobsDivider} />
                 <p className={styles.relatedJobsDescription}>
-                  We&apos;re looking for talented engineers to solve them
+                  We&apos;re looking for engineers to solve them
                 </p>
                 <Link href="/careers">
                   <motion.button className={styles.relatedJobsCta} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

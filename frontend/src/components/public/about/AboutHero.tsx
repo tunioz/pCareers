@@ -32,7 +32,7 @@ export function AboutHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8 }}
           >
-            We build the world&apos;s most trusted cloud storage.
+            13 years. 24 million users. Zero compromises.
           </motion.h1>
 
           <motion.p

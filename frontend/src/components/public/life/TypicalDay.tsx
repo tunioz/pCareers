@@ -7,25 +7,25 @@ import styles from './TypicalDay.module.scss';
 
 const timeline = [
   {
-    time: '9:00 AM',
-    badgeClass: 'timeBadgeYellow' as const,
-    title: 'Finance Reporting',
+    time: '9:30 AM',
+    badgeClass: 'timeBadgeGreen' as const,
+    title: 'Morning Standup',
     description:
-      'Monthly financial review and budget analysis with the leadership team',
+      'Quick 15-min async check-in with the storage team. Share blockers, align on sprint goals.',
   },
   {
-    time: '12:00 PM',
+    time: '11:00 AM',
     badgeClass: 'timeBadgeCyan' as const,
-    title: 'Payroll Processing',
+    title: 'Deep Work: Code Review',
     description:
-      'Ensuring timely and accurate compensation for our global team',
+      'Reviewing a critical PR for the sync engine. Two hours of uninterrupted focus \u2014 Slack notifications off.',
   },
   {
-    time: '6:00 PM',
+    time: '3:00 PM',
     badgeClass: 'timeBadgePurple' as const,
-    title: 'Charity Bike Race',
+    title: 'Architecture Session',
     description:
-      'Team building event supporting local community initiatives',
+      'Whiteboarding a new approach to cross-datacenter replication with the infrastructure team.',
   },
 ];
 
@@ -45,13 +45,13 @@ export function TypicalDay() {
         >
           <div className={styles.imageWrapper}>
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1601612858161-5e007f0303b6?w=800"
-              alt="Rock climbing woman"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+              alt="Martin, Backend Engineer"
             />
           </div>
           <div className={styles.overlayCard}>
-            <span className={styles.personName}>Antoaneta</span>
-            <span className={styles.personTeam}>Finance Team</span>
+            <span className={styles.personName}>Martin</span>
+            <span className={styles.personTeam}>Backend Engineer</span>
           </div>
         </motion.div>
 

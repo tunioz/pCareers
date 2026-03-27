@@ -5,9 +5,9 @@ import { CareersPage as CareersPageClient } from '@/components/public/jobs/Caree
 import { TalentCommunity } from '@/components/public/TalentCommunity';
 
 export const metadata: Metadata = {
-  title: 'Careers | pCloud',
+  title: 'Open Positions',
   description:
-    'Join our world-class team of builders. Explore open roles at pCloud and build products used by 22M+ people.',
+    'Explore open roles at pCloud. Build products used by 24 million people.',
 };
 
 export default function CareersPage() {

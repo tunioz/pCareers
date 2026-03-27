@@ -2,16 +2,17 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Globe, Smartphone, Monitor, Laptop } from 'lucide-react';
+import { Globe, Smartphone, Monitor, Laptop, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import styles from './SupportedPlatforms.module.scss';
 
 const platforms = [
-  { name: 'Web', icon: Globe },
-  { name: 'iOS', icon: Smartphone },
-  { name: 'Android', icon: Smartphone },
-  { name: 'Windows', icon: Monitor },
-  { name: 'macOS', icon: Laptop },
-  { name: 'Linux', icon: Monitor },
+  { name: 'Web', icon: Globe, href: '/careers' },
+  { name: 'iOS', icon: Smartphone, href: '/careers/senior-ios-developer' },
+  { name: 'Android', icon: Smartphone, href: '/careers' },
+  { name: 'Windows', icon: Monitor, href: '/careers/senior-windows-desktop-developer' },
+  { name: 'macOS', icon: Laptop, href: '/careers/senior-macos-desktop-developer' },
+  { name: 'Linux', icon: Monitor, href: '/careers/senior-linux-desktop-developer' },
 ];
 
 export function SupportedPlatforms() {
@@ -27,10 +28,10 @@ export function SupportedPlatforms() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <h2 className={styles.title}>Everywhere you are</h2>
+          <h2 className={styles.title}>We hire for every platform</h2>
           <p className={styles.subtitle}>
-            Access pCloud from any device, anywhere. We support all major platforms so you&apos;re
-            never limited to one operating system. Your files are always within reach.
+            From kernel-level C to SwiftUI, from Electron to native Windows — our teams build
+            for every major platform. Find your stack.
           </p>
         </motion.div>
 
@@ -38,23 +39,31 @@ export function SupportedPlatforms() {
           {platforms.map((platform, index) => {
             const Icon = platform.icon;
             return (
-              <motion.div
+              <Link
                 key={platform.name}
-                className={styles.card}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                whileHover={{ y: -8 }}
+                href={platform.href}
+                className={styles.cardLink}
               >
                 <motion.div
-                  className={styles.iconBox}
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
+                  className={styles.card}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                  whileHover={{ y: -8 }}
                 >
-                  <Icon size={32} />
+                  <motion.div
+                    className={styles.iconBox}
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Icon size={32} />
+                  </motion.div>
+                  <h3 className={styles.platformName}>{platform.name}</h3>
+                  <span className={styles.viewRole}>
+                    View role <ArrowRight size={14} />
+                  </span>
                 </motion.div>
-                <h3 className={styles.platformName}>{platform.name}</h3>
-              </motion.div>
+              </Link>
             );
           })}
         </div>

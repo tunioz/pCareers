@@ -19,7 +19,7 @@ export function WhyPCloud() {
     {
       icon: Globe,
       title: 'Global Impact',
-      description: 'Trusted by 22M+ users. Operating in 195+ countries. Storing 500+ petabytes.',
+      description: 'Trusted by 24M+ users. Operating in 175+ countries. Storing 500+ petabytes.',
       color: '#E6FF00',
     },
     {

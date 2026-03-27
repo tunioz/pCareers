@@ -8,7 +8,7 @@ import styles from './Benefits.module.scss';
 const benefits = [
   {
     title: 'Compensation & Financial',
-    description: 'Competitive salary, bonuses, and equity options.',
+    description: 'Competitive salary, bonuses, and performance rewards.',
     image:
       'https://images.unsplash.com/photo-1624953901718-e24ee7200b85?w=600',
   },
@@ -59,7 +59,7 @@ export function Benefits() {
         >
           <h2 className={styles.heading}>
             We Take Care of{' '}
-            <span className={styles.highlight}>Our People</span>
+            <span className={styles.highlight}>the Team</span>
           </h2>
           <div className={styles.divider} />
           <p className={styles.subtitle}>

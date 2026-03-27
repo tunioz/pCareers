@@ -1,0 +1,81 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  background-color: #05183f;
+  padding: $spacing-20 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: $spacing-24 $spacing-20;
+  }
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-16;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-xl;
+  color: rgba($color-white, 0.6);
+  font-weight: $font-weight-medium;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-6;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background-color: rgba($color-white, 0.04);
+  border: 1px solid rgba($color-white, 0.1);
+  border-radius: $border-radius-lg;
+  padding: $spacing-8;
+  transition: all $transition-base;
+
+  &:hover {
+    background-color: rgba($color-white, 0.07);
+    border-color: rgba($color-white, 0.18);
+    transform: translateY(-2px);
+  }
+}
+
+.cardTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+  line-height: $line-height-tight;
+}
+
+.ifPrefix {
+  color: #E6FF00;
+}
+
+.cardDescription {
+  font-size: $font-size-md;
+  color: rgba($color-white, 0.65);
+  line-height: $line-height-relaxed;
+  margin: 0;
+}

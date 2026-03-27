@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   Briefcase,
@@ -20,6 +20,10 @@ import {
   Award,
   Clock,
   X,
+  Link2,
+  Linkedin,
+  Twitter,
+  Check,
 } from 'lucide-react';
 import { ImageWithFallback } from '@/components/public/ImageWithFallback';
 import type {
@@ -116,8 +120,9 @@ export function RolePreview({
   const processRef = useRef<HTMLElement>(null);
   const isProcessInView = useInView(processRef, { once: true, margin: '-100px' });
 
+  // valuesRef kept for potential re-enabling of candidateValues section
   const valuesRef = useRef<HTMLElement>(null);
-  const isValuesInView = useInView(valuesRef, { once: true, margin: '-100px' });
+  useInView(valuesRef, { once: true, margin: '-100px' });
 
   const pcloudBarRef = useRef<HTMLElement>(null);
   const isPCloudBarInView = useInView(pcloudBarRef, { once: true, margin: '-100px' });
@@ -132,6 +137,61 @@ export function RolePreview({
   const [applySubmitted, setApplySubmitted] = useState(false);
   const [applySubmitting, setApplySubmitting] = useState(false);
   const [applyError, setApplyError] = useState('');
+
+  // Share dropdown state
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showSidebarShareMenu, setShowSidebarShareMenu] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
+  const sidebarShareMenuRef = useRef<HTMLDivElement>(null);
+
+  const getCurrentUrl = useCallback(() => {
+    if (typeof window !== 'undefined') return window.location.href;
+    return '';
+  }, []);
+
+  const handleCopyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(getCurrentUrl());
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = getCurrentUrl();
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  }, [getCurrentUrl]);
+
+  const handleShareLinkedIn = useCallback(() => {
+    const url = encodeURIComponent(getCurrentUrl());
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,noreferrer');
+  }, [getCurrentUrl]);
+
+  const handleShareTwitter = useCallback(() => {
+    const url = encodeURIComponent(getCurrentUrl());
+    const text = encodeURIComponent(`Check out this role at pCloud: ${job.title}`);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'noopener,noreferrer');
+  }, [getCurrentUrl, job.title]);
+
+  // Close share menus on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
+        setShowShareMenu(false);
+      }
+      if (sidebarShareMenuRef.current && !sidebarShareMenuRef.current.contains(event.target as Node)) {
+        setShowSidebarShareMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,14 +299,50 @@ export function RolePreview({
               >
                 Apply Now
               </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={styles.btnOutlined}
-              >
-                <Share2 size={20} />
-                Share
-              </motion.button>
+              <div className={styles.shareWrapper} ref={shareMenuRef}>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={styles.btnOutlined}
+                  onClick={() => setShowShareMenu((prev) => !prev)}
+                >
+                  <Share2 size={20} />
+                  Share
+                </motion.button>
+                <AnimatePresence>
+                  {showShareMenu && (
+                    <motion.div
+                      className={styles.shareDropdown}
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <button
+                        className={styles.shareDropdownItem}
+                        onClick={() => { handleCopyLink(); setShowShareMenu(false); }}
+                      >
+                        {copiedLink ? <Check size={18} /> : <Link2 size={18} />}
+                        {copiedLink ? 'Copied!' : 'Copy link'}
+                      </button>
+                      <button
+                        className={styles.shareDropdownItem}
+                        onClick={() => { handleShareLinkedIn(); setShowShareMenu(false); }}
+                      >
+                        <Linkedin size={18} />
+                        LinkedIn
+                      </button>
+                      <button
+                        className={styles.shareDropdownItem}
+                        onClick={() => { handleShareTwitter(); setShowShareMenu(false); }}
+                      >
+                        <Twitter size={18} />
+                        Twitter / X
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -539,11 +635,51 @@ export function RolePreview({
               >
                 <h3 className={styles.sidebarTitle}>Ready to Apply?</h3>
                 <p className={styles.sidebarText}>
-                  Join our team and help build infrastructure that 22M+ users depend on.
+                  Join our team and help build infrastructure that 24M+ users depend on.
                 </p>
                 <div className={styles.sidebarButtons}>
                   <button className={styles.sidebarApply} onClick={() => setShowApplyModal(true)}>Apply Now</button>
-                  <button className={styles.sidebarShare}>Share This Role</button>
+                  <div className={styles.sidebarShareWrapper} ref={sidebarShareMenuRef}>
+                    <button
+                      className={styles.sidebarShare}
+                      onClick={() => setShowSidebarShareMenu((prev) => !prev)}
+                    >
+                      Share This Role
+                    </button>
+                    <AnimatePresence>
+                      {showSidebarShareMenu && (
+                        <motion.div
+                          className={styles.shareDropdownSidebar}
+                          initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <button
+                            className={styles.shareDropdownItem}
+                            onClick={() => { handleCopyLink(); setShowSidebarShareMenu(false); }}
+                          >
+                            {copiedLink ? <Check size={18} /> : <Link2 size={18} />}
+                            {copiedLink ? 'Copied!' : 'Copy link'}
+                          </button>
+                          <button
+                            className={styles.shareDropdownItem}
+                            onClick={() => { handleShareLinkedIn(); setShowSidebarShareMenu(false); }}
+                          >
+                            <Linkedin size={18} />
+                            LinkedIn
+                          </button>
+                          <button
+                            className={styles.shareDropdownItem}
+                            onClick={() => { handleShareTwitter(); setShowSidebarShareMenu(false); }}
+                          >
+                            <Twitter size={18} />
+                            Twitter / X
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </motion.div>
             </div>
@@ -649,61 +785,10 @@ export function RolePreview({
 
       {/* ================================================================= */}
       {/* 4. What We Value in Candidates                                     */}
+      {/* Removed: generic "What We Value" section — the pCloud Bar section  */}
+      {/* below is more distinctive and covers the same purpose.             */}
+      {/* Data flow (candidateValues prop) kept intact for re-enabling.      */}
       {/* ================================================================= */}
-      {candidateValues.length > 0 && (
-        <section ref={valuesRef} className={styles.valuesSection}>
-          <div className={styles.valuesSectionContainer}>
-            <motion.div
-              className={styles.valuesSectionHeader}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isValuesInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className={styles.valuesSectionTitle}>What We Value in Candidates</h2>
-            </motion.div>
-
-            <div className={styles.valuesCarousel}>
-              <div className={styles.valuesTrack}>
-                {candidateValues.map((value, index) => (
-                  <motion.div
-                    key={value.id}
-                    className={styles.valueCard}
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={isValuesInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: index * 0.1, duration: 0.6 }}
-                  >
-                    {value.image && (
-                      <div className={styles.valueCardImage}>
-                        <ImageWithFallback src={value.image} alt={value.title} />
-                      </div>
-                    )}
-                    <div className={styles.valueCardOverlay} />
-                    <div className={styles.valueCardContent}>
-                      <h3 className={styles.valueCardTitle}>{value.title}</h3>
-                      <p className={styles.valueCardDescription}>{value.description}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            <motion.div
-              className={styles.valuesDots}
-              initial={{ opacity: 0 }}
-              animate={isValuesInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.6, duration: 0.6 }}
-            >
-              {candidateValues.map((_, index) => (
-                <button
-                  key={index}
-                  className={styles.valueDot}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </motion.div>
-          </div>
-        </section>
-      )}
 
       {/* ================================================================= */}
       {/* 5. The pCloud Bar                                                  */}

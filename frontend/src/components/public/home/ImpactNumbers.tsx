@@ -9,8 +9,8 @@ export function ImpactNumbers() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   const stats = [
-    { number: '22M+', label: 'Users worldwide' },
-    { number: '195+', label: 'Countries' },
+    { number: '24M+', label: 'Users worldwide' },
+    { number: '175+', label: 'Countries' },
     { number: '500+', label: 'Petabytes Stored' },
     { number: '13+', label: 'Years of Excellence' },
     { number: '99.92%', label: 'Uptime' },

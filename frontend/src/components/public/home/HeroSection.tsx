@@ -41,7 +41,7 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                  We keep the world&apos;s memories, work, and ideas - safe, private, and always accessible.
+                  24 million people trust us with their data. We need engineers who take that personally.
                 </motion.h1>
 
                 <motion.p
@@ -50,7 +50,7 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                 >
-                  Join our team of innovators building privacy-first cloud solutions trusted by millions worldwide.
+                  We ship code that 24 million people depend on every day. The bar is high. The work is real.
                 </motion.p>
 
                 <motion.div

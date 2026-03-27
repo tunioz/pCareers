@@ -6,9 +6,9 @@ import { Linkedin, Twitter, Instagram, Github } from 'lucide-react';
 import styles from './Social.module.scss';
 
 const socials = [
-  { name: 'LinkedIn', Icon: Linkedin, href: 'https://linkedin.com/company/pcloud' },
-  { name: 'Twitter', Icon: Twitter, href: 'https://twitter.com/paborak' },
-  { name: 'Instagram', Icon: Instagram, href: 'https://instagram.com/pcloud' },
+  { name: 'LinkedIn', Icon: Linkedin, href: 'https://www.linkedin.com/company/pcloud/' },
+  { name: 'Twitter', Icon: Twitter, href: 'https://twitter.com/paborcloud' },
+  { name: 'Instagram', Icon: Instagram, href: 'https://www.instagram.com/pcloud/' },
   { name: 'GitHub', Icon: Github, href: 'https://github.com/pcloud' },
 ];
 

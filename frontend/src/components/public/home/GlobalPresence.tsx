@@ -117,7 +117,7 @@ export function GlobalPresence() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 1.5, duration: 0.8 }}
           >
-            Serving 22M+ users across 195+ countries from trusted global locations
+            Serving 24M+ users across 175+ countries from trusted global locations
           </motion.p>
         </motion.div>
       </div>

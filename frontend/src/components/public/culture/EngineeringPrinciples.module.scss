@@ -53,21 +53,28 @@
 }
 
 .numberWrapper {
-  display: none;
+  display: flex;
+  align-items: flex-start;
 
   @include breakpoint(md) {
-    display: flex;
     align-items: center;
     justify-content: center;
   }
 }
 
 .number {
-  font-size: 120px;
-  font-weight: $font-weight-semibold;
-  color: $color-white;
-  opacity: 0.1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-blue;
+  letter-spacing: 1px;
   line-height: 1;
+
+  @include breakpoint(md) {
+    font-size: 120px;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+    opacity: 0.1;
+  }
 
   @include breakpoint(lg) {
     font-size: 180px;
@@ -79,17 +86,6 @@
   flex-direction: column;
   gap: $spacing-4;
   justify-content: center;
-}
-
-.mobileNumber {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-bold;
-  color: $color-blue;
-  letter-spacing: 1px;
-
-  @include breakpoint(md) {
-    display: none;
-  }
 }
 
 .title {
