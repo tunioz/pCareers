@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "python3", "gcc", "gnumake"]
+
+[phases.install]
+cmds = ["cd frontend && npm ci"]
+
+[phases.build]
+cmds = ["cd frontend && mkdir -p ./data && npm run build"]
+
+[start]
+cmd = "cd frontend && DB_DIR=./data npm run start"
