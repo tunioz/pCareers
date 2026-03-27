@@ -2,8 +2,8 @@ import Database from 'better-sqlite3';
 import path from 'node:path';
 import fs from 'node:fs';
 
-const DB_DIR = path.resolve(process.cwd(), '..', 'data');
-const DB_PATH = path.join(DB_DIR, 'pcloud.db');
+const DB_DIR = process.env.DB_DIR || path.resolve(process.cwd(), '..', 'data');
+const DB_PATH = process.env.DB_PATH || path.join(DB_DIR, 'pcloud.db');
 
 // Ensure data directory exists
 if (!fs.existsSync(DB_DIR)) {
