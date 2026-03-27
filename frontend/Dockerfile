@@ -1,15 +1,10 @@
-# Single-stage build to avoid timeout
-FROM node:20-slim
-
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
-# Install deps first (cached layer)
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --ignore-scripts && npx --yes node-pre-gyp install --directory=node_modules/better-sqlite3 --target_arch=x64 --target_platform=linux 2>/dev/null || npm rebuild better-sqlite3
 
-# Copy source and build
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production

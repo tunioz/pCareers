@@ -1,15 +1,11 @@
 [phases.setup]
-nixPkgs = ["python3", "gcc", "gnumake", "pkg-config"]
+nixPkgs = ["nodejs_20", "python3", "gcc", "gnumake"]
 
 [phases.install]
 cmds = ["npm ci"]
 
 [phases.build]
-cmds = ["mkdir -p ../data", "npm run build"]
+cmds = ["mkdir -p ./data", "npm run build"]
 
 [start]
-cmd = "npm run start"
-
-[variables]
-NODE_ENV = "production"
-NEXT_TELEMETRY_DISABLED = "1"
+cmd = "DB_DIR=./data npm run start"
