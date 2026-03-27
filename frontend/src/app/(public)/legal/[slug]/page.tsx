@@ -4,12 +4,7 @@ import { queryOne, queryAll } from '@/lib/db';
 import type { LegalPage } from '@/types';
 import styles from '@/components/public/legal/LegalPage.module.scss';
 
-export async function generateStaticParams() {
-  const pages = queryAll<LegalPage>(
-    'SELECT slug FROM legal_pages WHERE is_published = 1'
-  );
-  return pages.map((page) => ({ slug: page.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,

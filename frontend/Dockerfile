@@ -1,9 +1,11 @@
 FROM node:20-bookworm-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci --ignore-scripts && npx --yes node-pre-gyp install --directory=node_modules/better-sqlite3 --target_arch=x64 --target_platform=linux 2>/dev/null || npm rebuild better-sqlite3
+RUN npm ci
 
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1

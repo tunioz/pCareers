@@ -7,10 +7,7 @@ import type { Post } from '@/types';
 import { ImageWithFallback } from '@/components/public/ImageWithFallback';
 import styles from '@/components/public/blog/BlogPost.module.scss';
 
-export async function generateStaticParams() {
-  const posts = queryAll<Post>('SELECT slug FROM posts WHERE is_published = 1');
-  return posts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,

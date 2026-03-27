@@ -13,10 +13,7 @@ import type {
 } from '@/types';
 import { RolePreview } from '@/components/public/jobs/RolePreview';
 
-export async function generateStaticParams() {
-  const jobs = queryAll<Job>('SELECT slug FROM jobs WHERE is_published = 1');
-  return jobs.map((job) => ({ slug: job.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,

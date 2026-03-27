@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
 import { PageHero } from '@/components/public/PageHero';

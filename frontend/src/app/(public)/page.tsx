@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
 import type { Post, Job } from '@/types';
