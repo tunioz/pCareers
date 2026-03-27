@@ -4,17 +4,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 make g+
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 
-COPY . .
+COPY frontend/ .
+RUN mkdir -p ./data
+
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-RUN mkdir -p /app/data && npm run build
+ENV DB_DIR=/app/data
+RUN npm run build
 
 EXPOSE 3000
 ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-ENV DB_DIR="/app/data"
+ENV HOSTNAME=0.0.0.0
 
 CMD ["npm", "run", "start"]
