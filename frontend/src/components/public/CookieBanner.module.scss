@@ -1,0 +1,108 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-index-fixed;
+  background-color: $color-white;
+  border-top: 1px solid $color-neutral-200;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  padding: $spacing-6;
+  transform: translateY(100%);
+  transition: transform $transition-slow;
+
+  &.visible {
+    transform: translateY(0);
+  }
+}
+
+.container {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-8;
+  }
+}
+
+.text {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-neutral-700;
+  line-height: $line-height-relaxed;
+
+  @include breakpoint(md) {
+    font-size: $font-size-md;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btnAccept {
+  @include button-reset;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: $spacing-2 $spacing-6;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  transition: background-color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $color-blue-hover;
+  }
+
+  @include focus-ring;
+}
+
+.btnReject {
+  @include button-reset;
+  background-color: transparent;
+  color: $color-neutral-700;
+  padding: $spacing-2 $spacing-6;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-neutral-300;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  transition: background-color $transition-fast, border-color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $color-neutral-50;
+    border-color: $color-neutral-400;
+  }
+
+  @include focus-ring;
+}
+
+.btnSettings {
+  @include button-reset;
+  color: $color-blue;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-blue-hover;
+  }
+
+  @include focus-ring;
+}

@@ -1,0 +1,47 @@
+{
+  "name": "pcloud-employee-branding",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "tsx --tsconfig tsconfig.json src/lib/seed.ts"
+  },
+  "dependencies": {
+    "@tiptap/extension-color": "^3.20.4",
+    "@tiptap/extension-highlight": "^3.20.4",
+    "@tiptap/extension-image": "^3.20.4",
+    "@tiptap/extension-link": "^3.20.4",
+    "@tiptap/extension-placeholder": "^3.20.4",
+    "@tiptap/extension-text-align": "^3.20.4",
+    "@tiptap/extension-text-style": "^3.20.4",
+    "@tiptap/extension-underline": "^3.20.4",
+    "@tiptap/pm": "^3.20.4",
+    "@tiptap/react": "^3.20.4",
+    "@tiptap/starter-kit": "^3.20.4",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.8.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.474.0",
+    "next": "^15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sass": "^1.86.0",
+    "sharp": "^0.33.5",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.2"
+  }
+}

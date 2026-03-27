@@ -1,0 +1,70 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  padding: $spacing-20 0;
+  background-color: $color-dark-blue;
+  border-top: 1px solid rgba($color-white, 0.1);
+}
+
+.container {
+  @include container;
+  text-align: center;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+  line-height: $line-height-tight;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-lg;
+  color: rgba($color-white, 0.7);
+  margin-bottom: $spacing-12;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-10;
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-3;
+  text-decoration: none;
+}
+
+.iconCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: $border-radius-full;
+  background: rgba($color-white, 0.05);
+  border: 1px solid rgba($color-white, 0.1);
+  @include flex-center;
+  color: $color-white;
+  transition: background $transition-base;
+
+  .socialLink:hover & {
+    background: rgba($color-white, 0.1);
+  }
+}
+
+.label {
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.7);
+}

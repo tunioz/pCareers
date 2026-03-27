@@ -1,0 +1,125 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, $color-blue 40%, rgba($color-blue, 0) 100%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  padding: $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: $spacing-20;
+  }
+}
+
+.wrapper {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-12;
+  align-items: end;
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+  align-items: flex-start;
+  align-self: flex-end;
+}
+
+.label {
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-xs;
+  color: $color-white;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.heading {
+  font-size: $font-size-5xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  line-height: $line-height-tight;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+
+  @include breakpoint(lg) {
+    font-size: 4.5rem;
+  }
+}
+
+.description {
+  font-size: $font-size-lg;
+  color: rgba($color-white, 0.9);
+  max-width: 28rem;
+  line-height: $line-height-relaxed;
+}
+
+.cta {
+  display: flex;
+  gap: $spacing-4;
+  width: 100%;
+}
+
+.ctaButton {
+  @include button-reset;
+  background-color: $color-dark-blue;
+  color: $color-white;
+  padding: 0 $spacing-8;
+  height: 56px;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-semibold;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color $transition-fast;
+  box-shadow: $shadow-lg;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #041230;
+  }
+}

@@ -1,0 +1,102 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  padding: $spacing-20 0;
+  background-color: $color-white;
+}
+
+.container {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-16;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.headingHighlight {
+  color: $color-blue;
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-6;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  position: relative;
+}
+
+.cardInner {
+  background-color: #f4f4f4;
+  padding: $spacing-8;
+  border-radius: $border-radius-xl;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: transform $transition-base;
+}
+
+.bgAccent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.2;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 1;
+}
+
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-6;
+}
+
+.cardTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+  margin-bottom: $spacing-3;
+}
+
+.cardDescription {
+  color: $color-neutral-600;
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+}

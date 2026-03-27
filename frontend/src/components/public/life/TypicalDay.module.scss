@@ -1,0 +1,180 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 600px;
+
+  @include breakpoint(lg) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// --- Left column: image ---
+
+.imageCol {
+  position: relative;
+  min-height: 400px;
+
+  @include breakpoint(lg) {
+    min-height: 600px;
+  }
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.overlayCard {
+  position: absolute;
+  bottom: $spacing-6;
+  left: $spacing-6;
+  background: rgba($color-white, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: $border-radius-xl;
+  padding: $spacing-4 $spacing-6;
+  z-index: 2;
+}
+
+.personName {
+  display: block;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-md;
+  color: $color-neutral-900;
+}
+
+.personTeam {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-neutral-600;
+}
+
+// --- Right column: coral content ---
+
+.contentCol {
+  background-color: #ff6b5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-16 $spacing-8;
+
+  @include breakpoint(lg) {
+    padding: $spacing-16 $spacing-16;
+  }
+}
+
+.contentInner {
+  width: 100%;
+  max-width: 480px;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-12;
+  line-height: $line-height-tight;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+// --- Timeline ---
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-5;
+  position: relative;
+  padding-bottom: $spacing-8;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.timeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 80px;
+  text-align: center;
+}
+
+.timeBadgeYellow {
+  background-color: $color-yellow;
+  color: $color-dark-blue;
+}
+
+.timeBadgeCyan {
+  background-color: $color-primary-cyan;
+  color: $color-white;
+}
+
+.timeBadgePurple {
+  background-color: $color-purple;
+  color: $color-white;
+}
+
+.timelineContent {
+  flex: 1;
+}
+
+.timelineTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-1;
+}
+
+.timelineDesc {
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.85);
+  line-height: $line-height-relaxed;
+}
+
+// --- SVG connectors ---
+
+.connectorSvg {
+  position: absolute;
+  left: 38px;
+  pointer-events: none;
+
+  @include breakpoint-down(md) {
+    left: 38px;
+  }
+}
+
+.connectorLine {
+  stroke: rgba($color-white, 0.3);
+  stroke-width: 2;
+  fill: none;
+}

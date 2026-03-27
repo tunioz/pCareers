@@ -1,0 +1,499 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+// =============================================================================
+// CareersPage — full rebuild matching Figma design
+// =============================================================================
+
+// ---------------------------------------------------------------------------
+// 1. Hero Section — light gradient background
+// ---------------------------------------------------------------------------
+.hero {
+  padding-top: 160px;
+  padding-bottom: $spacing-16;
+  background: linear-gradient(180deg, rgba($color-blue, 0.05) 0%, $color-white 100%);
+  text-align: center;
+}
+
+.heroContainer {
+  @include container;
+  max-width: 900px;
+}
+
+.heroTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-neutral-900;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint(md) {
+    font-size: $font-size-5xl;
+  }
+
+  @include breakpoint(lg) {
+    font-size: $font-size-6xl;
+  }
+}
+
+.heroHighlight {
+  color: $color-blue;
+}
+
+.heroSubtitle {
+  font-size: $font-size-lg;
+  color: $color-neutral-600;
+  margin: 0;
+
+  @include breakpoint(md) {
+    font-size: $font-size-xl;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 2. Filter Tags — horizontal pill row
+// ---------------------------------------------------------------------------
+.tagsSection {
+  padding: $spacing-8 0;
+  background-color: $color-white;
+}
+
+.tagsContainer {
+  @include container;
+  max-width: 1280px;
+}
+
+.tagsRow {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.tagPill {
+  @include button-reset;
+  @include focus-ring;
+  padding: $spacing-2 $spacing-5;
+  border-radius: $border-radius-full;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+  user-select: none;
+}
+
+.tagPillInactive {
+  background-color: #f4f4f4;
+  color: $color-neutral-700;
+
+  &:hover {
+    background-color: $color-neutral-200;
+  }
+}
+
+.tagPillActive {
+  background-color: $color-dark-blue;
+  color: $color-white;
+  box-shadow: $shadow-sm;
+}
+
+// ---------------------------------------------------------------------------
+// 3. Filter Controls — dropdowns + results count + toggle
+// ---------------------------------------------------------------------------
+.filtersSection {
+  padding: $spacing-4 0 $spacing-8;
+  background-color: $color-white;
+}
+
+.filtersContainer {
+  @include container;
+  max-width: 1280px;
+}
+
+.filtersRow {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.filtersLeft {
+  display: flex;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filterSelect {
+  @include button-reset;
+  @include focus-ring;
+  padding: $spacing-2 $spacing-10 $spacing-2 $spacing-4;
+  border-radius: $border-radius-full;
+  font-size: $font-size-sm;
+  border: 1px solid $color-neutral-300;
+  background-color: $color-white;
+  color: $color-neutral-700;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M2.5 4.5L6 8l3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+  min-width: 140px;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: $color-neutral-400;
+  }
+
+  &:focus {
+    border-color: $color-blue;
+  }
+}
+
+.clearAllButton {
+  @include button-reset;
+  @include focus-ring;
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  font-weight: $font-weight-medium;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius-full;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-blue;
+    background-color: rgba($color-blue, 0.05);
+  }
+}
+
+.filtersRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+}
+
+.resultsCount {
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+}
+
+.departmentViewBtn {
+  @include button-reset;
+  @include focus-ring;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius-full;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-blue;
+  background-color: rgba($color-blue, 0.08);
+  border: 1px solid rgba($color-blue, 0.2);
+  transition: all $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: rgba($color-blue, 0.15);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 4. Jobs List — grouped by department (Proton-style)
+// ---------------------------------------------------------------------------
+.rolesSection {
+  padding: 0 0 $spacing-20;
+  background-color: $color-white;
+}
+
+.rolesContainer {
+  @include container;
+  max-width: 1000px;
+}
+
+.rolesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-8;
+}
+
+.rolesTitle {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-neutral-900;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-4xl;
+  }
+}
+
+.rolesCountBadge {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $color-blue;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+}
+
+.jobsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-10;
+}
+
+.deptGroup {
+  // nothing extra needed
+}
+
+.deptHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: $spacing-3;
+  border-bottom: 2px solid $color-neutral-200;
+  margin-bottom: $spacing-1;
+}
+
+.deptName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin: 0;
+}
+
+.deptCount {
+  font-size: $font-size-sm;
+  color: $color-neutral-400;
+}
+
+.deptJobs {
+  // nothing extra needed
+}
+
+.jobRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-5 $spacing-4;
+  text-decoration: none;
+  border-bottom: 1px solid $color-neutral-100;
+  transition: background-color $transition-fast;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background-color: rgba($color-blue, 0.03);
+
+    .jobRowArrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    h4 {
+      color: $color-blue;
+    }
+  }
+}
+
+.jobRowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.jobRowTitle {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+
+  h4 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-900;
+    margin: 0;
+    transition: color $transition-fast;
+
+    @include breakpoint(md) {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+.badgeNew {
+  background-color: $color-blue;
+  color: $color-white;
+  font-size: 9px;
+  font-weight: $font-weight-bold;
+  padding: 2px 6px;
+  border-radius: $border-radius-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.jobRowProduct {
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  margin: 0;
+}
+
+.jobRowRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  flex-shrink: 0;
+}
+
+.jobRowMeta {
+  display: none;
+  align-items: center;
+  gap: $spacing-5;
+
+  @include breakpoint(md) {
+    display: flex;
+  }
+}
+
+.jobRowMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  white-space: nowrap;
+}
+
+.jobRowType {
+  font-size: $font-size-xs;
+  color: $color-blue;
+  font-weight: $font-weight-medium;
+  padding: 2px 8px;
+  border: 1px solid rgba($color-blue, 0.2);
+  border-radius: $border-radius-full;
+  white-space: nowrap;
+}
+
+.jobRowArrow {
+  color: $color-blue;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all $transition-fast;
+  flex-shrink: 0;
+}
+
+// ---------------------------------------------------------------------------
+// No results
+// ---------------------------------------------------------------------------
+.noResults {
+  text-align: center;
+  padding: $spacing-20 0;
+  color: $color-neutral-500;
+  font-size: $font-size-lg;
+
+  p {
+    margin: $spacing-2 0 0;
+    font-size: $font-size-sm;
+    color: $color-neutral-400;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 5. WhyJoin Section — dark blue background
+// ---------------------------------------------------------------------------
+.whyJoinSection {
+  padding: $spacing-20 0;
+  background-color: $color-dark-blue;
+}
+
+.whyJoinContainer {
+  @include container;
+  max-width: 1280px;
+}
+
+.whyJoinTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  text-align: center;
+  margin-bottom: $spacing-12;
+  line-height: $line-height-tight;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.whyJoinHighlight {
+  color: $color-yellow;
+}
+
+.benefitsGrid {
+  display: grid;
+  gap: $spacing-6;
+  grid-template-columns: 1fr;
+
+  @include breakpoint(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.benefitCard {
+  background-color: rgba($color-white, 0.05);
+  border: 1px solid rgba($color-white, 0.1);
+  border-radius: $border-radius-lg;
+  padding: $spacing-8;
+  text-align: center;
+  transition: all $transition-base;
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background-color: rgba($color-white, 0.08);
+    border-color: rgba($color-white, 0.2);
+    transform: translateY(-4px);
+  }
+}
+
+.benefitIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  @include flex-center;
+  margin: 0 auto $spacing-5;
+}
+
+.benefitIconBlue {
+  background-color: rgba($color-blue, 0.3);
+  color: lighten($color-blue, 20%);
+}
+
+.benefitIconYellow {
+  background-color: rgba($color-yellow, 0.2);
+  color: $color-yellow;
+}
+
+.benefitTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-3;
+}
+
+.benefitDescription {
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.6);
+  line-height: $line-height-relaxed;
+  margin: 0;
+}

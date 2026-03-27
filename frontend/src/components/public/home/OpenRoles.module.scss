@@ -1,0 +1,182 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  background-color: #f4f4f4;
+  padding: $spacing-20 0;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: $spacing-8;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+  margin-bottom: $spacing-4;
+  text-align: center;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.subtitle {
+  color: $color-neutral-500;
+  text-align: center;
+  max-width: 857px;
+}
+
+.cardsGrid {
+  display: grid;
+  gap: $spacing-6;
+  margin-bottom: $spacing-12;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.jobCard {
+  position: relative;
+  height: 320px;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+}
+
+.cardBg {
+  position: absolute;
+  inset: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.cardContent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $spacing-8;
+}
+
+.badges {
+  display: flex;
+  gap: $spacing-2;
+}
+
+.badgeNew {
+  background-color: #fbbf24;
+  color: $color-dark-blue;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+}
+
+.badgePriority {
+  background-color: $color-error;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+}
+
+.cardBottom {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-2;
+  transition: color $transition-fast;
+
+  .jobCard:hover & {
+    color: $color-primary-cyan;
+  }
+}
+
+.cardSeniority {
+  color: rgba($color-white, 0.8);
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-2;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+}
+
+.tagDept {
+  background-color: rgba($color-white, 0.2);
+  backdrop-filter: blur(4px);
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+  border: 1px solid rgba($color-white, 0.3);
+}
+
+.tagProduct {
+  background-color: rgba($color-primary-cyan, 0.9);
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+}
+
+.viewAll {
+  text-align: center;
+}
+
+.viewAllButton {
+  @include button-reset;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: 0 $spacing-8;
+  height: 48px;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-md;
+  transition: background-color $transition-fast;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    background-color: $color-blue-hover;
+  }
+}

@@ -1,0 +1,181 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-index-fixed;
+  background-color: $color-white;
+  box-shadow: $shadow-sm;
+}
+
+.container {
+  max-width: $max-content-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $spacing-6;
+  padding-right: $spacing-6;
+
+  @include breakpoint(lg) {
+    padding-left: $spacing-12;
+    padding-right: $spacing-12;
+  }
+}
+
+.inner {
+  @include flex-between;
+  height: 64px;
+
+  @include breakpoint(lg) {
+    height: 80px;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: transform $transition-fast;
+
+  img {
+    height: 32px;
+    width: auto;
+    display: block;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: $spacing-8;
+
+  @include breakpoint(lg) {
+    display: flex;
+  }
+}
+
+.navLink {
+  font-size: $font-size-sm;
+  color: $color-neutral-600;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-blue;
+  }
+}
+
+.navLinkActive {
+  color: $color-blue;
+  font-weight: $font-weight-medium;
+}
+
+.actions {
+  display: none;
+  align-items: center;
+  gap: $spacing-4;
+
+  @include breakpoint(lg) {
+    display: flex;
+  }
+}
+
+.ctaButton {
+  @include button-reset;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: $spacing-2 $spacing-6;
+  border-radius: $border-radius-full;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: background-color $transition-fast, transform $transition-fast;
+
+  &:hover {
+    background-color: $color-blue-hover;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.mobileToggle {
+  @include button-reset;
+  display: block;
+  color: $color-neutral-600;
+  padding: $spacing-2;
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.mobileMenu {
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  background-color: $color-white;
+  z-index: $z-index-modal;
+
+  @include breakpoint(lg) {
+    display: none;
+  }
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-6;
+  gap: $spacing-4;
+}
+
+.mobileLink {
+  display: block;
+  padding: $spacing-3 0;
+  border-bottom: 1px solid $color-neutral-100;
+  color: $color-neutral-600;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-blue;
+  }
+}
+
+.mobileLinkActive {
+  color: $color-blue;
+  font-weight: $font-weight-semibold;
+}
+
+.mobileCta {
+  @include button-reset;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: $spacing-3 $spacing-6;
+  border-radius: $border-radius-full;
+  margin-top: $spacing-4;
+  text-align: center;
+  font-weight: $font-weight-medium;
+}
+
+.langSwitch {
+  @include button-reset;
+  font-size: $font-size-sm;
+  color: $color-neutral-600;
+  font-weight: $font-weight-medium;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-sm;
+  transition: color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    color: $color-blue;
+    background-color: $color-neutral-50;
+  }
+}

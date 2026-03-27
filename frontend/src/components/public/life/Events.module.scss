@@ -1,0 +1,93 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  padding: $spacing-20 0;
+  background-color: $color-dark-blue;
+}
+
+.container {
+  @include container;
+}
+
+.heading {
+  text-align: center;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-12;
+  line-height: $line-height-tight;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-6;
+  grid-template-columns: 1fr;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background: rgba($color-white, 0.05);
+  border: 1px solid rgba($color-white, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: $border-radius-xl;
+  padding: $spacing-8;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+  transition: background $transition-base, transform $transition-base;
+
+  &:hover {
+    background: rgba($color-white, 0.08);
+    transform: translateY(-3px);
+  }
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: $border-radius-full;
+  @include flex-center;
+  flex-shrink: 0;
+}
+
+.iconCircleBlue {
+  background-color: $color-blue;
+  color: $color-white;
+}
+
+.iconCircleYellow {
+  background-color: $color-yellow;
+  color: $color-dark-blue;
+}
+
+.datePill {
+  display: inline-block;
+  padding: $spacing-1 $spacing-4;
+  border-radius: $border-radius-full;
+  background: rgba($color-white, 0.1);
+  color: rgba($color-white, 0.7);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  width: fit-content;
+}
+
+.cardTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+}
+
+.cardDescription {
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.7);
+  line-height: $line-height-relaxed;
+}

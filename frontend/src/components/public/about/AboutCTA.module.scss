@@ -1,0 +1,12 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section { padding: $spacing-20 0; background-color: $color-blue; position: relative; overflow: hidden; }
+.bgPattern { position: absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 50px 50px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 $spacing-6; position: relative; @include breakpoint(lg) { padding: 0 $spacing-12; } }
+.content { text-align: center; }
+.heading { font-size: $font-size-4xl; font-weight: $font-weight-bold; color: $color-white; margin-bottom: $spacing-12; @include breakpoint(lg) { font-size: $font-size-6xl; } }
+.highlight { color: $color-yellow; }
+.buttons { display: flex; flex-direction: column; gap: $spacing-4; justify-content: center; @include breakpoint(sm) { flex-direction: row; } }
+.primaryButton { @include button-reset; background-color: $color-yellow; color: $color-dark-blue; padding: 0 $spacing-8; height: 48px; border-radius: $border-radius-full; display: flex; align-items: center; justify-content: center; gap: $spacing-2; font-size: $font-size-md; font-weight: $font-weight-bold; transition: background-color $transition-fast; &:hover { background-color: #d4e600; } }
+.secondaryButton { @include button-reset; border: 2px solid $color-white; color: $color-white; padding: 0 $spacing-8; height: 48px; border-radius: $border-radius-full; font-size: $font-size-md; transition: background-color $transition-fast, color $transition-fast; &:hover { background-color: $color-white; color: $color-blue; } }

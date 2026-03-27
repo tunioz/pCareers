@@ -1,0 +1,86 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  background-color: $color-blue;
+  padding: $spacing-20 $spacing-6;
+  position: relative;
+  overflow: hidden;
+
+  @include breakpoint(lg) {
+    padding: $spacing-24 $spacing-20;
+  }
+}
+
+.bgPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: radial-gradient(circle, $color-white 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+.floatingCircle {
+  position: absolute;
+  border-radius: $border-radius-full;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.circleYellow {
+  width: 300px;
+  height: 300px;
+  background-color: rgba(#e6ff00, 0.3);
+  top: -100px;
+  right: -50px;
+}
+
+.circleWhite {
+  width: 200px;
+  height: 200px;
+  background-color: rgba($color-white, 0.15);
+  bottom: -60px;
+  left: -40px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  text-align: center;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-12;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-6xl;
+  }
+}
+
+.highlight {
+  color: $color-yellow;
+}
+
+.button {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-yellow;
+  color: $color-dark-blue;
+  padding: 0 $spacing-10;
+  height: 56px;
+  border-radius: $border-radius-full;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: #d4e600;
+  }
+}

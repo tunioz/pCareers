@@ -1,0 +1,1431 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+// =============================================================================
+// Hero Section
+// =============================================================================
+
+.hero {
+  background: linear-gradient(
+    135deg,
+    rgba($color-primary-cyan, 0.05) 0%,
+    $color-white 50%,
+    rgba($color-primary-cyan, 0.05) 100%
+  );
+  padding: 120px 0 $spacing-12;
+
+  @include breakpoint(lg) {
+    padding: 140px 0 $spacing-16;
+  }
+}
+
+.heroContainer {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.heroTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-6;
+  line-height: $line-height-tight;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-6xl;
+  }
+}
+
+.metaPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+}
+
+.metaPill {
+  padding: $spacing-2 $spacing-4;
+  background-color: $color-white;
+  border: 1px solid rgba($color-primary-cyan, 0.2);
+  border-radius: $border-radius-full;
+  font-size: $font-size-sm;
+  color: $color-dark-blue;
+}
+
+.heroButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+}
+
+.btnApply {
+  @include button-reset;
+  background-color: $color-primary-cyan;
+  color: $color-white;
+  padding: 0 $spacing-8;
+  height: 56px;
+  border-radius: $border-radius-full;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-primary-cyan-dark;
+  }
+}
+
+.btnOutlined {
+  @include button-reset;
+  border: 2px solid $color-primary-cyan;
+  color: $color-primary-cyan;
+  padding: 0 $spacing-8;
+  height: 56px;
+  border-radius: $border-radius-full;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-primary-cyan, 0.05);
+  }
+}
+
+// =============================================================================
+// Two-Column Layout
+// =============================================================================
+
+.twoColumnSection {
+  padding: $spacing-16 0;
+
+  @include breakpoint(lg) {
+    padding: $spacing-24 0;
+  }
+}
+
+.twoColumnContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-12;
+
+  @include breakpoint(lg) {
+    grid-template-columns: 1fr 350px;
+  }
+}
+
+// =============================================================================
+// Left Column
+// =============================================================================
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-12;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
+  margin-bottom: $spacing-4;
+}
+
+.sectionHeaderLarge {
+  composes: sectionHeader;
+  margin-bottom: $spacing-6;
+}
+
+.iconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconCyan {
+  background-color: rgba($color-primary-cyan, 0.1);
+  color: $color-primary-cyan;
+}
+
+.iconCoral {
+  background-color: rgba($color-coral, 0.1);
+  color: $color-coral;
+}
+
+.iconPurple {
+  background-color: rgba($color-purple, 0.1);
+  color: $color-purple;
+}
+
+.iconYellow {
+  background-color: rgba($color-yellow, 0.2);
+  color: $color-dark-blue;
+}
+
+.iconGreen {
+  background-color: rgba($color-success, 0.1);
+  color: $color-success;
+}
+
+.sectionHeading {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+}
+
+.indentedContent {
+  margin-left: 64px; // 48px icon + 16px gap
+
+  @include breakpoint-down(md) {
+    margin-left: 0;
+  }
+}
+
+// A. About the Role
+.aboutText {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  line-height: $line-height-relaxed;
+}
+
+// B. Challenges
+.challengeList {
+  list-style: none;
+  padding-left: 64px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+
+  @include breakpoint-down(md) {
+    padding-left: 0;
+  }
+}
+
+.challengeItem {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  line-height: $line-height-relaxed;
+  position: relative;
+}
+
+.challengeBullet {
+  color: $color-coral;
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 7px;
+}
+
+// C. Your Team
+.teamCard {
+  background-color: $color-white;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+}
+
+.teamCardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @include breakpoint(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.teamPhoto {
+  min-height: 300px;
+  background: linear-gradient(135deg, rgba($color-primary-cyan, 0.2), rgba($color-purple, 0.2));
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 300px;
+    display: block;
+  }
+}
+
+.teamInfo {
+  padding: $spacing-8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.teamLabel {
+  font-size: $font-size-sm;
+  color: $color-primary-cyan;
+  margin-bottom: $spacing-2;
+}
+
+.teamLead {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-4;
+}
+
+.teamQuote {
+  color: #4b5563;
+  font-style: italic;
+  margin-bottom: $spacing-6;
+  border-left: 4px solid $color-primary-cyan;
+  padding-left: $spacing-4;
+}
+
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+}
+
+.techTag {
+  padding: $spacing-1 $spacing-3;
+  background-color: $color-neutral-50;
+  color: $color-dark-blue;
+  font-size: $font-size-sm;
+  font-family: $font-family-mono;
+  border-radius: $border-radius-sm;
+}
+
+// D. What You'll Learn
+.learnBlock {
+  background-color: $color-white;
+  border-left: 4px solid $color-primary-cyan;
+  padding: $spacing-6;
+  border-top-right-radius: $border-radius-xl;
+  border-bottom-right-radius: $border-radius-xl;
+  box-shadow: $shadow-sm;
+}
+
+.learnText {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  line-height: $line-height-relaxed;
+}
+
+// E. What We're Looking For
+.requirementsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.requirementItem {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+}
+
+.checkMark {
+  color: $color-success;
+  flex-shrink: 0;
+  font-size: $font-size-xl;
+  min-width: 20px;
+  line-height: 1;
+}
+
+.niceToHaveHeading {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-3;
+}
+
+.niceToHaveList {
+  composes: requirementsList;
+}
+
+.niceToHaveMark {
+  color: $color-primary-cyan;
+  flex-shrink: 0;
+  font-size: $font-size-xl;
+  min-width: 20px;
+  line-height: 1;
+}
+
+// F. What We Offer
+.benefitsIntro {
+  font-size: $font-size-lg;
+  color: #4b5563;
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-6;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.benefitCard {
+  background-color: $color-white;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-lg;
+  padding: $spacing-6;
+  transition: border-color $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    border-color: $color-primary-cyan;
+    box-shadow: $shadow-lg;
+  }
+}
+
+.benefitTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-2;
+}
+
+.benefitDescription {
+  color: #4b5563;
+  font-size: $font-size-md;
+  line-height: $line-height-relaxed;
+}
+
+// G. Working Process Highlights
+.processIntro {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  margin-bottom: $spacing-6;
+}
+
+.processGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-4;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.processCard {
+  background: linear-gradient(to right, rgba($color-purple, 0.05), transparent);
+  border-left: 4px solid $color-purple;
+  padding: $spacing-4;
+  border-top-right-radius: $border-radius-md;
+  border-bottom-right-radius: $border-radius-md;
+}
+
+.processLabel {
+  font-weight: $font-weight-semibold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-1;
+}
+
+.processDetail {
+  color: #4b5563;
+  font-size: $font-size-sm;
+}
+
+// =============================================================================
+// Right Column - Sidebar
+// =============================================================================
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+
+  @include breakpoint(lg) {
+    position: sticky;
+    top: 120px;
+    align-self: flex-start;
+  }
+}
+
+.sidebarCard {
+  backdrop-filter: blur(6px);
+  background-color: rgba($color-dark-blue, 0.95);
+  border-radius: $border-radius-lg;
+  padding: $spacing-6;
+  box-shadow: $shadow-sm;
+  border: 1px solid rgba($color-white, 0.1);
+}
+
+.sidebarTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-yellow;
+  margin-bottom: $spacing-4;
+}
+
+.sidebarText {
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.8);
+  margin-bottom: $spacing-6;
+  line-height: $line-height-relaxed;
+}
+
+.sidebarButtons {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.sidebarApply {
+  @include button-reset;
+  width: 100%;
+  background-color: $color-yellow;
+  color: $color-dark-blue;
+  height: 48px;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: #d4ed00;
+  }
+}
+
+.sidebarShare {
+  @include button-reset;
+  width: 100%;
+  color: $color-yellow;
+  height: 48px;
+  font-size: $font-size-sm;
+  border: 1px solid $color-yellow;
+  border-radius: $border-radius-full;
+  transition: color $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    color: #d4ed00;
+    border-color: #d4ed00;
+  }
+}
+
+// =============================================================================
+// Process Section (dark blue bg)
+// =============================================================================
+
+.processSection {
+  padding: $spacing-20 0;
+  background-color: $color-dark-blue;
+}
+
+.processSectionContainer {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.processSectionHeader {
+  text-align: center;
+  margin-bottom: $spacing-12;
+}
+
+.processSectionTitle {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-4xl;
+  }
+}
+
+.processSectionSubtitle {
+  font-size: $font-size-lg;
+  color: rgba($color-white, 0.8);
+  max-width: 768px;
+  margin: 0 auto;
+  line-height: $line-height-relaxed;
+}
+
+.stagesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-6;
+  margin-bottom: $spacing-12;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stageCard {
+  background-color: rgba($color-white, 0.05);
+  backdrop-filter: blur(4px);
+  border-radius: $border-radius-xl;
+  padding: $spacing-6;
+  border: 1px solid rgba($color-white, 0.1);
+  transition: transform $transition-base, background-color $transition-base;
+
+  &:hover {
+    transform: translateY(-10px);
+    background-color: rgba($color-white, 0.1);
+  }
+}
+
+.stageNumber {
+  font-size: $font-size-6xl;
+  font-weight: $font-weight-bold;
+  color: rgba($color-white, 0.1);
+  margin-bottom: $spacing-4;
+  line-height: 1;
+}
+
+.stageIconRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-4;
+}
+
+.stageIconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: $color-yellow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-dark-blue;
+  transition: transform $transition-base;
+
+  &:hover {
+    transform: scale(1.1) rotate(10deg);
+  }
+}
+
+.stageTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+}
+
+.stageDuration {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  color: $color-yellow;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-3;
+}
+
+.stageDescription {
+  color: rgba($color-white, 0.7);
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-4;
+  line-height: $line-height-relaxed;
+}
+
+.stageFocus {
+  margin-bottom: $spacing-3;
+}
+
+.stageFocusLabel {
+  color: rgba($color-white, 0.5);
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stageFocusText {
+  color: rgba($color-white, 0.8);
+  font-size: $font-size-sm;
+  margin-top: $spacing-1;
+}
+
+.stageTimeline {
+  padding-top: $spacing-3;
+  border-top: 1px solid rgba($color-white, 0.1);
+}
+
+.stageTimelineLabel {
+  composes: stageFocusLabel;
+}
+
+.stageTimelineText {
+  color: $color-yellow;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  margin-top: $spacing-1;
+}
+
+// Overall Timeline
+.overallTimeline {
+  background-color: $color-blue;
+  border-radius: $border-radius-xl;
+  padding: $spacing-8;
+  text-align: center;
+}
+
+.overallTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+}
+
+.overallContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  justify-content: center;
+  align-items: center;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+  }
+}
+
+.overallWeeks {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-yellow;
+  margin-bottom: $spacing-2;
+}
+
+.overallWeeksLabel {
+  color: rgba($color-white, 0.8);
+}
+
+.overallDivider {
+  display: none;
+
+  @include breakpoint(md) {
+    display: block;
+    width: 1px;
+    height: 64px;
+    background-color: rgba($color-white, 0.2);
+  }
+}
+
+.overallFeedback {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-2;
+}
+
+.overallFeedbackLabel {
+  color: rgba($color-white, 0.8);
+}
+
+// =============================================================================
+// Values Section
+// =============================================================================
+
+.valuesSection {
+  padding: $spacing-20 0;
+  background-color: $color-white;
+}
+
+.valuesSectionContainer {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.valuesSectionHeader {
+  text-align: center;
+  margin-bottom: $spacing-16;
+}
+
+.valuesSectionTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.valuesCarousel {
+  overflow-x: auto;
+  margin: 0 (-$spacing-6);
+  padding: 0 $spacing-6 $spacing-4;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include breakpoint(lg) {
+    margin: 0 (-$spacing-12);
+    padding: 0 $spacing-12 $spacing-4;
+  }
+}
+
+.valuesTrack {
+  display: flex;
+  gap: $spacing-6;
+  min-width: max-content;
+}
+
+.valueCard {
+  background-color: #e5e7eb;
+  width: 320px;
+  height: 380px;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  padding: $spacing-8;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.valueCardImage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  img {
+    position: absolute;
+    height: 100%;
+    left: -75%;
+    max-width: none;
+    top: 0;
+    width: 250%;
+    object-fit: cover;
+  }
+}
+
+.valueCardOverlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 38, 77, 0) 24%,
+    #00264d 100%
+  );
+}
+
+.valueCardContent {
+  position: relative;
+  z-index: 1;
+  padding-bottom: $spacing-2;
+}
+
+.valueCardTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-3;
+}
+
+.valueCardDescription {
+  color: rgba($color-white, 0.9);
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+}
+
+// Pagination dots
+.valuesDots {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-2;
+  margin-top: $spacing-8;
+}
+
+.valueDot {
+  @include button-reset;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-blue;
+  }
+}
+
+// =============================================================================
+// pCloud Bar Section
+// =============================================================================
+
+.pcloudBarSection {
+  padding: $spacing-20 0;
+  background-color: #f4f4f4;
+}
+
+.pcloudBarContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.pcloudBarHeader {
+  text-align: center;
+  margin-bottom: $spacing-12;
+}
+
+.pcloudBarTitle {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-4xl;
+  }
+}
+
+.pcloudBarSubtitle {
+  font-size: $font-size-lg;
+  color: #4b5563;
+  max-width: 768px;
+  margin: 0 auto;
+  line-height: $line-height-relaxed;
+}
+
+.pcloudBarGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-6;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.pcloudBarCard {
+  background-color: $color-white;
+  border-radius: $border-radius-xl;
+  padding: $spacing-6;
+  border: 1px solid #e5e7eb;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba($color-blue, 0.1);
+  }
+}
+
+.pcloudBarCardInner {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
+}
+
+.pcloudBarIcon {
+  flex-shrink: 0;
+  color: $color-blue;
+}
+
+.pcloudBarCardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: #3a3a3a;
+  margin-bottom: $spacing-2;
+}
+
+.pcloudBarCardDescription {
+  color: #4b5563;
+  line-height: $line-height-relaxed;
+}
+
+// =============================================================================
+// Talent Community Section
+// =============================================================================
+
+.talentSection {
+  padding: $spacing-20 0;
+  background-color: $color-blue;
+  position: relative;
+  overflow: hidden;
+}
+
+.talentBgPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: radial-gradient(circle, white 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.talentContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+  position: relative;
+  z-index: 1;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.talentHeader {
+  text-align: center;
+  margin-bottom: $spacing-12;
+}
+
+.talentTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint(lg) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.talentHighlight {
+  color: $color-yellow;
+}
+
+.talentForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.talentRow {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  align-items: stretch;
+
+  @include breakpoint(md) {
+    flex-direction: row;
+  }
+}
+
+.talentFieldWrapper {
+  flex: 1;
+}
+
+.talentInput {
+  width: 100%;
+  padding: $spacing-4 $spacing-6;
+  border-radius: $border-radius-full;
+  color: #3a3a3a;
+  border: 2px solid rgba($color-white, 0.3);
+  font-size: $font-size-md;
+  background-color: $color-white;
+  outline: none;
+  transition: border-color $transition-fast;
+
+  &::placeholder {
+    color: $color-neutral-400;
+  }
+
+  &:focus {
+    border-color: $color-yellow;
+    box-shadow: 0 0 0 2px rgba($color-yellow, 0.3);
+  }
+}
+
+.talentFileLabel {
+  display: block;
+  width: 100%;
+}
+
+.talentFileHidden {
+  display: none;
+}
+
+.talentFileBox {
+  width: 100%;
+  padding: $spacing-4 $spacing-6;
+  border-radius: $border-radius-full;
+  background-color: $color-white;
+  color: #3a3a3a;
+  border: 2px solid rgba($color-white, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: $color-yellow;
+  }
+}
+
+.talentFilePlaceholder {
+  color: $color-neutral-400;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.talentFileName {
+  font-size: $font-size-sm;
+  @include text-truncate;
+}
+
+.talentFileRemove {
+  @include button-reset;
+  margin-left: $spacing-2;
+  color: #3a3a3a;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-blue;
+  }
+}
+
+.talentSubmitBtn {
+  @include button-reset;
+  background-color: $color-yellow;
+  color: $color-dark-blue;
+  padding: $spacing-4 $spacing-8;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-lg;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  white-space: nowrap;
+  height: 100%;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: #d4e600;
+  }
+}
+
+.talentConsentLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  cursor: pointer;
+  margin-top: $spacing-2;
+}
+
+.talentConsentCheckbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: $color-yellow;
+  cursor: pointer;
+}
+
+.talentConsentText {
+  color: rgba($color-white, 0.85);
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+
+  a {
+    color: $color-yellow;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: #d4e600;
+    }
+  }
+}
+
+.talentHelperText {
+  text-align: center;
+  color: rgba($color-white, 0.8);
+  font-size: $font-size-sm;
+  margin-top: $spacing-4;
+}
+
+.talentSuccess {
+  text-align: center;
+  background-color: rgba($color-white, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: $border-radius-xl;
+  padding: $spacing-12;
+}
+
+.talentSuccessIcon {
+  width: 80px;
+  height: 80px;
+  background-color: $color-yellow;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto $spacing-6;
+}
+
+.talentSuccessTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-2;
+}
+
+.talentSuccessText {
+  color: rgba($color-white, 0.8);
+}
+
+// =============================================================================
+// Utility: inner spacing for section content (below header)
+// =============================================================================
+
+.sectionContentSpaced {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+// =============================================================================
+// Apply Modal
+// =============================================================================
+
+.applyOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-index-modal;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-6;
+}
+
+.applyModal {
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: $shadow-xl;
+}
+
+.applyModalClose {
+  @include button-reset;
+  position: absolute;
+  top: $spacing-4;
+  right: $spacing-4;
+  color: $color-neutral-400;
+  z-index: 1;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-neutral-900;
+  }
+}
+
+.applyModalHeader {
+  padding: $spacing-8 $spacing-8 $spacing-4;
+  border-bottom: 1px solid $color-neutral-200;
+}
+
+.applyModalTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-3;
+}
+
+.applyModalJob {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: $font-size-md;
+    color: $color-blue;
+  }
+
+  span {
+    font-size: $font-size-sm;
+    color: $color-neutral-500;
+  }
+}
+
+.applyModalForm {
+  padding: $spacing-6 $spacing-8 $spacing-8;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.applyModalError {
+  background: rgba($color-error, 0.1);
+  color: $color-error;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  text-align: center;
+}
+
+.applyModalField {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  position: relative;
+
+  label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-700;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: $spacing-3 $spacing-4;
+    border: 1px solid $color-neutral-300;
+    border-radius: $border-radius-md;
+    font-size: $font-size-md;
+    font-family: inherit;
+    outline: none;
+    transition: border-color $transition-fast;
+    color: $color-neutral-900;
+
+    &::placeholder {
+      color: $color-neutral-400;
+    }
+
+    &:focus {
+      border-color: $color-blue;
+      box-shadow: 0 0 0 2px rgba($color-blue, 0.15);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+}
+
+.applyModalHint {
+  font-size: $font-size-xs;
+  color: $color-neutral-400;
+}
+
+.applyModalCharCount {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 11px;
+  color: $color-neutral-400;
+}
+
+.applyModalConsent {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-2;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  color: $color-neutral-600;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    accent-color: $color-blue;
+    flex-shrink: 0;
+  }
+
+  a {
+    color: $color-blue;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-blue-hover;
+    }
+  }
+}
+
+.applyModalSubmit {
+  @include button-reset;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: $spacing-3 $spacing-6;
+  border-radius: $border-radius-md;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: background-color $transition-fast;
+  text-align: center;
+
+  &:hover:not(:disabled) {
+    background-color: $color-blue-hover;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.applyModalSuccess {
+  padding: $spacing-12 $spacing-8;
+  text-align: center;
+
+  h4 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-dark-blue;
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    color: $color-neutral-500;
+  }
+}
+
+.applyModalSuccessIcon {
+  width: 64px;
+  height: 64px;
+  background-color: rgba($color-blue, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto $spacing-4;
+  color: $color-blue;
+}

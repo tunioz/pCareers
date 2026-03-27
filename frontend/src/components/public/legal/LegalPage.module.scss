@@ -1,0 +1,158 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  background-color: $color-white;
+  min-height: 100vh;
+  padding-top: 120px;
+  padding-bottom: $spacing-20;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include breakpoint(lg) {
+    padding: 0 $spacing-12;
+  }
+}
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-dark-blue;
+  margin-bottom: $spacing-4;
+  line-height: $line-height-tight;
+
+  @include breakpoint(md) {
+    font-size: $font-size-4xl;
+  }
+}
+
+.lastUpdated {
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  margin-bottom: $spacing-12;
+}
+
+.content {
+  h2 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-dark-blue;
+    margin-top: $spacing-12;
+    margin-bottom: $spacing-4;
+    line-height: $line-height-tight;
+
+    @include breakpoint(md) {
+      font-size: $font-size-3xl;
+    }
+  }
+
+  h3 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-dark-blue;
+    margin-top: $spacing-8;
+    margin-bottom: $spacing-3;
+
+    @include breakpoint(md) {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  h4 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-dark-blue;
+    margin-top: $spacing-6;
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    font-size: $font-size-md;
+    color: $color-neutral-700;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-4;
+
+    @include breakpoint(md) {
+      font-size: $font-size-lg;
+    }
+  }
+
+  ul,
+  ol {
+    font-size: $font-size-md;
+    color: $color-neutral-700;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-6;
+    padding-left: $spacing-6;
+
+    @include breakpoint(md) {
+      font-size: $font-size-lg;
+    }
+  }
+
+  li {
+    margin-bottom: $spacing-2;
+  }
+
+  a {
+    color: $color-blue;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: $color-blue-hover;
+    }
+  }
+
+  strong {
+    font-weight: $font-weight-semibold;
+    color: $color-dark-blue;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: $spacing-8 0;
+    font-size: $font-size-sm;
+
+    @include breakpoint(md) {
+      font-size: $font-size-md;
+    }
+
+    th,
+    td {
+      padding: $spacing-3 $spacing-4;
+      border: 1px solid $color-neutral-200;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: $color-neutral-50;
+      font-weight: $font-weight-semibold;
+      color: $color-dark-blue;
+    }
+
+    td {
+      color: $color-neutral-700;
+    }
+  }
+
+  blockquote {
+    border-left: 4px solid $color-blue;
+    padding-left: $spacing-6;
+    margin: $spacing-8 0;
+    font-style: italic;
+    color: $color-neutral-600;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid $color-neutral-200;
+    margin: $spacing-12 0;
+  }
+}

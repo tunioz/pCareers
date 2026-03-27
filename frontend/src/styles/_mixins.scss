@@ -1,0 +1,180 @@
+// =============================================================================
+// Mixins — pCloud Employee Branding
+// =============================================================================
+
+@use 'variables' as *;
+
+// ---------------------------------------------------------------------------
+// Responsive Breakpoints
+// ---------------------------------------------------------------------------
+
+/// Mobile-first breakpoint (min-width)
+@mixin breakpoint($size) {
+  @if $size == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $size == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $size == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $size == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else if $size == 2xl {
+    @media (min-width: $breakpoint-2xl) { @content; }
+  }
+}
+
+/// Max-width breakpoint (for overrides)
+@mixin breakpoint-down($size) {
+  @if $size == sm {
+    @media (max-width: ($breakpoint-sm - 1px)) { @content; }
+  } @else if $size == md {
+    @media (max-width: ($breakpoint-md - 1px)) { @content; }
+  } @else if $size == lg {
+    @media (max-width: ($breakpoint-lg - 1px)) { @content; }
+  } @else if $size == xl {
+    @media (max-width: ($breakpoint-xl - 1px)) { @content; }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Layout
+// ---------------------------------------------------------------------------
+
+/// Content container with max-width and responsive padding
+@mixin container {
+  width: 100%;
+  max-width: $max-content-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $padding-mobile;
+  padding-right: $padding-mobile;
+
+  @include breakpoint(lg) {
+    padding-left: $padding-desktop;
+    padding-right: $padding-desktop;
+  }
+}
+
+/// Flex center (both axes)
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Flex between (space-between on main axis)
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/// CSS Grid with auto-fill responsive columns
+@mixin grid-auto-fill($min-width: 300px, $gap: $spacing-6) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+// ---------------------------------------------------------------------------
+// Typography
+// ---------------------------------------------------------------------------
+
+/// Truncate single line
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// Clamp to N lines
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// Interactive
+// ---------------------------------------------------------------------------
+
+/// Focus-visible ring
+@mixin focus-ring($color: $color-primary-cyan) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}
+
+/// Hover transition helper
+@mixin hover-lift($y: -2px) {
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY($y);
+    box-shadow: $shadow-lg;
+  }
+}
+
+/// Button reset
+@mixin button-reset {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// Visual
+// ---------------------------------------------------------------------------
+
+/// Overlay for image cards
+@mixin overlay($opacity: 0.5) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba($color-black, $opacity);
+    border-radius: inherit;
+  }
+}
+
+/// Smooth scrollbar styling
+@mixin custom-scrollbar($width: 6px, $thumb-color: $color-neutral-400) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: $border-radius-full;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility
+// ---------------------------------------------------------------------------
+
+/// Visually hidden but accessible to screen readers
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

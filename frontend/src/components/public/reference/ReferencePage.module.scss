@@ -1,0 +1,272 @@
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  padding: 48px;
+
+  @media (max-width: 600px) {
+    padding: 28px 20px;
+  }
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 32px;
+
+  img {
+    height: 32px;
+  }
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+
+.candidateInfo {
+  font-weight: 600;
+  color: #1EBCC5;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 6px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1f2937;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #1EBCC5;
+    box-shadow: 0 0 0 2px rgba(30, 188, 197, 0.1);
+  }
+}
+
+.textarea {
+  @extend .input;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.wordCount {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.ratingGroup {
+  margin-bottom: 16px;
+}
+
+.ratingLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.ratingStars {
+  display: flex;
+  gap: 6px;
+}
+
+.ratingStar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #1EBCC5;
+    color: #1EBCC5;
+  }
+}
+
+.ratingStarActive {
+  composes: ratingStar;
+  background: #1EBCC5;
+  border-color: #1EBCC5;
+  color: #ffffff;
+
+  &:hover {
+    background: #17a5ad;
+    color: #ffffff;
+  }
+}
+
+.rehireGroup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rehireOption {
+  padding: 10px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: #1EBCC5;
+  }
+}
+
+.rehireOptionActive {
+  composes: rehireOption;
+  background: #1EBCC5;
+  border-color: #1EBCC5;
+  color: #ffffff;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  background: #1EBCC5;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 24px;
+
+  &:hover {
+    background: #17a5ad;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.successContainer {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.successIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.successTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.successText {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 64px 24px;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.errorTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.errorText {
+  font-size: 15px;
+  color: #6b7280;
+}

@@ -1,0 +1,2235 @@
+// =============================================================================
+// Admin Panel Styles — pCloud Employee Branding
+// =============================================================================
+
+@use 'variables' as *;
+@use 'sass:color';
+@use 'mixins' as *;
+
+// ---------------------------------------------------------------------------
+// Admin Variables
+// ---------------------------------------------------------------------------
+$admin-sidebar-width: 260px;
+$admin-sidebar-collapsed: 64px;
+$admin-topbar-height: 64px;
+$admin-card-padding: 24px;
+$admin-table-row-height: 48px;
+
+// ---------------------------------------------------------------------------
+// Login Page
+// ---------------------------------------------------------------------------
+
+.loginPage {
+  min-height: 100vh;
+  @include flex-center;
+  background: linear-gradient(135deg, $color-neutral-50 0%, $color-neutral-200 100%);
+  padding: $spacing-4;
+}
+
+.loginCard {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-xl;
+  padding: $spacing-10;
+  width: 100%;
+  max-width: 420px;
+}
+
+.loginLogo {
+  text-align: center;
+  margin-bottom: $spacing-8;
+
+  h1 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-dark-blue;
+    margin-bottom: $spacing-1;
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: $color-neutral-500;
+  }
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.loginError {
+  background: rgba($color-error, 0.1);
+  color: $color-error;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  text-align: center;
+}
+
+// ---------------------------------------------------------------------------
+// Admin Layout
+// ---------------------------------------------------------------------------
+
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  background: $color-neutral-50;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $admin-sidebar-width;
+  background: $color-dark-blue;
+  color: $color-white;
+  display: flex;
+  flex-direction: column;
+  z-index: $z-index-fixed;
+  transition: width $transition-base, transform $transition-base;
+  overflow: hidden;
+
+  &.collapsed {
+    width: $admin-sidebar-collapsed;
+
+    .navLabel,
+    .sidebarBrandName,
+    .userInfo span,
+    .sidebarSection {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .navItem {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .navIcon {
+      margin-right: 0;
+    }
+  }
+
+  @include breakpoint-down(md) {
+    transform: translateX(-100%);
+    width: $admin-sidebar-width;
+
+    &.mobileOpen {
+      transform: translateX(0);
+    }
+
+    &.collapsed {
+      width: $admin-sidebar-width;
+
+      .navLabel,
+      .sidebarBrandName,
+      .userInfo span,
+      .sidebarSection {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .navItem {
+        justify-content: flex-start;
+        padding-left: $spacing-4;
+        padding-right: $spacing-4;
+      }
+
+      .navIcon {
+        margin-right: $spacing-3;
+      }
+    }
+  }
+}
+
+.sidebarOverlay {
+  display: none;
+
+  @include breakpoint-down(md) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba($color-black, 0.5);
+    z-index: $z-index-fixed - 1;
+  }
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  padding: $spacing-5 $spacing-4;
+  border-bottom: 1px solid rgba($color-white, 0.1);
+  gap: $spacing-3;
+  min-height: $admin-topbar-height;
+  flex-shrink: 0;
+}
+
+.sidebarBrandIcon {
+  width: 32px;
+  height: 32px;
+  background: $color-blue;
+  border-radius: $border-radius-sm;
+  @include flex-center;
+  flex-shrink: 0;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+}
+
+.sidebarLogo {
+  height: 24px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+
+.sidebarBrandName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+  transition: opacity $transition-fast;
+}
+
+.sidebarNav {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-3 0;
+  @include custom-scrollbar(4px, rgba($color-white, 0.2));
+}
+
+.sidebarSection {
+  padding: $spacing-3 $spacing-4 $spacing-1;
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba($color-white, 0.4);
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+  transition: opacity $transition-fast;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-2 $spacing-4;
+  margin: 1px $spacing-2;
+  border-radius: $border-radius-sm;
+  color: rgba($color-white, 0.7);
+  text-decoration: none;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color: $color-white;
+    background: rgba($color-white, 0.1);
+  }
+
+  &.active {
+    color: $color-white;
+    background: rgba($color-blue, 0.3);
+  }
+}
+
+.navIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: $spacing-3;
+  flex-shrink: 0;
+  transition: margin $transition-fast;
+}
+
+.navLabel {
+  white-space: nowrap;
+  transition: opacity $transition-fast;
+}
+
+.sidebarFooter {
+  border-top: 1px solid rgba($color-white, 0.1);
+  padding: $spacing-3 $spacing-4;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-2 0;
+
+  span {
+    font-size: $font-size-sm;
+    color: rgba($color-white, 0.7);
+    white-space: nowrap;
+    transition: opacity $transition-fast;
+  }
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: $border-radius-full;
+  background: $color-blue;
+  @include flex-center;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  flex-shrink: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Main Content Area
+// ---------------------------------------------------------------------------
+
+.mainArea {
+  flex: 1;
+  margin-left: $admin-sidebar-width;
+  transition: margin-left $transition-base;
+  min-width: 0;
+
+  &.sidebarCollapsed {
+    margin-left: $admin-sidebar-collapsed;
+  }
+
+  @include breakpoint-down(md) {
+    margin-left: 0;
+
+    &.sidebarCollapsed {
+      margin-left: 0;
+    }
+  }
+}
+
+.topbar {
+  height: $admin-topbar-height;
+  background: $color-white;
+  border-bottom: 1px solid $color-neutral-200;
+  @include flex-between;
+  padding: 0 $spacing-6;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+
+  @include breakpoint-down(md) {
+    padding: 0 $spacing-4;
+  }
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.hamburger {
+  @include button-reset;
+  display: none;
+  padding: $spacing-2;
+  border-radius: $border-radius-sm;
+
+  @include breakpoint-down(md) {
+    display: flex;
+  }
+
+  &:hover {
+    background: $color-neutral-100;
+  }
+}
+
+.collapseBtn {
+  @include button-reset;
+  padding: $spacing-2;
+  border-radius: $border-radius-sm;
+  color: $color-neutral-600;
+
+  &:hover {
+    background: $color-neutral-100;
+    color: $color-neutral-800;
+  }
+
+  @include breakpoint-down(md) {
+    display: none;
+  }
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+
+  a {
+    color: $color-neutral-600;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-blue;
+    }
+  }
+
+  .breadcrumbSep {
+    color: $color-neutral-400;
+  }
+
+  .breadcrumbCurrent {
+    color: $color-neutral-800;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.mainContent {
+  padding: $spacing-6;
+
+  @include breakpoint-down(md) {
+    padding: $spacing-4;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page Header
+// ---------------------------------------------------------------------------
+
+.pageHeader {
+  @include flex-between;
+  margin-bottom: $spacing-6;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  h1 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-neutral-900;
+  }
+}
+
+.pageActions {
+  display: flex;
+  gap: $spacing-3;
+  align-items: center;
+}
+
+// ---------------------------------------------------------------------------
+// Buttons
+// ---------------------------------------------------------------------------
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all $transition-fast;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.btnPrimary {
+  @extend .btn;
+  background: $color-blue;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background: color.adjust($color-blue, $lightness: -8%);
+  }
+}
+
+.btnSecondary {
+  @extend .btn;
+  background: $color-white;
+  color: $color-neutral-700;
+  border-color: $color-neutral-300;
+
+  &:hover:not(:disabled) {
+    background: $color-neutral-50;
+    border-color: $color-neutral-400;
+  }
+}
+
+.btnDanger {
+  @extend .btn;
+  background: $color-error;
+  color: $color-white;
+
+  &:hover:not(:disabled) {
+    background: color.adjust($color-error, $lightness: -8%);
+  }
+}
+
+.btnGhost {
+  @extend .btn;
+  background: transparent;
+  color: $color-neutral-600;
+
+  &:hover:not(:disabled) {
+    background: $color-neutral-100;
+    color: $color-neutral-800;
+  }
+}
+
+.btnSmall {
+  padding: $spacing-1 $spacing-2;
+  font-size: $font-size-xs;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.btnIcon {
+  padding: $spacing-2;
+  min-width: auto;
+}
+
+// ---------------------------------------------------------------------------
+// Cards
+// ---------------------------------------------------------------------------
+
+.card {
+  background: $color-white;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-neutral-200;
+  padding: $admin-card-padding;
+}
+
+.cardHeader {
+  @include flex-between;
+  margin-bottom: $spacing-4;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-900;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form Elements
+// ---------------------------------------------------------------------------
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.formLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-neutral-700;
+}
+
+.formInput {
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid $color-neutral-300;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  font-family: inherit;
+  color: $color-neutral-900;
+  background: $color-white;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue;
+    box-shadow: 0 0 0 3px rgba($color-blue, 0.1);
+  }
+
+  &::placeholder {
+    color: $color-neutral-400;
+  }
+
+  &:disabled {
+    background: $color-neutral-50;
+    color: $color-neutral-500;
+    cursor: not-allowed;
+  }
+}
+
+.formTextarea {
+  @extend .formInput;
+  min-height: 100px;
+  resize: vertical;
+  line-height: $line-height-normal;
+}
+
+.formTextareaLarge {
+  @extend .formTextarea;
+  min-height: 200px;
+}
+
+.formSelect {
+  @extend .formInput;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right $spacing-3 center;
+  background-size: 16px;
+  padding-right: $spacing-10;
+  cursor: pointer;
+}
+
+.formCheckbox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-blue;
+    cursor: pointer;
+  }
+
+  label {
+    font-size: $font-size-sm;
+    color: $color-neutral-700;
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.formError {
+  font-size: $font-size-xs;
+  color: $color-error;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+
+  @include breakpoint-down(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-3;
+  padding-top: $spacing-4;
+  border-top: 1px solid $color-neutral-200;
+  margin-top: $spacing-6;
+}
+
+// ---------------------------------------------------------------------------
+// Data Table
+// ---------------------------------------------------------------------------
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: $spacing-3 $spacing-4;
+    text-align: left;
+    border-bottom: 1px solid $color-neutral-200;
+    font-size: $font-size-sm;
+    white-space: nowrap;
+  }
+
+  th {
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-600;
+    background: $color-neutral-50;
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    color: $color-neutral-800;
+  }
+
+  tbody tr {
+    transition: background $transition-fast;
+
+    &:hover {
+      background: $color-neutral-50;
+    }
+  }
+}
+
+.tableActions {
+  display: flex;
+  gap: $spacing-1;
+}
+
+// ---------------------------------------------------------------------------
+// Status Badge
+// ---------------------------------------------------------------------------
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px $spacing-2;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+}
+
+.badgeGreen {
+  @extend .badge;
+  background: rgba($color-success, 0.1);
+  color: $color-success;
+}
+
+.badgeYellow {
+  @extend .badge;
+  background: rgba($color-warning, 0.1);
+  color: color.adjust($color-warning, $lightness: -10%);
+}
+
+.badgeRed {
+  @extend .badge;
+  background: rgba($color-error, 0.1);
+  color: $color-error;
+}
+
+.badgeBlue {
+  @extend .badge;
+  background: rgba($color-blue, 0.1);
+  color: $color-blue;
+}
+
+.badgePurple {
+  @extend .badge;
+  background: rgba($color-purple, 0.1);
+  color: $color-purple;
+}
+
+.badgeGray {
+  @extend .badge;
+  background: $color-neutral-100;
+  color: $color-neutral-600;
+}
+
+// ---------------------------------------------------------------------------
+// Toolbar (filters, search)
+// ---------------------------------------------------------------------------
+
+.toolbar {
+  @include flex-between;
+  margin-bottom: $spacing-4;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+}
+
+.toolbarLeft {
+  display: flex;
+  gap: $spacing-3;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  @extend .formInput;
+  width: 280px;
+  max-width: 100%;
+  padding-left: $spacing-8;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'%3e%3c/circle%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'%3e%3c/line%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: $spacing-3 center;
+  background-size: 16px;
+}
+
+.filterSelect {
+  @extend .formSelect;
+  width: auto;
+  min-width: 140px;
+}
+
+// ---------------------------------------------------------------------------
+// Pagination
+// ---------------------------------------------------------------------------
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-1;
+  padding-top: $spacing-4;
+}
+
+.pageBtn {
+  @include button-reset;
+  width: 36px;
+  height: 36px;
+  @include flex-center;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  color: $color-neutral-600;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: $color-neutral-100;
+    color: $color-neutral-800;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.pageBtnActive {
+    background: $color-blue;
+    color: $color-white;
+  }
+}
+
+.paginationInfo {
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  margin: 0 $spacing-2;
+}
+
+// ---------------------------------------------------------------------------
+// Modal / Confirm Dialog
+// ---------------------------------------------------------------------------
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($color-black, 0.5);
+  z-index: $z-index-modal-backdrop;
+  @include flex-center;
+  padding: $spacing-4;
+}
+
+.modal {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-xl;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  @include flex-between;
+  padding: $spacing-5 $spacing-6;
+  border-bottom: 1px solid $color-neutral-200;
+
+  h2 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.modalClose {
+  @include button-reset;
+  padding: $spacing-1;
+  border-radius: $border-radius-sm;
+  color: $color-neutral-400;
+
+  &:hover {
+    color: $color-neutral-600;
+    background: $color-neutral-100;
+  }
+}
+
+.modalBody {
+  padding: $spacing-6;
+}
+
+.modalFooter {
+  @include flex-between;
+  padding: $spacing-4 $spacing-6;
+  border-top: 1px solid $color-neutral-200;
+  gap: $spacing-3;
+  justify-content: flex-end;
+}
+
+// ---------------------------------------------------------------------------
+// File Upload
+// ---------------------------------------------------------------------------
+
+.fileUpload {
+  border: 2px dashed $color-neutral-300;
+  border-radius: $border-radius-md;
+  padding: $spacing-6;
+  text-align: center;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $color-blue;
+    background: rgba($color-blue, 0.02);
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: $color-neutral-500;
+    margin-top: $spacing-2;
+  }
+}
+
+.fileUploadPreview {
+  position: relative;
+  display: inline-block;
+  margin-top: $spacing-3;
+
+  img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: $border-radius-sm;
+    object-fit: cover;
+  }
+}
+
+.fileUploadRemove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  @include flex-center;
+  background: $color-error;
+  color: $color-white;
+  border-radius: $border-radius-full;
+  border: 2px solid $color-white;
+  @include button-reset;
+  font-size: 12px;
+
+  &:hover {
+    background: color.adjust($color-error, $lightness: -10%);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard
+// ---------------------------------------------------------------------------
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+
+  @include breakpoint-down(lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint-down(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.statCard {
+  @extend .card;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: $border-radius-md;
+  @include flex-center;
+  flex-shrink: 0;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.statIconBlue {
+    background: rgba($color-blue, 0.1);
+    color: $color-blue;
+  }
+
+  &.statIconGreen {
+    background: rgba($color-success, 0.1);
+    color: $color-success;
+  }
+
+  &.statIconPurple {
+    background: rgba($color-purple, 0.1);
+    color: $color-purple;
+  }
+
+  &.statIconCyan {
+    background: rgba($color-primary-cyan, 0.1);
+    color: $color-primary-cyan;
+  }
+}
+
+.statContent {
+  h3 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-neutral-900;
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: $color-neutral-500;
+  }
+}
+
+.statSub {
+  font-size: $font-size-xs;
+  color: $color-neutral-400;
+  margin-top: 2px;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+
+  @include breakpoint-down(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.recentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-3 0;
+  border-bottom: 1px solid $color-neutral-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.recentItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-neutral-800;
+    @include text-truncate;
+  }
+
+  span {
+    font-size: $font-size-xs;
+    color: $color-neutral-500;
+  }
+}
+
+.quickActions {
+  display: flex;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+}
+
+// ---------------------------------------------------------------------------
+// Toggle Switch
+// ---------------------------------------------------------------------------
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  input {
+    @include visually-hidden;
+  }
+}
+
+.toggleTrack {
+  width: 40px;
+  height: 22px;
+  background: $color-neutral-300;
+  border-radius: $border-radius-full;
+  position: relative;
+  transition: background $transition-fast;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: $color-white;
+    border-radius: $border-radius-full;
+    transition: transform $transition-fast;
+    box-shadow: $shadow-sm;
+  }
+
+  input:checked + & {
+    background: $color-success;
+
+    &::after {
+      transform: translateX(18px);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Empty State
+// ---------------------------------------------------------------------------
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-12 $spacing-6;
+  color: $color-neutral-500;
+
+  svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: $spacing-4;
+    color: $color-neutral-300;
+  }
+
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-2;
+    color: $color-neutral-600;
+  }
+
+  p {
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-4;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Loading
+// ---------------------------------------------------------------------------
+
+.loading {
+  @include flex-center;
+  padding: $spacing-10;
+  color: $color-neutral-400;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid $color-neutral-200;
+  border-top-color: $color-blue;
+  border-radius: $border-radius-full;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingSkeleton {
+  background: $color-neutral-200;
+  border-radius: $border-radius-sm;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// ---------------------------------------------------------------------------
+// Toast
+// ---------------------------------------------------------------------------
+
+.toast {
+  position: fixed;
+  top: $spacing-4;
+  right: $spacing-4;
+  z-index: $z-index-toast;
+  padding: $spacing-3 $spacing-5;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  box-shadow: $shadow-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  animation: slideIn 0.3s ease;
+  max-width: 400px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  &.toastSuccess {
+    background: $color-success;
+    color: $color-white;
+  }
+
+  &.toastError {
+    background: $color-error;
+    color: $color-white;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Team Cards
+// ---------------------------------------------------------------------------
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-4;
+}
+
+.teamCard {
+  @extend .card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.teamCardPhoto {
+  width: 80px;
+  height: 80px;
+  border-radius: $border-radius-full;
+  object-fit: cover;
+  background: $color-neutral-200;
+  margin-bottom: $spacing-3;
+}
+
+.teamCardName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-neutral-900;
+}
+
+.teamCardRole {
+  font-size: $font-size-sm;
+  color: $color-neutral-500;
+  margin-bottom: $spacing-2;
+}
+
+.teamCardDept {
+  font-size: $font-size-xs;
+  color: $color-neutral-400;
+  margin-bottom: $spacing-3;
+}
+
+.teamCardActions {
+  display: flex;
+  gap: $spacing-2;
+  margin-top: $spacing-3;
+  padding-top: $spacing-3;
+  border-top: 1px solid $color-neutral-100;
+  width: 100%;
+  justify-content: center;
+}
+
+.teamCardOrder {
+  position: absolute;
+  top: $spacing-3;
+  left: $spacing-3;
+  font-size: $font-size-xs;
+  color: $color-neutral-400;
+  background: $color-neutral-100;
+  padding: 2px $spacing-2;
+  border-radius: $border-radius-sm;
+}
+
+.teamCardPublished {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+}
+
+// ---------------------------------------------------------------------------
+// Application Detail
+// ---------------------------------------------------------------------------
+
+.detailPanel {
+  background: $color-neutral-50;
+  border-radius: $border-radius-md;
+  padding: $spacing-5;
+  margin-top: $spacing-3;
+}
+
+.detailRow {
+  display: flex;
+  padding: $spacing-2 0;
+  border-bottom: 1px solid $color-neutral-200;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detailLabel {
+  width: 140px;
+  flex-shrink: 0;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-neutral-600;
+}
+
+.detailValue {
+  font-size: $font-size-sm;
+  color: $color-neutral-800;
+  word-break: break-word;
+}
+
+// ---------------------------------------------------------------------------
+// Settings form
+// ---------------------------------------------------------------------------
+
+.settingsForm {
+  max-width: 600px;
+
+  .formGroup + .formGroup {
+    margin-top: $spacing-4;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Inline edit
+// ---------------------------------------------------------------------------
+
+.inlineEdit {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.inlineInput {
+  @extend .formInput;
+  width: auto;
+  padding: $spacing-1 $spacing-2;
+  font-size: $font-size-sm;
+}
+
+// ---------------------------------------------------------------------------
+// Logout button in sidebar
+// ---------------------------------------------------------------------------
+
+.logoutBtn {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 0;
+  font-size: $font-size-sm;
+  color: rgba($color-white, 0.5);
+  width: 100%;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-error;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Hiring Content — Tabs & Cards
+// ---------------------------------------------------------------------------
+
+.hcTabs {
+  display: flex;
+  border-bottom: 2px solid $color-neutral-200;
+  padding: 0 $spacing-6;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include breakpoint-down(md) {
+    padding: 0 $spacing-3;
+  }
+}
+
+.hcTab {
+  @include button-reset;
+  padding: $spacing-3 $spacing-4;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-neutral-500;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-neutral-700;
+  }
+
+  &.hcTabActive {
+    color: $color-blue;
+    border-bottom-color: $color-blue;
+  }
+}
+
+.hcExpandedCard {
+  background: $color-white;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+}
+
+.hcCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-5;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: $color-neutral-50;
+  }
+}
+
+.hcListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-2;
+  background: $color-white;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: $color-neutral-50;
+  }
+}
+
+.hcStageRow {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  padding: $spacing-3;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-2;
+  background: $color-neutral-50;
+}
+
+.hcStageHandle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding-top: $spacing-2;
+  flex-shrink: 0;
+  width: 36px;
+}
+
+// ---------------------------------------------------------------------------
+// Collapsible Section
+// ---------------------------------------------------------------------------
+
+.collapsibleSection {
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-md;
+  margin-top: $spacing-4;
+  overflow: hidden;
+}
+
+.collapsibleHeader {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-neutral-700;
+  background: $color-neutral-50;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: $color-neutral-100;
+  }
+}
+
+.collapsibleContent {
+  padding: $spacing-4;
+  border-top: 1px solid $color-neutral-200;
+}
+
+// ---------------------------------------------------------------------------
+// ATS Pipeline Board
+// ---------------------------------------------------------------------------
+
+.atsStatsBar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+
+  @include breakpoint-down(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include breakpoint-down(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.atsStatItem {
+  @extend .card;
+  padding: $spacing-4;
+  text-align: center;
+
+  h4 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-neutral-900;
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-size: $font-size-xs;
+    color: $color-neutral-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.atsViewToggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid $color-neutral-300;
+  border-radius: $border-radius-sm;
+  overflow: hidden;
+
+  button {
+    @include button-reset;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+    color: $color-neutral-600;
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    transition: all $transition-fast;
+
+    &:not(:last-child) {
+      border-right: 1px solid $color-neutral-300;
+    }
+
+    &.atsViewActive {
+      background: $color-blue;
+      color: $color-white;
+    }
+
+    &:hover:not(.atsViewActive) {
+      background: $color-neutral-50;
+    }
+  }
+}
+
+.atsPipelineBoard {
+  display: flex;
+  gap: $spacing-3;
+  overflow-x: auto;
+  padding-bottom: $spacing-4;
+  -webkit-overflow-scrolling: touch;
+  @include custom-scrollbar(6px, $color-neutral-300);
+  min-height: 400px;
+}
+
+.atsPipelineCol {
+  flex: 0 0 260px;
+  min-width: 260px;
+  background: $color-neutral-50;
+  border-radius: $border-radius-md;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 300px);
+}
+
+.atsPipelineColHeader {
+  padding: $spacing-3 $spacing-4;
+  border-radius: $border-radius-md $border-radius-md 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+
+  h3 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-white;
+  }
+
+  .atsPipelineCount {
+    background: rgba($color-white, 0.3);
+    color: $color-white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    padding: 1px $spacing-2;
+    border-radius: $border-radius-full;
+    min-width: 20px;
+    text-align: center;
+  }
+}
+
+.atsPipelineColBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-2;
+  @include custom-scrollbar(4px, $color-neutral-300);
+}
+
+.atsCandidateCard {
+  background: $color-white;
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-sm;
+  padding: $spacing-3;
+  margin-bottom: $spacing-2;
+  cursor: pointer;
+  transition: box-shadow $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $color-neutral-300;
+  }
+}
+
+.atsCandidateCardName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-neutral-900;
+  margin-bottom: 2px;
+  @include text-truncate;
+}
+
+.atsCandidateCardJob {
+  font-size: $font-size-xs;
+  color: $color-neutral-500;
+  margin-bottom: $spacing-2;
+  @include text-truncate;
+}
+
+.atsCandidateCardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+  flex-wrap: wrap;
+}
+
+.atsCandidateCardScore {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: $color-warning;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.atsCandidateCardDays {
+  font-size: 11px;
+  color: $color-neutral-400;
+}
+
+.atsCandidateCardSource {
+  font-size: 11px;
+  padding: 1px $spacing-1;
+  border-radius: $border-radius-sm;
+  background: $color-neutral-100;
+  color: $color-neutral-600;
+}
+
+// Collapsed section for rejected / on hold / withdrawn
+.atsCollapsedSection {
+  margin-top: $spacing-4;
+}
+
+// ---------------------------------------------------------------------------
+// ATS Candidate Dossier
+// ---------------------------------------------------------------------------
+
+.dossierHeader {
+  @extend .card;
+  display: flex;
+  align-items: center;
+  gap: $spacing-5;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-6;
+
+  @include breakpoint-down(md) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.dossierAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: $border-radius-full;
+  background: $color-blue;
+  @include flex-center;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.dossierHeaderInfo {
+  flex: 1;
+  min-width: 0;
+
+  h1 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-neutral-900;
+    margin-bottom: $spacing-1;
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: $color-neutral-500;
+  }
+}
+
+.dossierHeaderMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+  margin-top: $spacing-2;
+}
+
+.dossierHeaderActions {
+  display: flex;
+  gap: $spacing-2;
+  flex-shrink: 0;
+
+  @include breakpoint-down(md) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.dossierTabs {
+  display: flex;
+  border-bottom: 2px solid $color-neutral-200;
+  margin-bottom: $spacing-5;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dossierTab {
+  @include button-reset;
+  padding: $spacing-3 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-neutral-500;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-neutral-700;
+  }
+
+  &.dossierTabActive {
+    color: $color-blue;
+    border-bottom-color: $color-blue;
+  }
+}
+
+.dossierSection {
+  @extend .card;
+  margin-bottom: $spacing-4;
+
+  h3 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-800;
+    margin-bottom: $spacing-4;
+  }
+}
+
+.dossierInfoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+
+  @include breakpoint-down(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dossierInfoItem {
+  label {
+    display: block;
+    font-size: $font-size-xs;
+    color: $color-neutral-500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-size: $font-size-sm;
+    color: $color-neutral-800;
+    word-break: break-word;
+  }
+
+  a {
+    color: $color-blue;
+    text-decoration: none;
+    font-size: $font-size-sm;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Scorecard styles
+.scorecardItem {
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-md;
+  padding: $spacing-4;
+  margin-bottom: $spacing-3;
+}
+
+.scorecardHeader {
+  @include flex-between;
+  margin-bottom: $spacing-3;
+
+  h4 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-800;
+  }
+}
+
+.scorecardDimensions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-3;
+  margin-bottom: $spacing-3;
+
+  @include breakpoint-down(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.scorecardDimension {
+  label {
+    display: block;
+    font-size: $font-size-xs;
+    color: $color-neutral-600;
+    margin-bottom: 4px;
+  }
+}
+
+.scorecardBar {
+  height: 8px;
+  border-radius: $border-radius-full;
+  background: $color-neutral-200;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.scorecardBarFill {
+  height: 100%;
+  border-radius: $border-radius-full;
+  transition: width $transition-base;
+}
+
+.scorecardBarValue {
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+}
+
+.scorecardRecommendation {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px $spacing-2;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+// Timeline styles
+.timelineList {
+  position: relative;
+  padding-left: $spacing-8;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: $color-neutral-200;
+  }
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: $spacing-5;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.timelineIcon {
+  position: absolute;
+  left: calc(-#{$spacing-8} + 4px);
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: $border-radius-full;
+  @include flex-center;
+  z-index: 1;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.timelineContent {
+  h4 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-neutral-800;
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-size: $font-size-xs;
+    color: $color-neutral-500;
+  }
+}
+
+.timelineDate {
+  font-size: 11px;
+  color: $color-neutral-400;
+  margin-top: 2px;
+}
+
+// Status change modal
+.statusModal {
+  max-width: 460px;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+
+  @include breakpoint-down(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.statusOption {
+  @include button-reset;
+  padding: $spacing-2 $spacing-3;
+  border: 2px solid $color-neutral-200;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-align: center;
+  transition: all $transition-fast;
+  color: $color-neutral-700;
+
+  &:hover {
+    border-color: $color-neutral-400;
+  }
+
+  &.statusOptionActive {
+    border-color: $color-blue;
+    background: rgba($color-blue, 0.05);
+    color: $color-blue;
+  }
+}
+
+// Scorecard form
+.scoreInput {
+  display: flex;
+  gap: $spacing-1;
+
+  button {
+    @include button-reset;
+    width: 28px;
+    height: 28px;
+    border: 1px solid $color-neutral-300;
+    border-radius: $border-radius-sm;
+    @include flex-center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    transition: all $transition-fast;
+    color: $color-neutral-600;
+
+    &.scoreInputActive {
+      border-color: transparent;
+    }
+
+    &:hover {
+      border-color: $color-neutral-400;
+    }
+  }
+}
+
+// Notes list
+.noteItem {
+  padding: $spacing-3 0;
+  border-bottom: 1px solid $color-neutral-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-bottom: $spacing-1;
+
+  strong {
+    font-size: $font-size-sm;
+    color: $color-neutral-800;
+  }
+
+  span {
+    font-size: $font-size-xs;
+    color: $color-neutral-400;
+  }
+}
+
+.noteContent {
+  font-size: $font-size-sm;
+  color: $color-neutral-700;
+  line-height: $line-height-normal;
+  white-space: pre-wrap;
+}
+
+// Reference card
+.refCard {
+  border: 1px solid $color-neutral-200;
+  border-radius: $border-radius-md;
+  padding: $spacing-4;
+  margin-bottom: $spacing-3;
+}
+
+.refHeader {
+  @include flex-between;
+  margin-bottom: $spacing-3;
+
+  h4 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-neutral-800;
+  }
+
+  p {
+    font-size: $font-size-xs;
+    color: $color-neutral-500;
+  }
+}
+
+.refRatings {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $spacing-2;
+
+  @include breakpoint-down(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.refRating {
+  text-align: center;
+
+  label {
+    display: block;
+    font-size: 11px;
+    color: $color-neutral-500;
+    margin-bottom: 2px;
+  }
+
+  span {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: $color-neutral-800;
+  }
+}
+
+// Candidate status badge - specific colors
+.badgeTeal {
+  @extend .badge;
+  background: rgba(#0d9488, 0.1);
+  color: #0d9488;
+}
+
+.badgeOrange {
+  @extend .badge;
+  background: rgba(#ea580c, 0.1);
+  color: #ea580c;
+}
+
+.badgePink {
+  @extend .badge;
+  background: rgba(#db2777, 0.1);
+  color: #db2777;
+}
+
+.badgeGold {
+  @extend .badge;
+  background: rgba(#b45309, 0.1);
+  color: #b45309;
+}
+
+// Large modal
+.modalLarge {
+  max-width: 700px;
+}
+
+// Stars display
+.starsDisplay {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Print styles (Feature 7: Export PDF)
+// ---------------------------------------------------------------------------
+@media print {
+  .sidebar,
+  .sidebarOverlay,
+  .topbar,
+  .hamburger,
+  .collapseBtn,
+  .breadcrumbs,
+  .dossierHeaderActions,
+  .sidebarFooter,
+  .modalOverlay,
+  .formActions {
+    display: none !important;
+  }
+
+  .adminLayout {
+    display: block !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .mainArea {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .mainContent {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .dossierHeader {
+    padding: 16px 0 !important;
+    border-bottom: 2px solid #000 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .dossierSection {
+    page-break-inside: avoid;
+    padding: 12px 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .scorecardItem {
+    page-break-inside: avoid;
+    border: 1px solid #ccc !important;
+    margin-bottom: 12px !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}

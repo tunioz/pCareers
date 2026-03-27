@@ -1,0 +1,48 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  padding: 128px 0;
+  background-color: $color-dark-blue;
+}
+
+.container {
+  @include container;
+  text-align: center;
+}
+
+.heading {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: $spacing-10;
+  line-height: $line-height-tight;
+
+  @include breakpoint(md) {
+    font-size: $font-size-5xl;
+  }
+
+  @include breakpoint(lg) {
+    font-size: $font-size-6xl;
+  }
+}
+
+.ctaButton {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-blue;
+  color: $color-white;
+  padding: 0 $spacing-10;
+  height: 48px;
+  border-radius: $border-radius-full;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: color.adjust($color-blue, $lightness: -10%);
+  }
+}

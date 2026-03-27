@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pcloud-branding-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - uploads:/app/public/uploads
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME:-pCloud Careers}
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+    networks:
+      - pcloud-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: pcloud-branding-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - uploads:/usr/share/nginx/uploads:ro
+    depends_on:
+      - app
+    networks:
+      - pcloud-net
+
+volumes:
+  uploads:
+
+networks:
+  pcloud-net:
+    driver: bridge
