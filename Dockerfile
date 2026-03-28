@@ -6,26 +6,22 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# 1. Install dependencies
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 
-# 2. Copy source code
 COPY frontend/ .
-
-# 3. Copy pre-seeded database
 COPY data/ ./data/
 
-# 4. Build Next.js (in-memory DB to avoid hang, timeout to force exit)
+# Build with in-memory DB
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-ENV DB_DIR=/app/data
 ENV NEXT_BUILD_MODE=1
-RUN timeout 600 npx next build; echo "Build step done with exit $?"
+ENV DB_DIR=/app/data
+RUN timeout 600 npx next build; echo "Build exit: $?"
 
-# 5. Runtime config
+# UNSET build mode for runtime so real DB is used
+ENV NEXT_BUILD_MODE=
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
 
-# 6. Start — unset NEXT_BUILD_MODE so real DB is used at runtime
-CMD NEXT_BUILD_MODE= DB_DIR=/app/data npx next start -H 0.0.0.0 -p ${PORT:-3000}
+CMD ["sh", "-c", "unset NEXT_BUILD_MODE && exec npx next start -H 0.0.0.0 -p ${PORT:-3000}"]
