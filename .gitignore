@@ -3,8 +3,8 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js build (kept in git for Railway pre-built deploy)
-# .next/
+# Next.js build
+.next/
 out/
 
 # Production build
