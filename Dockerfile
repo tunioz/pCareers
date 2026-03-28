@@ -2,7 +2,7 @@ FROM node:20-bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci --omit=dev
+RUN npm ci
 COPY frontend/ .
 COPY data/ ./data/
 ENV NODE_ENV=production

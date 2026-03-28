@@ -1,0 +1,129 @@
+/* [project]/src/components/public/Footer.module.scss.module.css [app-client] (css) */
+.Footer-module-scss-module__WwNl0a__footer {
+  color: #fff;
+  background-color: #05183f;
+}
+
+.Footer-module-scss-module__WwNl0a__container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 4rem 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .Footer-module-scss-module__WwNl0a__container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+.Footer-module-scss-module__WwNl0a__grid {
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  display: grid;
+}
+
+@media (min-width: 768px) {
+  .Footer-module-scss-module__WwNl0a__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .Footer-module-scss-module__WwNl0a__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.Footer-module-scss-module__WwNl0a__brandName {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.Footer-module-scss-module__WwNl0a__footerLogo {
+  filter: brightness(0) invert();
+  width: auto;
+  height: 28px;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.Footer-module-scss-module__WwNl0a__description {
+  color: rgba(255, 255, 255, .7);
+  font-size: .875rem;
+  line-height: 1.75;
+}
+
+.Footer-module-scss-module__WwNl0a__columnTitle {
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.Footer-module-scss-module__WwNl0a__linkList {
+  flex-direction: column;
+  gap: .5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.Footer-module-scss-module__WwNl0a__link {
+  color: rgba(255, 255, 255, .7);
+  font-size: .875rem;
+  text-decoration: none;
+  transition: color .15s;
+}
+
+.Footer-module-scss-module__WwNl0a__link:hover {
+  color: #fff;
+}
+
+.Footer-module-scss-module__WwNl0a__socialLinks {
+  gap: 1rem;
+  display: flex;
+}
+
+.Footer-module-scss-module__WwNl0a__socialLink {
+  color: rgba(255, 255, 255, .7);
+  transition: color .15s, transform .15s;
+}
+
+.Footer-module-scss-module__WwNl0a__socialLink:hover {
+  color: #fff;
+  transform: translateY(-4px);
+}
+
+.Footer-module-scss-module__WwNl0a__cookieSettingsButton {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  color: rgba(255, 255, 255, .7);
+  text-align: left;
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: .875rem;
+  transition: color .15s;
+}
+
+.Footer-module-scss-module__WwNl0a__cookieSettingsButton:hover {
+  color: #fff;
+}
+
+.Footer-module-scss-module__WwNl0a__copyright {
+  text-align: center;
+  color: rgba(255, 255, 255, .5);
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  padding-top: 2rem;
+  font-size: .875rem;
+}
+
+/*# sourceMappingURL=src_components_public_Footer_module_scss_module_css_bad6b30c._.single.css.map*/

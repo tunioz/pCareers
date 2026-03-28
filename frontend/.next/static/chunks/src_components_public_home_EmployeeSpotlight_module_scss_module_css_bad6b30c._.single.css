@@ -1,0 +1,183 @@
+/* [project]/src/components/public/home/EmployeeSpotlight.module.scss.module.css [app-client] (css) */
+.EmployeeSpotlight-module-scss-module__ZDG2oG__section {
+  background-color: #fff;
+  padding: 5rem 0;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .EmployeeSpotlight-module-scss-module__ZDG2oG__container {
+    padding: 0 3rem;
+  }
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__heading {
+  color: #3a3a3a;
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+@media (min-width: 1024px) {
+  .EmployeeSpotlight-module-scss-module__ZDG2oG__heading {
+    font-size: 3rem;
+  }
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__headingHighlight {
+  color: #1ebcc5;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__carouselTrack {
+  display: flex;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__slide {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__slideInner {
+  background-color: #f4f4f4;
+  border-radius: 1.5rem;
+  align-items: center;
+  gap: 3rem;
+  padding: 2rem;
+  display: grid;
+}
+
+@media (min-width: 1024px) {
+  .EmployeeSpotlight-module-scss-module__ZDG2oG__slideInner {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 3rem;
+  }
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__photoWrapper {
+  aspect-ratio: 4 / 5;
+  border-radius: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__photoWrapper img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__quote {
+  color: #6c757d;
+  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.75;
+}
+
+@media (min-width: 1024px) {
+  .EmployeeSpotlight-module-scss-module__ZDG2oG__quote {
+    font-size: 1.5rem;
+  }
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__name {
+  color: #3a3a3a;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__role {
+  color: #6c757d;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__storyLink {
+  color: #1ebcc5;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: gap .15s;
+  display: inline-flex;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__storyLink:hover {
+  gap: 1rem;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__navButtons {
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  display: flex;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__navButton {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  color: #1ebcc5;
+  background: none;
+  border: 2px solid #1ebcc5;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  transition: background-color .15s, color .15s;
+  display: flex;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__navButton:hover {
+  color: #fff;
+  background-color: #1ebcc5;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__indicators {
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1.5rem;
+  display: flex;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__indicator {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background: #dee2e6;
+  border: none;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  transition: background-color .15s;
+}
+
+.EmployeeSpotlight-module-scss-module__ZDG2oG__indicatorActive {
+  background-color: #1ebcc5;
+}
+
+/*# sourceMappingURL=src_components_public_home_EmployeeSpotlight_module_scss_module_css_bad6b30c._.single.css.map*/
