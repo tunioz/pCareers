@@ -3,8 +3,8 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js build
-.next/
+# Next.js build (kept in git for Railway pre-built deploy)
+# .next/
 out/
 
 # Production build
@@ -17,10 +17,10 @@ dist/
 .env.*.local
 !.env.example
 
-# SQLite database
-data/*.db
-data/*.db-wal
-data/*.db-shm
+# SQLite database (kept in git for Railway deploy)
+# data/*.db
+# data/*.db-wal
+# data/*.db-shm
 
 # Uploads (keep directory structure, ignore files)
 frontend/public/uploads/*
