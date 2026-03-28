@@ -1811,10 +1811,12 @@ export async function seed() {
   console.log('Seeding complete!');
 }
 
-// Auto-run when executed directly via tsx
-seed()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error('Seed failed:', err);
-    process.exit(1);
-  });
+// Auto-run only when executed directly (not when imported by Next.js)
+if (process.argv[1]?.includes('seed')) {
+  seed()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error('Seed failed:', err);
+      process.exit(1);
+    });
+}
