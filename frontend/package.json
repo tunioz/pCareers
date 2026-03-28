@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "NEXT_BUILD_MODE=1 next build & NEXT_PID=$!; while kill -0 $NEXT_PID 2>/dev/null; do if [ -f .next/BUILD_ID ]; then sleep 5; kill $NEXT_PID 2>/dev/null; break; fi; sleep 2; done; exit 0",
+    "build": "NEXT_BUILD_MODE=1 timeout 900 next build || true",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint",
     "seed": "tsx --tsconfig tsconfig.json src/lib/seed.ts"

@@ -137,7 +137,8 @@
       "Bash(DB_DIR=./data npm run build)",
       "Bash(echo EXISTS!)",
       "Bash(echo FOUND!)",
-      "Bash(\"/Users/tunioz/Desktop/Claude Vibe:*)"
+      "Bash(\"/Users/tunioz/Desktop/Claude Vibe:*)",
+      "Bash(curl:*)"
     ]
   }
 }
