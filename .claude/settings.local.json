@@ -138,7 +138,8 @@
       "Bash(echo EXISTS!)",
       "Bash(echo FOUND!)",
       "Bash(\"/Users/tunioz/Desktop/Claude Vibe:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(rm -f ../data/pcloud.db ../data/pcloud.db-shm ../data/pcloud.db-wal)"
     ]
   }
 }
