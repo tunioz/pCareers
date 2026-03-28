@@ -130,7 +130,14 @@
       "Bash(NODE_ENV=production DB_DIR=./data npm run build)",
       "Bash(DB_DIR=./data NODE_ENV=production npx next build)",
       "Bash(cd:*)",
-      "Bash(time NEXT_PHASE=phase-production-build DB_DIR=./data NODE_ENV=production npx next build)"
+      "Bash(time NEXT_PHASE=phase-production-build DB_DIR=./data NODE_ENV=production npx next build)",
+      "Bash(DB_DIR=./data NODE_ENV=production node node_modules/.bin/next build)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(DB_DIR=./data NODE_ENV=production node -e \":*)",
+      "Bash(DB_DIR=./data npm run build)",
+      "Bash(echo EXISTS!)",
+      "Bash(echo FOUND!)",
+      "Bash(\"/Users/tunioz/Desktop/Claude Vibe:*)"
     ]
   }
 }

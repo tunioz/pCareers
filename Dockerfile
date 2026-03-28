@@ -1,18 +1,12 @@
 FROM node:20-bookworm-slim
-
 RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
-
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci --production=false
-
+RUN npm ci --omit=dev
 COPY frontend/ .
-
-EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
+COPY data/ ./data/
 ENV NODE_ENV=production
 ENV DB_DIR=/app/data
-
-CMD ["npm", "run", "start"]
+ENV HOSTNAME=0.0.0.0
+EXPOSE 3000
+CMD npx next start -H 0.0.0.0 -p ${PORT:-3000}

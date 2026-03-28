@@ -5,12 +5,17 @@ import fs from 'node:fs';
 const DB_DIR = process.env.DB_DIR || path.resolve(process.cwd(), '..', 'data');
 const DB_PATH = process.env.DB_PATH || path.join(DB_DIR, 'pcloud.db');
 
-// Ensure data directory exists
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
+let db: Database.Database;
+
+if (process.env.NEXT_BUILD_MODE === '1') {
+  db = new Database(':memory:');
+} else {
+  if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+  }
+  db = new Database(DB_PATH);
 }
 
-const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 db.pragma('busy_timeout = 5000');
@@ -581,7 +586,23 @@ export function getDb(): Database.Database {
   return db;
 }
 
-// Close DB on process exit to prevent hanging
+// During build: force exit after routes-manifest is written
+if (process.env.NEXT_BUILD_MODE === '1') {
+  const checkDone = setInterval(() => {
+    try {
+      const routesPath = path.join(process.cwd(), '.next', 'routes-manifest.json');
+      if (fs.existsSync(routesPath)) {
+        clearInterval(checkDone);
+        // Write prerender-manifest if missing (process can't exit to write it)
+        const prerenderPath = path.join(process.cwd(), '.next', 'prerender-manifest.json');
+        if (!fs.existsSync(prerenderPath)) {
+          fs.writeFileSync(prerenderPath, JSON.stringify({ version: 4, routes: {}, dynamicRoutes: {}, staticRoutes: {}, notFoundRoutes: [] }));
+        }
+        setTimeout(() => { try { db.close(); } catch {} process.exit(0); }, 3000);
+      }
+    } catch { /* ignore */ }
+  }, 5000);
+}
 process.on('beforeExit', () => {
   try { db.close(); } catch { /* ignore */ }
 });
