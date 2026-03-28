@@ -581,4 +581,9 @@ export function getDb(): Database.Database {
   return db;
 }
 
+// Close DB on process exit to prevent hanging
+process.on('beforeExit', () => {
+  try { db.close(); } catch { /* ignore */ }
+});
+
 export default db;
