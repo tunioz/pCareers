@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 const JWT_SECRET = process.env.JWT_SECRET || (
   process.env.NODE_ENV === 'production'
@@ -8,9 +8,11 @@ const JWT_SECRET = process.env.JWT_SECRET || (
     : 'dev-secret-change-in-production'
 );
 
-function isValidToken(token: string): boolean {
+const secret = new TextEncoder().encode(JWT_SECRET);
+
+async function isValidToken(token: string): Promise<boolean> {
   try {
-    jwt.verify(token, JWT_SECRET);
+    await jwtVerify(token, secret);
     return true;
   } catch {
     return false;
@@ -48,7 +50,7 @@ function isProtectedApiRoute(pathname: string, method: string): boolean {
   return false;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
@@ -65,14 +67,14 @@ export function middleware(request: NextRequest) {
 
   // Protect admin pages (except login)
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    if (!token || !isValidToken(token)) {
+    if (!token || !(await isValidToken(token))) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
 
   // Protect sensitive API routes
   if (pathname.startsWith('/api/') && isProtectedApiRoute(pathname, method)) {
-    if (!token || !isValidToken(token)) {
+    if (!token || !(await isValidToken(token))) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
         { status: 401 }

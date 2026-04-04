@@ -17,7 +17,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV NEXT_BUILD_MODE=1
 ENV DB_DIR=/app/data
-RUN timeout 600 npx next build; echo "Build exit: $?"
+RUN npx next build
 
 # UNSET build mode for runtime so real DB is used
 ENV NEXT_BUILD_MODE=
