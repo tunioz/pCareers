@@ -15,27 +15,24 @@ export function Header() {
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Culture', href: '/culture' },
-    { name: 'Open Roles', href: '/careers' },
+    { name: 'Careers', href: '/careers' },
     { name: 'Life at pCloud', href: '/life' },
     { name: 'Blog', href: '/blog' },
   ];
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
+    <header
       className={styles.header}
     >
       <div className={styles.container}>
         <div className={styles.inner}>
           <Link href="/" className={styles.logo}>
-            <img src="/images/pcloud-logo-full.svg" alt="pCloud" height={32} />
+            <img src="/images/pcloud-logo-white.svg" alt="pCloud" height={32} />
           </Link>
 
           <nav className={styles.nav}>
             {navLinks.map((link) => {
-              const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
+              const isActive = link.href === '/' ? pathname === '/' : (pathname === link.href || pathname.startsWith(link.href + '/'));
               return (
                 <motion.div key={link.name} whileHover={{ y: -2 }}>
                   <Link
@@ -50,21 +47,18 @@ export function Header() {
           </nav>
 
           <div className={styles.actions}>
-            <Link href="/careers">
-              <motion.button
-                className={styles.ctaButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/careers" className={styles.ctaButton}>
                 Join Now
-              </motion.button>
-            </Link>
+              </Link>
+            </motion.div>
           </div>
 
           <button
             className={styles.mobileToggle}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -82,7 +76,7 @@ export function Header() {
           >
             <nav className={styles.mobileNav}>
               {navLinks.map((link, index) => {
-                const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
+                const isActive = link.href === '/' ? pathname === '/' : (pathname === link.href || pathname.startsWith(link.href + '/'));
                 return (
                   <motion.div
                     key={link.name}
@@ -105,16 +99,14 @@ export function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >
-                <Link href="/careers" onClick={() => setMobileMenuOpen(false)}>
-                  <button className={styles.mobileCta}>
-                    Join Now
-                  </button>
+                <Link href="/careers" onClick={() => setMobileMenuOpen(false)} className={styles.mobileCta}>
+                  Join Now
                 </Link>
               </motion.div>
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

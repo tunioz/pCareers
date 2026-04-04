@@ -1,113 +1,145 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ═══════════════════════════════════════
+// ENGINEERING AT SCALE
+// ═══════════════════════════════════════
+
 .section {
-  padding: $spacing-16 0;
-  background-color: $color-neutral-50;
+  padding: 48px 0 88px;
+  position: relative;
+  z-index: 1;
 }
 
 .container {
-  max-width: $max-content-width;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-6;
-
-  @include breakpoint(lg) {
-    padding: 0 $spacing-12;
-  }
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
 }
 
+// ── Header ──
 .header {
   text-align: center;
-  margin-bottom: $spacing-12;
+  margin-bottom: 44px;
 }
 
 .title {
-  font-size: $font-size-3xl;
+  font-size: 36px;
   font-weight: $font-weight-bold;
-  color: $color-dark-blue;
-  margin-bottom: $spacing-3;
+  color: #000000;
+  letter-spacing: -0.3px;
+  line-height: 1.15;
+  margin-bottom: 8px;
 
-  @include breakpoint(lg) {
-    font-size: $font-size-4xl;
+  @media (max-width: 1024px) {
+    font-size: 30px;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 24px;
   }
 }
 
 .subtitle {
-  font-size: $font-size-lg;
-  color: $color-neutral-600;
-}
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.65);
+  letter-spacing: -0.2px;
+  line-height: 1.4;
 
-.metricsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: $spacing-6;
+  @media (max-width: 1024px) {
+    font-size: 18px;
+  }
 
-  @include breakpoint(md) {
-    grid-template-columns: repeat(4, 1fr);
+  @media (max-width: 640px) {
+    font-size: 16px;
   }
 }
 
-.metricCard {
+// ── Stats row ──
+.statsRow {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  margin: 0 auto 44px;
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+}
+
+.stat {
+  flex: 1;
   text-align: center;
-  padding: $spacing-6;
-  background: $color-white;
-  border-radius: $border-radius-xl;
-  border: 1px solid $color-neutral-200;
-  transition: box-shadow $transition-base, transform $transition-base;
+  padding: 0 24px;
+  position: relative;
 
-  &:hover {
-    box-shadow: $shadow-lg;
-    transform: translateY(-4px);
+  @media (max-width: 640px) {
+    flex: 0 0 45%;
+    padding: 0 16px;
   }
 }
 
-.metricIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: rgba($color-primary-cyan, 0.1);
-  color: $color-primary-cyan;
-  @include flex-center;
-  margin: 0 auto $spacing-4;
-}
-
-.metricValue {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-dark-blue;
+.statNumber {
+  font-size: clamp(40px, 4.5vw, 56px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
   line-height: 1;
-  margin-bottom: $spacing-2;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
-  }
+  background: linear-gradient(90deg, #17BED0 0%, #7B6CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
 }
 
-.metricLabel {
-  font-size: $font-size-sm;
-  color: $color-neutral-600;
-  line-height: $line-height-normal;
+.statLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.4;
 }
 
+// ── Links ──
 .links {
   display: flex;
   justify-content: center;
-  gap: $spacing-8;
-  margin-top: $spacing-10;
-  flex-wrap: wrap;
+  gap: 40px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
 }
 
 .link {
   display: inline-flex;
   align-items: center;
-  gap: $spacing-2;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-primary-cyan;
+  gap: 8px;
+  color: #20C9DB;
+  font-size: 17px;
+  font-weight: $font-weight-medium;
   text-decoration: none;
-  transition: color $transition-fast;
+  transition: gap 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: $color-primary-cyan-dark;
+    gap: 14px;
+    color: #A78BFA;
+  }
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .section {
+    padding: 32px 0 56px;
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }

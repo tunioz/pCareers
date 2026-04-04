@@ -1,11 +1,16 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
 import type { Post, Job } from '@/types';
 import { BlogPageClient } from '@/components/public/blog/BlogPageClient';
 
 export const metadata: Metadata = {
-  title: 'Engineering Blog',
+  title: 'Engineering Blog | pCloud Careers',
+  description: 'Insights from the pCloud engineering team — deep dives into cloud storage, encryption, infrastructure, and the culture behind our products.',
+  openGraph: {
+    title: 'Engineering Blog | pCloud Careers',
+    description: 'Insights from the pCloud engineering team — deep dives into cloud storage, encryption, infrastructure, and the culture behind our products.',
+  },
 };
 
 export default function BlogPage() {

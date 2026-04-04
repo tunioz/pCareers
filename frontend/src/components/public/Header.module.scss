@@ -7,8 +7,17 @@
   left: 0;
   right: 0;
   z-index: $z-index-fixed;
-  background-color: $color-white;
-  box-shadow: $shadow-sm;
+  border-bottom: 1px solid rgba(23, 190, 208, 0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 26, 43, 0.15);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    z-index: -1;
+  }
 }
 
 .container {
@@ -62,18 +71,21 @@
 
 .navLink {
   font-size: $font-size-sm;
-  color: $color-neutral-600;
+  color: $color-white;
   text-decoration: none;
-  transition: color $transition-fast;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 
   &:hover {
-    color: $color-blue;
+    color: $color-brand-teal;
+    text-shadow: none;
   }
 }
 
 .navLinkActive {
-  color: $color-blue;
+  color: $color-brand-teal;
   font-weight: $font-weight-medium;
+  text-shadow: none;
 }
 
 .actions {
@@ -109,7 +121,7 @@
 .mobileToggle {
   @include button-reset;
   display: block;
-  color: $color-neutral-600;
+  color: #A0B1C2;
   padding: $spacing-2;
 
   @include breakpoint(lg) {
@@ -121,7 +133,9 @@
   position: fixed;
   inset: 0;
   top: 64px;
-  background-color: $color-white;
+  background: rgba(11, 26, 43, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: $z-index-modal;
 
   @include breakpoint(lg) {
@@ -139,8 +153,8 @@
 .mobileLink {
   display: block;
   padding: $spacing-3 0;
-  border-bottom: 1px solid $color-neutral-100;
-  color: $color-neutral-600;
+  border-bottom: 1px solid rgba(23, 190, 208, 0.08);
+  color: #A0B1C2;
   text-decoration: none;
   transition: color $transition-fast;
 
@@ -168,14 +182,14 @@
 .langSwitch {
   @include button-reset;
   font-size: $font-size-sm;
-  color: $color-neutral-600;
+  color: #A0B1C2;
   font-weight: $font-weight-medium;
   padding: $spacing-1 $spacing-2;
   border-radius: $border-radius-sm;
   transition: color $transition-fast, background-color $transition-fast;
 
   &:hover {
-    color: $color-blue;
-    background-color: $color-neutral-50;
+    color: $color-white;
+    background-color: rgba(23, 190, 208, 0.08);
   }
 }

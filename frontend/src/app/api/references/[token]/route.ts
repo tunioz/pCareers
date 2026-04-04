@@ -22,7 +22,7 @@ export async function GET(_request: Request, context: RouteContext) {
     }
 
     const reference = queryOne<CandidateReference>(
-      'SELECT * FROM candidate_references WHERE token = ?',
+      "SELECT * FROM candidate_references WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now'))",
       [token]
     );
 
@@ -96,7 +96,7 @@ export async function PUT(request: Request, context: RouteContext) {
     }
 
     const reference = queryOne<CandidateReference>(
-      'SELECT * FROM candidate_references WHERE token = ?',
+      "SELECT * FROM candidate_references WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now'))",
       [token]
     );
 

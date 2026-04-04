@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
 import type { Post, Job } from '@/types';
@@ -12,6 +12,7 @@ import { OpenRoles } from '@/components/public/home/OpenRoles';
 import { EmployeeSpotlight } from '@/components/public/home/EmployeeSpotlight';
 import { BlogTeaser } from '@/components/public/home/BlogTeaser';
 import { TalentCommunity } from '@/components/public/TalentCommunity';
+import pageStyles from './page.module.scss';
 
 export const metadata: Metadata = {
   title: {
@@ -32,12 +33,14 @@ export default function HomePage() {
 
   return (
     <>
-      <HeroSection />
+      <HeroSection jobCount={jobs.length} />
       <ImpactNumbers />
       <WhoWeAre />
       <GlobalPresence />
-      <WhyPCloud />
-      <EngineeringProof />
+      <div className={pageStyles.sharedBg}>
+        <WhyPCloud />
+        <EngineeringProof />
+      </div>
       <OpenRoles jobs={jobs} />
       <EmployeeSpotlight />
       <BlogTeaser posts={posts} />

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import DOMPurify from 'isomorphic-dompurify';
 import { queryOne, queryAll } from '@/lib/db';
 import type { LegalPage } from '@/types';
 import styles from '@/components/public/legal/LegalPage.module.scss';
@@ -54,7 +55,7 @@ export default async function LegalPageRoute({
         <p className={styles.lastUpdated}>Last updated: {formattedDate}</p>
         <div
           className={styles.content}
-          dangerouslySetInnerHTML={{ __html: page.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(page.content) }}
         />
       </div>
     </div>

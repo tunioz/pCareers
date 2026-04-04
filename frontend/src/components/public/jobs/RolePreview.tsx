@@ -131,6 +131,8 @@ export function RolePreview({
 
   // Apply modal state
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [applyFullName, setApplyFullName] = useState('');
+  const [applyEmail, setApplyEmail] = useState('');
   const [applyPcloudLink, setApplyPcloudLink] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
   const [applyConsent, setApplyConsent] = useState(false);
@@ -195,7 +197,7 @@ export function RolePreview({
 
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!applyConsent || !applyPcloudLink) return;
+    if (!applyConsent || !applyFullName || !applyEmail || !applyPcloudLink) return;
     setApplySubmitting(true);
     setApplyError('');
 
@@ -204,8 +206,8 @@ export function RolePreview({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          full_name: `Applicant for ${job.title}`,
-          email: applyPcloudLink,
+          full_name: applyFullName,
+          email: applyEmail,
           job_id: job.id,
           cover_message: applyMessage,
           portfolio_url: applyPcloudLink,
@@ -432,17 +434,15 @@ export function RolePreview({
                     <div className={styles.teamCardGrid}>
                       {/* Team Photo */}
                       <div className={styles.teamPhoto}>
-                        {job.team_photo && (
-                          <ImageWithFallback
-                            src={job.team_photo}
-                            alt={`${job.team_name} Team`}
-                          />
-                        )}
+                        <ImageWithFallback
+                          src={job.team_photo || '/images/dobriana-1.jpg'}
+                          alt={`${job.team_name} Team`}
+                        />
                       </div>
                       {/* Team Info */}
                       <div className={styles.teamInfo}>
                         <p className={styles.teamLabel}>
-                          {job.team_name}
+                          <span className={styles.teamNameGradient}>{job.team_name}</span>
                           {job.team_size && <> &middot; {job.team_size}</>}
                         </p>
                         {job.team_lead && (
@@ -878,7 +878,29 @@ export function RolePreview({
                   )}
 
                   <div className={styles.applyModalField}>
-                    <label>Shared Link in pCloud *</label>
+                    <label>Full Name *</label>
+                    <input
+                      type="text"
+                      placeholder="Your full name"
+                      value={applyFullName}
+                      onChange={(e) => setApplyFullName(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.applyModalField}>
+                    <label>Email *</label>
+                    <input
+                      type="email"
+                      placeholder="your.email@example.com"
+                      value={applyEmail}
+                      onChange={(e) => setApplyEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.applyModalField}>
+                    <label>CV Link (pCloud) *</label>
                     <input
                       type="url"
                       placeholder="Paste your pCloud shared link with CV and documents"

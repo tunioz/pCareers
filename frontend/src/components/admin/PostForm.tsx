@@ -10,14 +10,7 @@ import { useToast } from '@/components/admin/Toast';
 import styles from '@/styles/admin.module.scss';
 import type { PostWithTags, CategoryWithCount, TagWithCount } from '@/types';
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .substring(0, 100);
-}
+import { createSlug as slugify } from '@/lib/slugify';
 
 interface PostFormProps {
   post?: PostWithTags | null;

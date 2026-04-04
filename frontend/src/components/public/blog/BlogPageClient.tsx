@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Clock, User, ChevronDown, Linkedin, Twitter, Mail } from 'lucide-react';
+import { ChevronDown, Linkedin, Twitter, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '../ImageWithFallback';
 import type { Post, Job } from '@/types';
@@ -14,13 +14,40 @@ interface BlogPageClientProps {
   jobs: Job[];
 }
 
+const catColorMap: Record<string, string> = {
+  'ai & ml': 'catAi',
+  'ai': 'catAi',
+  'security': 'catSec',
+  'infrastructure': 'catInf',
+  'engineering': 'catInf',
+};
+
+const deptColorMap: Record<string, string> = {
+  engineering: 'deptEng',
+  design: 'deptDes',
+  marketing: 'deptMkt',
+  support: 'deptSup',
+  qa: 'deptQa',
+};
+
+function getDeptClass(department: string): string {
+  return deptColorMap[department.toLowerCase()] || 'deptEng';
+}
+
+function getCatClass(category: string): string {
+  return catColorMap[category.toLowerCase()] || 'catInf';
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps) {
   const heroRef = useRef(null);
   const isHeroInView = useInView(heroRef, { once: true, margin: '-100px' });
   const jobsRef = useRef(null);
   const isJobsInView = useInView(jobsRef, { once: true, margin: '-100px' });
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [activeSlide, setActiveSlide] = useState(0);
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [visibleArticles, setVisibleArticles] = useState(6);
@@ -36,21 +63,17 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
   const displayedPosts = filteredPosts.slice(0, visibleArticles);
   const hasMore = visibleArticles < filteredPosts.length;
 
-  const handleSlideChange = (index: number) => {
-    setActiveSlide(index);
-    if (carouselRef.current) {
-      const slideWidth = carouselRef.current.offsetWidth;
-      carouselRef.current.scrollLeft = index * slideWidth;
-    }
-  };
 
   return (
-    <div style={{ backgroundColor: 'white', minHeight: '100vh' }}>
+    <div className={styles.page}>
       {/* Hero */}
       <section ref={heroRef} className={styles.heroSection}>
+        <div className={`${styles.blob} ${styles.blob1}`} />
+        <div className={`${styles.blob} ${styles.blob2}`} />
+        <div className={`${styles.blob} ${styles.blob3}`} />
         <div className={styles.heroContainer}>
           <motion.div className={styles.heroContent} initial={{ opacity: 0, y: 30 }} animate={isHeroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
-            <h1 className={styles.heroTitle}>Under the hood</h1>
+            <h1 className={styles.heroTitle}>Under the <span className={styles.heroAccent}>hood</span></h1>
             <p className={styles.heroSubtitle}>How we build infrastructure for 24 million users. No fluff. Real engineering.</p>
           </motion.div>
         </div>
@@ -60,24 +83,36 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
       {featuredPost && (
         <section className={styles.featuredSection}>
           <div className={styles.blogContainer}>
-            <p className={styles.sectionLabel}>Featured</p>
-            <Link href={`/blog/${featuredPost.slug}`} className={styles.featuredCard}>
-              <div className={styles.featuredGrid}>
-                <div className={styles.featuredImage}>
-                  <ImageWithFallback src={featuredPost.cover_image || 'https://images.unsplash.com/photo-1744868562210-fffb7fa882d9?w=800'} alt={featuredPost.title} />
-                  <div className={styles.featuredCat}>{featuredPost.category}</div>
-                </div>
-                <div className={styles.featuredBody}>
-                  <h3 className={styles.featuredTitle}>{featuredPost.title}</h3>
-                  <p className={styles.featuredExcerpt}>{featuredPost.excerpt || ''}</p>
-                  <div className={styles.featuredMeta}>
-                    <div className={styles.metaItem}><User size={16} /><span>{featuredPost.author}</span></div>
-                    <div className={styles.metaItem}><Clock size={16} /><span>{featuredPost.read_time || '5 min'}</span></div>
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+              <Link href={`/blog/${featuredPost.slug}`} className={styles.cardWide}>
+                <div className={styles.wideImg}>
+                  <div className={styles.wideImgInner}>
+                    <ImageWithFallback src={featuredPost.cover_image || 'https://images.unsplash.com/photo-1744868562210-fffb7fa882d9?w=800'} alt={featuredPost.title} />
                   </div>
-                  <span className={styles.readLink}>Read article →</span>
                 </div>
-              </div>
-            </Link>
+                <div className={styles.wideBody}>
+                  <span className={`${styles.category} ${styles[getCatClass(featuredPost.category)]}`}>
+                    {featuredPost.category}
+                  </span>
+                  <h3 className={styles.cardTitleWide}>{featuredPost.title}</h3>
+                  {featuredPost.excerpt && (
+                    <p className={styles.cardExcerpt}>{featuredPost.excerpt}</p>
+                  )}
+                  <div className={styles.cardMeta}>
+                    <span>{formatDate(featuredPost.created_at)}</span>
+                    <span className={styles.metaSep} />
+                    <span className={styles.readTime}>
+                      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" /><path d="M8 4.5V8l2.5 1.5" /></svg>
+                      {featuredPost.read_time || '5 min read'}
+                    </span>
+                  </div>
+                  <span className={styles.readLink}>
+                    Read article
+                    <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" /></svg>
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
           </div>
         </section>
       )}
@@ -108,25 +143,38 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
           {displayedPosts.length > 0 ? (
             <div className={styles.articlesGrid}>
               {displayedPosts.map((post, index) => (
-                <Link key={post.id} href={`/blog/${post.slug}`} className={styles.articleCard}>
-                  <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1, duration: 0.6 }} whileHover={{ y: -5 }} style={{ height: '100%' }}>
-                    <div className={styles.articleImage}>
-                      <ImageWithFallback src={post.cover_image || 'https://images.unsplash.com/photo-1649451844931-57e22fc82de3?w=600'} alt={post.title} />
-                      <div className={styles.articleCat}>{post.category}</div>
-                    </div>
-                    <div className={styles.articleBody}>
-                      <h3 className={styles.articleTitle}>{post.title}</h3>
-                      <div className={styles.articleMeta}>
-                        <div className={styles.articleMetaRow}><User size={14} /><span>{post.author}</span></div>
-                        <div className={styles.articleMetaDate}>
-                          <span>{new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                          <span className={styles.articleMetaTime}><Clock size={14} />{post.read_time || '5 min'}</span>
-                        </div>
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Link href={`/blog/${post.slug}`} className={styles.card}>
+                    <div className={styles.cardImg}>
+                      <div className={styles.cardImgInner}>
+                        <ImageWithFallback src={post.cover_image || 'https://images.unsplash.com/photo-1649451844931-57e22fc82de3?w=600'} alt={post.title} />
                       </div>
-                      <span className={styles.articleReadLink}>Read article →</span>
+                      <span className={`${styles.category} ${styles[getCatClass(post.category)]}`}>
+                        {post.category}
+                      </span>
                     </div>
-                  </motion.div>
-                </Link>
+                    <div className={styles.cardBody}>
+                      <h3 className={styles.cardTitle}>{post.title}</h3>
+                      {post.excerpt && (
+                        <p className={styles.cardExcerptSmall}>{post.excerpt}</p>
+                      )}
+                      <div className={styles.cardMeta}>
+                        <span>{formatDate(post.created_at)}</span>
+                        <span className={styles.metaSep} />
+                        <span className={styles.readTime}>
+                          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" /><path d="M8 4.5V8l2.5 1.5" /></svg>
+                          {post.read_time || '5 min read'}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           ) : (
@@ -143,7 +191,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
         </div>
       </section>
 
-      {/* Related Jobs - "These problems excite you?" */}
+      {/* Related Jobs */}
       {jobs.length > 0 && (
         <section ref={jobsRef} className={styles.relatedJobsSection}>
           <div className={styles.relatedJobsContainer}>
@@ -153,7 +201,6 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
               animate={isJobsInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8 }}
             >
-              {/* Left Content */}
               <div className={styles.relatedJobsLeft}>
                 <h2 className={styles.relatedJobsTitle}>
                   These problems excite you?
@@ -162,58 +209,37 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
                 <p className={styles.relatedJobsDescription}>
                   We&apos;re looking for engineers to solve them
                 </p>
-                <Link href="/careers">
-                  <motion.button className={styles.relatedJobsCta} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link href="/careers" className={styles.relatedJobsCta}>
                     View All Open Roles
-                  </motion.button>
-                </Link>
+                  </Link>
+                </motion.div>
               </div>
 
-              {/* Right - Job Cards Carousel */}
               <div className={styles.relatedJobsRight}>
-                <div
-                  className={styles.jobCarousel}
-                  ref={carouselRef}
-                  onScroll={(e) => {
-                    const container = e.currentTarget;
-                    const newIndex = Math.round(container.scrollLeft / container.offsetWidth);
-                    setActiveSlide(newIndex);
-                  }}
-                >
-                  {jobs.slice(0, 3).map((job, index) => (
-                    <Link key={job.id} href={`/careers/${job.slug}`} className={styles.jobCardLink}>
-                      <motion.div
-                        className={styles.jobCard}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={isJobsInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ delay: index * 0.1, duration: 0.6 }}
-                        whileHover={{ y: -5 }}
-                      >
-                        <ImageWithFallback
-                          src={job.cover_image || `https://images.unsplash.com/photo-163009179065${index}-85ec55570e0b?w=600&h=400&fit=crop`}
-                          alt={job.title}
-                        />
-                        <div className={styles.jobCardOverlay}>
-                          <h3>{job.title}</h3>
-                          <div className={styles.jobCardMeta}>
-                            <span>{job.department}</span>
-                            <span> • {job.product}</span>
-                          </div>
+                <div className={styles.jobCards}>
+                  {jobs.slice(0, 3).map((job) => (
+                    <Link key={job.id} href={`/careers/${job.slug}`} className={styles.jobCard}>
+                      <div className={styles.jobCardTop}>
+                        <span className={`${styles.deptPill} ${styles[getDeptClass(job.department)]}`}>
+                          {job.department}
+                        </span>
+                        <div className={styles.jobCardArrow}>
+                          <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" /></svg>
                         </div>
-                      </motion.div>
+                      </div>
+                      <h3 className={styles.jobCardTitle}>{job.title}</h3>
+                      <div className={styles.jobCardMeta}>
+                        <span>
+                          <svg viewBox="0 0 16 16">
+                            <path d="M8 1C5.2 1 3 3.2 3 6c0 4 5 9 5 9s5-5 5-9c0-2.8-2.2-5-5-5z" />
+                            <circle cx="8" cy="6" r="1.5" />
+                          </svg>
+                          {job.location || 'Sofia'}
+                        </span>
+                        <span>{job.employment_type}</span>
+                      </div>
                     </Link>
-                  ))}
-                </div>
-
-                {/* Dots */}
-                <div className={styles.carouselDots}>
-                  {jobs.slice(0, 3).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSlideChange(index)}
-                      className={`${styles.dot} ${activeSlide === index ? styles.dotActive : ''}`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
                   ))}
                 </div>
               </div>
@@ -234,13 +260,13 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
           >
             <h3 className={styles.shareTitle}>Share our blog</h3>
             <div className={styles.shareButtons}>
-              <motion.button className={styles.shareLinkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on LinkedIn">
+              <motion.button className={styles.shareLinkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on LinkedIn" onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}>
                 <Linkedin size={24} />
               </motion.button>
-              <motion.button className={styles.shareTwitter} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on Twitter">
+              <motion.button className={styles.shareTwitter} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on Twitter" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`, '_blank')}>
                 <Twitter size={24} />
               </motion.button>
-              <motion.button className={styles.shareEmail} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share via Email">
+              <motion.button className={styles.shareEmail} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share via Email" onClick={() => window.open(`mailto:?subject=pCloud Engineering Blog&body=${encodeURIComponent(window.location.href)}`)}>
                 <Mail size={24} />
               </motion.button>
             </div>

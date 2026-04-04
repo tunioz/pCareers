@@ -9,38 +9,32 @@ const benefits = [
   {
     title: 'Compensation & Financial',
     description: 'Competitive salary, bonuses, and performance rewards.',
-    image:
-      'https://images.unsplash.com/photo-1624953901718-e24ee7200b85?w=600',
+    image: '/images/compensation-bg.jpg',
   },
   {
     title: 'Health & Wellbeing',
     description: 'Premium health insurance and wellness programs.',
-    image:
-      'https://images.unsplash.com/photo-1722605341966-a61a3de57ad8?w=600',
+    image: '/images/health-bg.jpg',
   },
   {
     title: 'Work-Life Balance',
     description: 'Flexible hours, remote options, and generous PTO.',
-    image:
-      'https://images.unsplash.com/photo-1683885356374-a57b7e67ae37?w=600',
+    image: '/images/work-bg.jpg',
   },
   {
     title: 'Growth & Learning',
     description: 'Conference budgets, courses, and learning resources.',
-    image:
-      'https://images.unsplash.com/photo-1542725752-e9f7259b3881?w=600',
+    image: '/images/growth-bg.jpg',
   },
   {
     title: 'Team & Social',
     description: 'Team events, retreats, and community activities.',
-    image:
-      'https://images.unsplash.com/photo-1744891470331-c660191721b5?w=600',
+    image: '/images/team-bg.jpg',
   },
   {
     title: 'Workspace & Tools',
     description: 'Top-tier equipment and a modern, inspiring office.',
-    image:
-      'https://images.unsplash.com/photo-1765366417030-16d9765d920a?w=600',
+    image: '/images/workspace-bg.jpg',
   },
 ];
 

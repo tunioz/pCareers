@@ -109,7 +109,8 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Show More <ChevronDown size={18} />
+              Show more
+              <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" /></svg>
             </motion.button>
           </div>
         )}

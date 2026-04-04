@@ -1,160 +1,373 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ═══════════════════════════════════════
+// FROM THE ENGINEERING BLOG — Bento Grid
+// ═══════════════════════════════════════
+
 .section {
-  padding: $spacing-20 0;
-  background-color: #f4f4f4;
+  background: #F7F8FA;
+  padding: 56px 0 110px;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative blob
+  &::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(167, 139, 250, 0.04), transparent 70%);
+    bottom: -100px;
+    left: -50px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
 }
 
 .container {
-  max-width: $max-content-width;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-6;
-
-  @include breakpoint(lg) {
-    padding: 0 $spacing-12;
-  }
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
 }
 
+// ── Header ──
 .header {
-  text-align: center;
-  margin-bottom: $spacing-16;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 44px;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 
 .heading {
-  font-size: $font-size-4xl;
+  font-size: 44px;
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
+  color: #0A0E17;
+  line-height: 1.15;
 
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
+  @media (max-width: 800px) {
+    font-size: 32px;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 28px;
   }
 }
 
-.headingHighlight {
-  color: $color-blue;
+.gradientText {
+  background: linear-gradient(135deg, #20C9DB, #A78BFA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.grid {
-  display: grid;
-  gap: $spacing-8;
-
-  @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @include breakpoint(lg) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.card {
-  background-color: $color-white;
-  border-radius: $border-radius-xl;
-  overflow: hidden;
-  transition: box-shadow $transition-base;
-  cursor: pointer;
+.allLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: $font-weight-medium;
+  color: #20C9DB;
   text-decoration: none;
-  display: block;
+  flex-shrink: 0;
+  transition: gap 0.3s ease, color 0.3s ease;
 
   &:hover {
-    box-shadow: $shadow-xl;
+    gap: 14px;
+    color: #A78BFA;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
   }
 }
 
-.cardImage {
-  position: relative;
-  aspect-ratio: 16 / 10;
+// ── Bento grid ──
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  // Featured card spans full width
+  > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Featured wide card ──
+.cardWide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 320px;
+  background: $color-white;
+  border-radius: 24px;
   overflow: hidden;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}
+
+.wideImg {
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 800px) {
+    height: 240px;
+  }
+}
+
+.wideImgInner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  position: relative;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform $transition-slow;
   }
 
-  .card:hover & img {
-    transform: scale(1.1);
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cardWide:hover & {
+    transform: scale(1.05);
   }
 }
 
-.categoryPill {
-  position: absolute;
-  top: $spacing-4;
-  left: $spacing-4;
-  padding: $spacing-2 $spacing-4;
-  border-radius: $border-radius-full;
-  font-size: $font-size-sm;
+.wideImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1040, #A78BFA);
+}
+
+.wideBody {
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    padding: 24px;
+  }
+}
+
+// ── Category pill ──
+.category {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catAi  { background: rgba(167, 139, 250, 0.1); color: #A78BFA; }
+.catSec { background: rgba(52, 199, 123, 0.1); color: #34C77B; }
+.catInf { background: rgba(32, 201, 219, 0.1); color: #20C9DB; }
+
+// ── Card text (featured) ──
+.cardTitleWide {
+  font-size: 26px;
   font-weight: $font-weight-bold;
-}
+  color: #0A0E17;
+  line-height: 1.35;
 
-.cardBody {
-  padding: $spacing-6;
-}
-
-.cardTitle {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  color: #3a3a3a;
-  margin-bottom: $spacing-4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  transition: color $transition-fast;
-
-  .card:hover & {
-    color: $color-blue;
+  @media (max-width: 800px) {
+    font-size: 20px;
   }
+}
+
+.cardExcerpt {
+  font-size: 16px;
+  color: rgba(10, 14, 23, 0.5);
+  line-height: 1.6;
 }
 
 .cardMeta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: $font-size-sm;
-  color: $color-neutral-600;
-  margin-bottom: $spacing-4;
+  gap: 12px;
+  font-size: 13px;
+  color: rgba(10, 14, 23, 0.35);
+}
+
+.metaSep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(10, 14, 23, 0.2);
 }
 
 .readTime {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: $spacing-1;
-}
+  gap: 4px;
 
-.readMore {
-  display: flex;
-  align-items: center;
-  color: $color-blue;
-  font-weight: $font-weight-semibold;
-  transition: gap $transition-fast;
-
-  .card:hover & {
-    gap: $spacing-2;
+  svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
   }
 }
 
-.cta {
-  text-align: center;
-  margin-top: $spacing-12;
-}
-
-.ctaButton {
-  @include button-reset;
-  background-color: $color-blue;
-  color: $color-white;
-  padding: 0 $spacing-8;
-  height: 48px;
-  border-radius: $border-radius-full;
-  font-weight: $font-weight-semibold;
-  font-size: $font-size-md;
+.readLink {
   display: inline-flex;
   align-items: center;
-  transition: background-color $transition-fast;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: $font-weight-medium;
+  color: #20C9DB;
+  margin-top: 4px;
+  transition: gap 0.3s ease, color 0.3s ease;
+
+  .cardWide:hover & {
+    gap: 14px;
+    color: #A78BFA;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+}
+
+// ── Standard cards ──
+.card {
+  background: $color-white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 
   &:hover {
-    background-color: $color-blue-hover;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.cardImg {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+
+  .category {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+.cardImgInner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .card:hover & {
+    transform: scale(1.06);
+  }
+}
+
+.cardImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a1a2a, #20C9DB);
+}
+
+.cardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: $font-weight-bold;
+  color: #0A0E17;
+  line-height: 1.35;
+}
+
+.cardExcerptSmall {
+  font-size: 15px;
+  color: rgba(10, 14, 23, 0.5);
+  line-height: 1.6;
+  flex: 1;
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .section {
+    padding: 56px 0 64px;
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }

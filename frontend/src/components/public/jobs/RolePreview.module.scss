@@ -50,52 +50,65 @@
 }
 
 .metaPill {
-  padding: $spacing-2 $spacing-4;
-  background-color: $color-white;
-  border: 1px solid rgba($color-primary-cyan, 0.2);
-  border-radius: $border-radius-full;
-  font-size: $font-size-sm;
-  color: $color-dark-blue;
+  padding: 5px 14px;
+  background: rgba($color-brand-teal, 0.1);
+  border: none;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+  color: $color-brand-teal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .heroButtons {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-4;
+  gap: 16px;
 }
 
 .btnApply {
   @include button-reset;
-  background-color: $color-primary-cyan;
-  color: $color-white;
-  padding: 0 $spacing-8;
-  height: 56px;
-  border-radius: $border-radius-full;
-  font-size: $font-size-md;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 36px;
+  background: $color-brand-teal-base;
+  color: $bg-dark;
+  font-size: 16px;
   font-weight: $font-weight-semibold;
-  transition: background-color $transition-fast;
+  font-family: inherit;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: $color-primary-cyan-dark;
+    background: #4DD4E1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba($color-brand-teal, 0.25);
   }
 }
 
 .btnOutlined {
   @include button-reset;
-  border: 2px solid $color-primary-cyan;
-  color: $color-primary-cyan;
-  padding: 0 $spacing-8;
-  height: 56px;
-  border-radius: $border-radius-full;
-  font-size: $font-size-md;
-  font-weight: $font-weight-semibold;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: $spacing-2;
-  transition: background-color $transition-fast;
+  gap: 8px;
+  padding: 16px 32px;
+  background: transparent;
+  color: $color-neutral-700;
+  font-size: 16px;
+  font-weight: $font-weight-medium;
+  font-family: inherit;
+  border-radius: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: rgba($color-primary-cyan, 0.05);
+    border-color: rgba($color-brand-teal, 0.4);
+    color: $color-brand-teal;
+    background: rgba($color-brand-teal, 0.05);
   }
 }
 
@@ -334,8 +347,16 @@
 
 .teamLabel {
   font-size: $font-size-sm;
-  color: $color-primary-cyan;
+  font-weight: $font-weight-medium;
+  color: $color-neutral-500;
   margin-bottom: $spacing-2;
+}
+
+.teamNameGradient {
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .teamLead {
@@ -365,7 +386,7 @@
   color: $color-dark-blue;
   font-size: $font-size-sm;
   font-family: $font-family-mono;
-  border-radius: $border-radius-sm;
+  border-radius: $border-radius-full;
 }
 
 // D. What You'll Learn
@@ -524,63 +545,117 @@
 }
 
 .sidebarCard {
-  backdrop-filter: blur(6px);
-  background-color: rgba($color-dark-blue, 0.95);
-  border-radius: $border-radius-lg;
-  padding: $spacing-6;
-  box-shadow: $shadow-sm;
-  border: 1px solid rgba($color-white, 0.1);
+  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
+  border-radius: 20px;
+  padding: 32px 28px;
+  border: 1px solid rgba($color-white, 0.08);
+  position: relative;
+  overflow: hidden;
+
+  // Animated ambient blobs
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: $color-brand-teal;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.25;
+    top: -40px;
+    right: -20px;
+    pointer-events: none;
+    animation: sidebarBlobFloat 12s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: $color-purple;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.2;
+    bottom: -30px;
+    left: -20px;
+    pointer-events: none;
+    animation: sidebarBlobFloat 15s ease-in-out infinite reverse;
+  }
+}
+
+@keyframes sidebarBlobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15px, -10px) scale(1.1); }
+  66% { transform: translate(-10px, 8px) scale(0.9); }
 }
 
 .sidebarTitle {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-semibold;
-  color: $color-yellow;
-  margin-bottom: $spacing-4;
+  font-size: 22px;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-3;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .sidebarText {
-  font-size: $font-size-sm;
-  color: rgba($color-white, 0.8);
-  margin-bottom: $spacing-6;
-  line-height: $line-height-relaxed;
+  font-size: 15px;
+  color: rgba($color-white, 0.55);
+  margin-bottom: 28px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebarButtons {
   display: flex;
   flex-direction: column;
-  gap: $spacing-3;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebarApply {
   @include button-reset;
   width: 100%;
-  background-color: $color-yellow;
-  color: $color-dark-blue;
   height: 48px;
-  border-radius: $border-radius-full;
+  background: $color-brand-teal-base;
+  color: $bg-dark;
+  border-radius: 100px;
   font-weight: $font-weight-semibold;
-  font-size: $font-size-sm;
-  transition: background-color $transition-fast;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: #d4ed00;
+    background: #4DD4E1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba($color-brand-teal, 0.25);
   }
 }
 
 .sidebarShare {
   @include button-reset;
   width: 100%;
-  color: $color-yellow;
   height: 48px;
-  font-size: $font-size-sm;
-  border: 1px solid $color-yellow;
-  border-radius: $border-radius-full;
-  transition: color $transition-fast, border-color $transition-fast;
+  color: $color-white;
+  font-size: 15px;
+  font-weight: $font-weight-medium;
+  font-family: inherit;
+  border: 1px solid rgba($color-white, 0.2);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    color: #d4ed00;
-    border-color: #d4ed00;
+    border-color: rgba($color-brand-teal, 0.4);
+    color: $color-brand-teal;
+    background: rgba($color-brand-teal, 0.05);
   }
 }
 
@@ -590,7 +665,7 @@
 
 .processSection {
   padding: $spacing-20 0;
-  background-color: $color-dark-blue;
+  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
 }
 
 .processSectionContainer {
@@ -643,23 +718,25 @@
 }
 
 .stageCard {
-  background-color: rgba($color-white, 0.05);
-  backdrop-filter: blur(4px);
-  border-radius: $border-radius-xl;
+  background: rgba($color-white, 0.04);
+  border-radius: 20px;
   padding: $spacing-6;
-  border: 1px solid rgba($color-white, 0.1);
-  transition: transform $transition-base, background-color $transition-base;
+  border: 1px solid rgba($color-white, 0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 
   &:hover {
-    transform: translateY(-10px);
-    background-color: rgba($color-white, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
   }
 }
 
 .stageNumber {
   font-size: $font-size-6xl;
   font-weight: $font-weight-bold;
-  color: rgba($color-white, 0.1);
+  background: linear-gradient(135deg, rgba($color-brand-teal, 0.15), rgba($color-purple, 0.15));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: $spacing-4;
   line-height: 1;
 }
@@ -675,11 +752,11 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: $color-yellow;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $color-dark-blue;
+  color: $color-white;
   transition: transform $transition-base;
 
   &:hover {
@@ -697,7 +774,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-2;
-  color: $color-yellow;
+  color: $color-brand-teal;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   margin-bottom: $spacing-3;
@@ -737,7 +814,7 @@
 }
 
 .stageTimelineText {
-  color: $color-yellow;
+  color: $color-brand-teal;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   margin-top: $spacing-1;
@@ -745,8 +822,9 @@
 
 // Overall Timeline
 .overallTimeline {
-  background-color: $color-blue;
-  border-radius: $border-radius-xl;
+  background: linear-gradient(135deg, rgba($color-brand-teal, 0.15), rgba($color-purple, 0.15));
+  border: 1px solid rgba($color-white, 0.08);
+  border-radius: 20px;
   padding: $spacing-8;
   text-align: center;
 }
@@ -773,8 +851,11 @@
 .overallWeeks {
   font-size: $font-size-4xl;
   font-weight: $font-weight-bold;
-  color: $color-yellow;
   margin-bottom: $spacing-2;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .overallWeeksLabel {
@@ -795,8 +876,11 @@
 .overallFeedback {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: $color-white;
   margin-bottom: $spacing-2;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .overallFeedbackLabel {
@@ -948,7 +1032,7 @@
 
 .pcloudBarSection {
   padding: $spacing-20 0;
-  background-color: #f4f4f4;
+  background-color: $color-white;
 }
 
 .pcloudBarContainer {
@@ -969,7 +1053,7 @@
 .pcloudBarTitle {
   font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
+  color: $color-neutral-900;
   margin-bottom: $spacing-4;
 
   @include breakpoint(lg) {
@@ -979,7 +1063,7 @@
 
 .pcloudBarSubtitle {
   font-size: $font-size-lg;
-  color: #4b5563;
+  color: $color-neutral-500;
   max-width: 768px;
   margin: 0 auto;
   line-height: $line-height-relaxed;
@@ -988,7 +1072,7 @@
 .pcloudBarGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: $spacing-6;
+  gap: 20px;
 
   @include breakpoint(md) {
     grid-template-columns: repeat(2, 1fr);
@@ -996,17 +1080,44 @@
 }
 
 .pcloudBarCard {
-  background-color: $color-white;
-  border-radius: $border-radius-xl;
-  padding: $spacing-6;
-  border: 1px solid #e5e7eb;
-  transition: transform $transition-base, box-shadow $transition-base;
+  background: $color-white;
+  border: 1px solid $color-neutral-200;
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  // Colored accent bar at top
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 4px;
+    border-radius: 0 0 4px 4px;
+  }
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba($color-blue, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
   }
 }
+
+// Per-card accent bar colors
+.pcloudBarGrid > :nth-child(6n+1) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+1).pcloudBarCard::before { background: $color-brand-teal; }
+.pcloudBarGrid > :nth-child(6n+2) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+2).pcloudBarCard::before { background: $color-neutral-400; }
+.pcloudBarGrid > :nth-child(6n+3) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+3).pcloudBarCard::before { background: $color-green; }
+.pcloudBarGrid > :nth-child(6n+4) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+4).pcloudBarCard::before { background: $color-purple; }
+.pcloudBarGrid > :nth-child(6n+5) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+5).pcloudBarCard::before { background: $color-brand-teal-dark; }
+.pcloudBarGrid > :nth-child(6n+6) .pcloudBarCard::before,
+.pcloudBarGrid > :nth-child(6n+6).pcloudBarCard::before { background: $color-amber; }
 
 .pcloudBarCardInner {
   display: flex;
@@ -1016,19 +1127,27 @@
 
 .pcloudBarIcon {
   flex-shrink: 0;
-  color: $color-blue;
 }
+
+// Per-card icon colors matching accent bar
+.pcloudBarGrid > :nth-child(6n+1) .pcloudBarIcon { color: $color-brand-teal; }
+.pcloudBarGrid > :nth-child(6n+2) .pcloudBarIcon { color: $color-neutral-400; }
+.pcloudBarGrid > :nth-child(6n+3) .pcloudBarIcon { color: $color-green; }
+.pcloudBarGrid > :nth-child(6n+4) .pcloudBarIcon { color: $color-purple; }
+.pcloudBarGrid > :nth-child(6n+5) .pcloudBarIcon { color: $color-brand-teal-dark; }
+.pcloudBarGrid > :nth-child(6n+6) .pcloudBarIcon { color: $color-amber; }
 
 .pcloudBarCardTitle {
   font-size: $font-size-lg;
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
+  color: $color-neutral-900;
   margin-bottom: $spacing-2;
 }
 
 .pcloudBarCardDescription {
-  color: #4b5563;
+  color: $color-neutral-600;
   line-height: $line-height-relaxed;
+  font-size: $font-size-sm;
 }
 
 // =============================================================================

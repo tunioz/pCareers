@@ -11,29 +11,26 @@ export function LifeCTA() {
 
   return (
     <section ref={ref} className={styles.section}>
+      <div className={`${styles.blob} ${styles.blob1}`} />
+      <div className={`${styles.blob} ${styles.blob2}`} />
+      <div className={`${styles.blob} ${styles.blob3}`} />
       <div className={styles.container}>
-        <motion.h2
-          className={styles.heading}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          Ready to experience it yourself?
-        </motion.h2>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          <Link href="/careers">
-            <motion.button
-              className={styles.ctaButton}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              See Open Roles
-            </motion.button>
-          </Link>
+        <motion.div className={styles.content} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+          <h2 className={styles.heading}>
+            Ready to <span className={styles.highlight}>experience it</span> yourself?
+          </h2>
+          <motion.div className={styles.buttons} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3, duration: 0.8 }}>
+            <Link href="/careers">
+              <motion.button className={styles.primaryButton} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                See Open Roles
+              </motion.button>
+            </Link>
+            <Link href="/about">
+              <motion.button className={styles.secondaryButton} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                Learn More
+              </motion.button>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

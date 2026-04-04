@@ -63,17 +63,24 @@ export async function GET(request: Request) {
       [...queryParams, perPage, offset]
     );
 
-    // Fetch tags for all posts in batch
-    const postsWithTags: PostWithTags[] = posts.map((post) => {
-      const tags = queryAll<Tag>(
-        'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
-        [post.id]
+    // Fetch tags for all posts in a single batch query
+    const postIds = posts.map((p) => p.id);
+    let tagsByPost = new Map<number, string[]>();
+    if (postIds.length > 0) {
+      const placeholders = postIds.map(() => '?').join(',');
+      const allTags = queryAll<{ post_id: number; name: string }>(
+        `SELECT pt.post_id, t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id IN (${placeholders})`,
+        postIds
       );
-      return {
-        ...post,
-        tags: tags.map((t) => t.name),
-      };
-    });
+      for (const tag of allTags) {
+        if (!tagsByPost.has(tag.post_id)) tagsByPost.set(tag.post_id, []);
+        tagsByPost.get(tag.post_id)!.push(tag.name);
+      }
+    }
+    const postsWithTags: PostWithTags[] = posts.map((post) => ({
+      ...post,
+      tags: tagsByPost.get(post.id) || [],
+    }));
 
     return NextResponse.json({
       success: true,

@@ -43,8 +43,8 @@ export function WhoWeAre() {
             transition={{ delay: 0.1, duration: 0.6 }}
           >
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1646153114001-495dfb56506d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600"
-              alt="Modern tech office workspace"
+              src="/images/office-dev.jpg"
+              alt="Developer working at pCloud office"
             />
           </motion.div>
 
@@ -83,8 +83,8 @@ export function WhoWeAre() {
             transition={{ delay: 0.3, duration: 0.6 }}
           >
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1758873269317-51888e824b28?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
-              alt="Diverse team collaboration"
+              src="/images/office-wide.jpg"
+              alt="pCloud office workspace"
             />
           </motion.div>
 

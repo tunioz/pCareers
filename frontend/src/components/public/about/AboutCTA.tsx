@@ -11,7 +11,9 @@ export function AboutCTA() {
 
   return (
     <section ref={ref} className={styles.section}>
-      <div className={styles.bgPattern} />
+      <div className={`${styles.blob} ${styles.blob1}`} />
+      <div className={`${styles.blob} ${styles.blob2}`} />
+      <div className={`${styles.blob} ${styles.blob3}`} />
       <div className={styles.container}>
         <motion.div className={styles.content} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
           <h2 className={styles.heading}>Ready to build something that <span className={styles.highlight}>matters?</span></h2>

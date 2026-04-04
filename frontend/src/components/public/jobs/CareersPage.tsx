@@ -3,7 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { DollarSign, Zap, TrendingUp, Clock, ArrowRight, MapPin, Briefcase } from 'lucide-react';
+import { ArrowRight, MapPin, Briefcase } from 'lucide-react';
 import type { Job } from '@/types';
 import styles from './CareersPage.module.scss';
 
@@ -26,32 +26,28 @@ const FALLBACK_COVER =
 
 const BENEFITS = [
   {
-    icon: DollarSign,
+    iconSrc: '/images/top1-ic.svg',
     title: 'Top 1% Compensation',
     description:
       'Competitive salary, bonuses, and benefits that put you in the top percentile.',
-    color: 'blue' as const,
   },
   {
-    icon: Zap,
+    iconSrc: '/images/real-impact-ic.svg',
     title: 'Real Impact',
     description:
       'Your work reaches 24M+ users worldwide. Every line of code matters.',
-    color: 'yellow' as const,
   },
   {
-    icon: TrendingUp,
+    iconSrc: '/images/continuous-ic.svg',
     title: 'Continuous Growth',
     description:
       'Learning budget, conference attendance, and mentorship from industry leaders.',
-    color: 'blue' as const,
   },
   {
-    icon: Clock,
+    iconSrc: '/images/work-life-ic.svg',
     title: 'Work-Life Balance',
     description:
       'Flexible hours, remote-friendly culture, and generous PTO policy.',
-    color: 'yellow' as const,
   },
 ];
 
@@ -140,7 +136,7 @@ export function CareersPage({
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2, duration: 0.7 }}
           >
-            9 open roles. 500+ petabytes of responsibility. Zero tolerance for mediocrity.
+            {filteredJobs.length} open {filteredJobs.length === 1 ? 'role' : 'roles'}. 500+ petabytes of responsibility. Zero tolerance for mediocrity.
           </motion.p>
         </div>
       </section>
@@ -236,9 +232,7 @@ export function CareersPage({
                 {filteredJobs.length}{' '}
                 {filteredJobs.length === 1 ? 'role' : 'roles'} found
               </span>
-              <button type="button" className={styles.departmentViewBtn}>
-                Department View
-              </button>
+{/* Department View — planned for future release */}
             </div>
           </div>
         </div>
@@ -340,7 +334,6 @@ export function CareersPage({
 
           <div className={styles.benefitsGrid}>
             {BENEFITS.map((benefit, i) => {
-              const IconComp = benefit.icon;
               return (
                 <motion.div
                   key={benefit.title}
@@ -349,14 +342,8 @@ export function CareersPage({
                   animate={whyInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.1 * (i + 1), duration: 0.5 }}
                 >
-                  <div
-                    className={`${styles.benefitIcon} ${
-                      benefit.color === 'blue'
-                        ? styles.benefitIconBlue
-                        : styles.benefitIconYellow
-                    }`}
-                  >
-                    <IconComp size={24} />
+                  <div className={styles.benefitIcon}>
+                    <img src={benefit.iconSrc} alt={benefit.title} className={styles.benefitIconImg} />
                   </div>
                   <h3 className={styles.benefitTitle}>{benefit.title}</h3>
                   <p className={styles.benefitDescription}>

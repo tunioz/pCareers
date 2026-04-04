@@ -1,75 +1,80 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ImageWithFallback } from '../ImageWithFallback';
 import styles from './HeroSection.module.scss';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  jobCount?: number;
+}
+
+export function HeroSection({ jobCount }: HeroSectionProps) {
   return (
     <section className={styles.hero}>
-      <div aria-hidden="true" className={styles.background}>
-        <ImageWithFallback
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
-          alt=""
-        />
-        <div className={styles.overlay} />
+      {/* Multi-color animated gradient blobs */}
+      <div className={styles.gradientCanvas} aria-hidden="true">
+        <div className={`${styles.blob} ${styles.blobTeal}`} />
+        <div className={`${styles.blob} ${styles.blobPurple}`} />
+        <div className={`${styles.blob} ${styles.blobAmber}`} />
+        <div className={`${styles.blob} ${styles.blobGreen}`} />
+        <div className={`${styles.blob} ${styles.blobRose}`} />
       </div>
+      <div className={styles.gridOverlay} aria-hidden="true" />
 
-      <div className={styles.content}>
-        <div className={styles.inner}>
-          <div className={styles.wrapper}>
-            <div className={styles.grid}>
-              <motion.div
-                className={styles.textContent}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <motion.div
-                  className={styles.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                >
-                  CAREER OPPORTUNITIES
-                </motion.div>
+      <div className={styles.heroInner}>
+        {/* LEFT: Text */}
+        <div className={styles.heroText}>
+          <div className={styles.badge}>
+            <div className={styles.badgeDot} />
+            <span className={styles.badgeText}>We&apos;re hiring{jobCount ? ` — ${jobCount} open roles` : ''}</span>
+          </div>
 
-                <motion.h1
-                  className={styles.heading}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
-                >
-                  24 million people trust us with their data. We need engineers who take that personally.
-                </motion.h1>
+          <h1 className={styles.heroTitle}>
+            24 million people trust us with their data. We need engineers who{' '}
+            <span className={styles.hl}>take that personally.</span>
+          </h1>
 
-                <motion.p
-                  className={styles.description}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.8 }}
-                >
-                  We ship code that 24 million people depend on every day. The bar is high. The work is real.
-                </motion.p>
+          <p className={styles.heroSub}>
+            We ship code that 24 million people depend on every day. The bar is high. The work is real.
+          </p>
 
-                <motion.div
-                  className={styles.cta}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                >
-                  <Link href="/careers">
-                    <motion.button
-                      className={styles.ctaButton}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      See open roles
-                    </motion.button>
-                  </Link>
-                </motion.div>
-              </motion.div>
+          <div className={styles.heroActions}>
+            <Link href="/careers" className={styles.btnPrimary}>
+              See open roles
+              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12l5-5-5-5" />
+              </svg>
+            </Link>
+            <Link href="/about" className={styles.btnSecondary}>
+              Read our story
+            </Link>
+          </div>
+        </div>
+
+        {/* RIGHT: Terminal — C code */}
+        <div className={styles.terminalWrap}>
+          <div className={styles.terminal}>
+            <div className={styles.terminalBar}>
+              <div className={`${styles.td} ${styles.tdR}`} />
+              <div className={`${styles.td} ${styles.tdY}`} />
+              <div className={`${styles.td} ${styles.tdG}`} />
+              <span className={styles.terminalTab}>infrastructure.c</span>
+            </div>
+            <div className={styles.terminalBody}>
+              <div className={styles.tl}><span className={styles.cc}>{'/* What we protect every single day */'}</span></div>
+              <div className={styles.tl}><span className={styles.cp}>#include</span> <span className={styles.cs}>{'<pcloud/core.h>'}</span></div>
+              <div className={styles.tl}>&nbsp;</div>
+              <div className={styles.tl}><span className={styles.ck}>typedef struct</span> <span className={styles.cu}>{'{'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.ct}>uint64_t</span>&nbsp;&nbsp;&nbsp;<span className={styles.cv}>users</span><span className={styles.cu}>;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cc}>{'// 24,000,000+'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.ct}>uint64_t</span>&nbsp;&nbsp;&nbsp;<span className={styles.cv}>bytes_stored</span><span className={styles.cu}>;</span>&nbsp;<span className={styles.cc}>{'// 500+ petabytes'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.ct}>double</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cv}>uptime</span><span className={styles.cu}>;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cc}>{'// 99.92%'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.ct}>uint8_t</span>&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cv}>platforms</span><span className={styles.cu}>;</span>&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cc}>{'// 6'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.ct}>uint32_t</span>&nbsp;&nbsp;&nbsp;<span className={styles.cv}>breaches</span><span className={styles.cu}>;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cc}>{'// 0. Always.'}</span></div>
+              <div className={styles.tl}><span className={styles.cu}>{'}'}</span> <span className={styles.ct}>pcloud_platform_t</span><span className={styles.cu}>;</span></div>
+              <div className={styles.tl}>&nbsp;</div>
+              <div className={styles.tl}><span className={styles.ct}>pcloud_platform_t</span> <span className={styles.ct}>pcloud</span> <span className={styles.cu}>=</span> <span className={styles.cu}>{'{'}</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.cu}>.</span><span className={styles.cv}>users</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className={styles.cu}>=</span> <span className={styles.cn}>24000000</span><span className={styles.cu}>,</span></div>
+              <div className={styles.tl}>&nbsp;&nbsp;<span className={styles.cu}>.</span><span className={styles.cv}>bytes_stored</span> <span className={styles.cu}>=</span> <span className={styles.cn}>500ULL</span> <span className={styles.cu}>*</span> <span className={styles.cn}>PB</span><span className={styles.cu}>,</span></div>
+              <div className={styles.tl}><span className={styles.cu}>{'};'}</span> <span className={styles.cc}>{'// Ready to build with us?'}</span><span className={styles.cursor} /></div>
             </div>
           </div>
         </div>

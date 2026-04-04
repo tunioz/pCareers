@@ -5,12 +5,13 @@
 .container { max-width: $max-content-width; margin: 0 auto; padding: 0 $spacing-6; @include breakpoint(lg) { padding: 0 $spacing-12; } }
 .header { text-align: center; margin-bottom: $spacing-16; }
 .heading { font-size: $font-size-4xl; font-weight: $font-weight-bold; color: #3a3a3a; @include breakpoint(lg) { font-size: $font-size-5xl; } }
-.highlight { color: $color-blue; }
+.highlight { background: linear-gradient(135deg, $color-brand-teal, $color-purple); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .grid { display: grid; gap: $spacing-8; @include breakpoint(md) { grid-template-columns: repeat(3, 1fr); } }
-.card { position: relative; overflow: hidden; border-radius: $border-radius-xl; background-color: #f4f4f4; }
-.cardImage { position: relative; height: 256px; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; transition: transform $transition-slow; } .card:hover & img { transform: scale(1.1); } }
-.cardGradient { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, #f4f4f4); }
-.cardBody { position: relative; padding: $spacing-8; margin-top: -80px; }
-.iconWrapper { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: $spacing-6; }
+.card { position: relative; overflow: hidden; border-radius: 20px; background-color: #f4f4f4; min-height: 460px; }
+.cardImage { position: absolute; inset: 0; z-index: 0; img { width: 100%; height: 100%; object-fit: cover; transition: transform $transition-slow; } .card:hover & img { transform: scale(1.05); } }
+.cardGradient { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, transparent 20%, rgba(#f4f4f4, 0.85) 55%, #f4f4f4 75%); }
+.cardBody { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: $spacing-8; }
+.iconWrapper { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin-bottom: $spacing-6; }
+.productLogo { width: 64px; height: 64px; object-fit: contain; }
 .cardTitle { font-size: $font-size-2xl; font-weight: $font-weight-bold; color: #3a3a3a; margin-bottom: $spacing-4; }
 .cardDescription { color: $color-neutral-600; line-height: $line-height-relaxed; }

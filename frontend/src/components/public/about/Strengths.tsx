@@ -2,29 +2,29 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ImageWithFallback } from '../ImageWithFallback';
+import Image from 'next/image';
 import styles from './Strengths.module.scss';
 
 const cards = [
   {
     title: 'Zero-Knowledge Encryption',
-    image: 'https://images.unsplash.com/photo-1638645540399-40229456a236?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+    image: '/images/strength-encryption.jpg',
   },
   {
     title: 'Swiss Privacy Standards',
-    image: 'https://images.unsplash.com/photo-1640022578241-4a3275e7ffce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+    image: '/images/strength-swiss.jpg',
   },
   {
     title: '99.92% Uptime',
-    image: 'https://images.unsplash.com/photo-1548544027-1a96c4c24c7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+    image: '/images/strength-uptime.jpg',
   },
   {
     title: 'Top 1% Team',
-    image: 'https://images.unsplash.com/photo-1562577308-c8b2614b9b9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+    image: '/images/strength-team.jpg',
   },
   {
     title: '13+ Years of Innovation',
-    image: 'https://images.unsplash.com/photo-1763298464558-1b63197f2a9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+    image: '/images/strength-innovation.jpg',
   },
 ];
 
@@ -57,7 +57,7 @@ export function Strengths() {
               transition={{ delay: index * 0.1, duration: 0.6 }}
             >
               <div className={styles.cardImage}>
-                <ImageWithFallback src={card.image} alt={card.title} />
+                <Image src={card.image} alt={card.title} fill sizes="(max-width: 768px) 50vw, 20vw" />
               </div>
               <div className={styles.cardOverlay} />
               <div className={styles.cardContent}>

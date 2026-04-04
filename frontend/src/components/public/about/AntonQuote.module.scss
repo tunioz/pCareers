@@ -52,7 +52,10 @@
 }
 
 .highlight {
-  color: $color-blue;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .quoteBlock {
@@ -70,19 +73,16 @@
 
 .quoteContent {
   padding-left: $spacing-5;
-  position: relative;
 }
 
 .quoteMark {
-  position: absolute;
-  left: -2rem;
-  top: -0.75rem;
-  font-size: 7.5rem;
-  color: $color-neutral-200;
-  font-weight: $font-weight-bold;
-  font-style: italic;
-  line-height: 1;
-  pointer-events: none;
+  display: inline;
+  width: 39px;
+  height: 33px;
+  margin-right: 8px;
+  vertical-align: baseline;
+  position: relative;
+  top: 4px;
 }
 
 .quoteText {

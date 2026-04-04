@@ -126,6 +126,31 @@ export async function POST(request: Request, context: RouteContext) {
         );
       }
 
+      // Validate file type
+      const ALLOWED_TASK_TYPES = [
+        'application/zip', 'application/x-zip-compressed',
+        'application/pdf', 'application/gzip', 'application/x-tar',
+        'application/x-gzip', 'application/octet-stream',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
+      const ALLOWED_TASK_EXTENSIONS = ['.zip', '.pdf', '.tar.gz', '.gz', '.tar', '.docx', '.doc'];
+      const ext = path.extname(file.name).toLowerCase() || '.zip';
+
+      if (!ALLOWED_TASK_EXTENSIONS.includes(ext)) {
+        return NextResponse.json(
+          { success: false, error: `File type ${ext} is not allowed. Accepted: ${ALLOWED_TASK_EXTENSIONS.join(', ')}` },
+          { status: 400 }
+        );
+      }
+
+      if (!ALLOWED_TASK_TYPES.includes(file.type) && file.type !== '') {
+        return NextResponse.json(
+          { success: false, error: `MIME type ${file.type} is not allowed` },
+          { status: 400 }
+        );
+      }
+
       const now = new Date();
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -135,7 +160,6 @@ export async function POST(request: Request, context: RouteContext) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
 
-      const ext = path.extname(file.name) || '.zip';
       const uniqueName = `${Date.now()}-${crypto.randomUUID()}${ext}`;
       const fullPath = path.join(uploadDir, uniqueName);
 

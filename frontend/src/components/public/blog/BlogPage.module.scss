@@ -1,74 +1,477 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.heroSection { position: relative; background: linear-gradient(to bottom, $color-blue, $color-blue-hover); padding-top: 120px; padding-bottom: 60px; border-bottom-right-radius: 150px; }
-.heroContainer { max-width: $max-content-width; margin: 0 auto; padding: 0 $spacing-6; @include breakpoint(lg) { padding: 0 $spacing-12; } }
-.heroContent { text-align: center; max-width: 64rem; margin: 0 auto; }
-.heroTitle { font-size: $font-size-5xl; font-weight: $font-weight-bold; color: $color-white; margin-bottom: $spacing-6; @include breakpoint(lg) { font-size: 4.5rem; } }
-.heroSubtitle { font-size: $font-size-xl; color: rgba($color-white, 0.9); @include breakpoint(lg) { font-size: $font-size-2xl; } }
+// ═══════════════════════════════════════
+// BLOG PAGE — BlogTeaser card style
+// ═══════════════════════════════════════
 
-.featuredSection { background-color: $color-white; padding: $spacing-20 0; margin-top: -48px; }
-.blogContainer { max-width: $max-content-width; margin: 0 auto; padding: 0 $spacing-6; @include breakpoint(lg) { padding: 0 $spacing-12; } }
-.sectionLabel { font-size: $font-size-sm; letter-spacing: 2.5px; text-transform: uppercase; font-weight: $font-weight-semibold; color: $color-neutral-400; margin-bottom: $spacing-8; }
+.page {
+  background: #F7F8FA;
+  min-height: 100vh;
+}
 
-.featuredCard { background-color: $color-white; border-radius: $border-radius-xl; box-shadow: $shadow-xl; overflow: hidden; text-decoration: none; display: block; transition: box-shadow $transition-base, transform $transition-base; &:hover { box-shadow: $shadow-xl; transform: translateY(-5px); } }
-.featuredGrid { display: grid; grid-template-columns: 1fr; @include breakpoint(lg) { grid-template-columns: repeat(2, 1fr); } }
-.featuredImage { position: relative; height: 300px; @include breakpoint(lg) { height: auto; } img { width: 100%; height: 100%; object-fit: cover; } }
-.featuredCat { position: absolute; top: $spacing-6; left: $spacing-6; background-color: $color-blue; color: $color-white; padding: $spacing-2 $spacing-4; border-radius: $border-radius-full; font-size: $font-size-sm; font-weight: $font-weight-semibold; }
-.featuredBody { padding: $spacing-8; display: flex; flex-direction: column; justify-content: center; @include breakpoint(lg) { padding: $spacing-12; } }
-.featuredTitle { font-size: $font-size-3xl; font-weight: $font-weight-bold; color: #3a3a3a; margin-bottom: $spacing-6; @include breakpoint(lg) { font-size: $font-size-4xl; } }
-.featuredExcerpt { font-size: $font-size-lg; color: $color-neutral-600; line-height: $line-height-relaxed; margin-bottom: $spacing-8; }
-.featuredMeta { display: flex; align-items: center; gap: $spacing-6; color: $color-neutral-500; margin-bottom: $spacing-8; }
-.metaItem { display: flex; align-items: center; gap: $spacing-2; font-size: $font-size-sm; }
-.readLink { color: $color-blue; font-weight: $font-weight-semibold; font-size: $font-size-lg; }
+// ── Hero ──
+.heroSection {
+  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
+  padding: 140px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
 
-.filtersSection { background-color: #f9fafb; padding: $spacing-12 0; }
-.filtersWrap { display: flex; flex-wrap: wrap; justify-content: center; gap: $spacing-3; }
-.filterPill { @include button-reset; padding: $spacing-3 $spacing-6; border-radius: $border-radius-full; font-size: $font-size-sm; font-weight: $font-weight-semibold; transition: all $transition-fast; }
-.filterActive { background-color: $color-blue; color: $color-white; }
-.filterInactive { background-color: $color-white; color: $color-neutral-600; &:hover { background-color: $color-neutral-200; } }
+// ── Ambient blobs ──
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  pointer-events: none;
+}
 
-.gridSection { background-color: $color-white; padding: $spacing-20 0; }
-.gridTitle { font-size: $font-size-4xl; font-weight: $font-weight-bold; color: #3a3a3a; margin-bottom: $spacing-12; }
-.articlesGrid { display: grid; grid-template-columns: 1fr; gap: $spacing-8; @include breakpoint(md) { grid-template-columns: repeat(2, 1fr); } @include breakpoint(lg) { grid-template-columns: repeat(3, 1fr); } }
+.blob1 {
+  width: 500px;
+  height: 500px;
+  background: $color-brand-teal;
+  top: -150px;
+  right: -100px;
+  animation: blobFloat 12s ease-in-out infinite;
+}
 
-.articleCard { background-color: $color-white; border-radius: $border-radius-xl; box-shadow: $shadow-md; overflow: hidden; text-decoration: none; display: block; transition: box-shadow $transition-base, transform $transition-base; &:hover { box-shadow: $shadow-xl; transform: translateY(-5px); } }
-.articleImage { position: relative; height: 192px; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; transition: transform $transition-slow; } .articleCard:hover & img { transform: scale(1.1); } }
-.articleCat { position: absolute; top: $spacing-4; left: $spacing-4; background-color: $color-blue; color: $color-white; padding: $spacing-1 $spacing-3; border-radius: $border-radius-full; font-size: $font-size-xs; font-weight: $font-weight-semibold; }
-.articleBody { padding: $spacing-6; }
-.articleTitle { font-size: $font-size-xl; font-weight: $font-weight-bold; color: #3a3a3a; margin-bottom: $spacing-3; @include line-clamp(2); transition: color $transition-fast; .articleCard:hover & { color: $color-blue; } }
-.articleMeta { display: flex; flex-direction: column; gap: $spacing-2; margin-bottom: $spacing-4; color: $color-neutral-500; font-size: $font-size-sm; }
-.articleMetaRow { display: flex; align-items: center; gap: $spacing-2; }
-.articleMetaDate { display: flex; align-items: center; gap: $spacing-4; }
-.articleReadLink { color: $color-blue; font-weight: $font-weight-semibold; font-size: $font-size-sm; }
+.blob2 {
+  width: 400px;
+  height: 400px;
+  background: $color-purple;
+  bottom: -100px;
+  left: -80px;
+  animation: blobFloat 15s ease-in-out infinite reverse;
+}
 
-.loadMore { text-align: center; margin-top: $spacing-12; }
-.loadMoreButton { @include button-reset; background-color: $color-blue; color: $color-white; padding: 0 $spacing-8; height: 48px; border-radius: $border-radius-full; font-size: $font-size-md; font-weight: $font-weight-semibold; display: inline-flex; align-items: center; gap: $spacing-3; transition: background-color $transition-fast; &:hover { background-color: $color-blue-hover; } }
+.blob3 {
+  width: 300px;
+  height: 300px;
+  background: $color-brand-teal;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: blobPulse 8s ease-in-out infinite;
+}
 
-.noResults { text-align: center; padding: $spacing-16 0; color: $color-neutral-500; font-size: $font-size-lg; }
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 15px) scale(0.95); }
+}
 
-.articleMetaTime { display: flex; align-items: center; gap: 4px; }
+@keyframes blobPulse {
+  0%, 100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.12; transform: translate(-50%, -50%) scale(1.2); }
+}
 
-// Related Jobs Section
+.heroContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.heroContent {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.heroAccent {
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: 20px;
+  color: rgba($color-white, 0.6);
+  line-height: 1.6;
+}
+
+// ── Shared ──
+.blogContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+// ── Featured Section ──
+.featuredSection {
+  padding: 64px 0 0;
+}
+
+// ── Wide featured card (from BlogTeaser) ──
+.cardWide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 320px;
+  background: $color-white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}
+
+.wideImg {
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 800px) {
+    height: 240px;
+  }
+}
+
+.wideImgInner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cardWide:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.wideBody {
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    padding: 24px;
+  }
+}
+
+// ── Category pill (color-coded) ──
+.category {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catAi  { background: rgba(167, 139, 250, 0.1); color: #A78BFA; }
+.catSec { background: rgba(52, 199, 123, 0.1); color: #34C77B; }
+.catInf { background: rgba(32, 201, 219, 0.1); color: #20C9DB; }
+
+// ── Featured card text ──
+.cardTitleWide {
+  font-size: 26px;
+  font-weight: $font-weight-bold;
+  color: #0A0E17;
+  line-height: 1.35;
+
+  @media (max-width: 800px) {
+    font-size: 20px;
+  }
+}
+
+.cardExcerpt {
+  font-size: 16px;
+  color: rgba(10, 14, 23, 0.5);
+  line-height: 1.6;
+}
+
+// ── Shared meta ──
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: rgba(10, 14, 23, 0.35);
+}
+
+.metaSep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(10, 14, 23, 0.2);
+}
+
+.readTime {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+}
+
+.readLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: $font-weight-medium;
+  color: #20C9DB;
+  margin-top: 4px;
+  transition: gap 0.3s ease, color 0.3s ease;
+
+  .cardWide:hover & {
+    gap: 14px;
+    color: #A78BFA;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+}
+
+// ── Filters ──
+.filtersSection {
+  padding: 48px 0 0;
+}
+
+.filtersWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filterPill {
+  @include button-reset;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: $font-weight-semibold;
+  transition: all 0.3s ease;
+}
+
+.filterActive {
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  color: $color-white;
+}
+
+.filterInactive {
+  background: $color-white;
+  color: rgba(10, 14, 23, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  &:hover {
+    color: #0A0E17;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// ── Articles grid ──
+.gridSection {
+  padding: 48px 0 80px;
+}
+
+.gridTitle {
+  font-size: 44px;
+  font-weight: $font-weight-bold;
+  color: #0A0E17;
+  margin-bottom: 44px;
+  line-height: 1.15;
+
+  @media (max-width: 800px) {
+    font-size: 32px;
+  }
+}
+
+.articlesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// ── Standard card (from BlogTeaser) ──
+.card {
+  background: $color-white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.cardImg {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+
+  .category {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+.cardImgInner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .card:hover & {
+    transform: scale(1.06);
+  }
+}
+
+.cardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: $font-weight-bold;
+  color: #0A0E17;
+  line-height: 1.35;
+}
+
+.cardExcerptSmall {
+  font-size: 15px;
+  color: rgba(10, 14, 23, 0.5);
+  line-height: 1.6;
+  flex: 1;
+}
+
+// ── Load more ──
+.loadMore {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.loadMoreButton {
+  @include button-reset;
+  background: $color-brand-teal-base;
+  color: $bg-dark;
+  padding: 0 32px;
+  height: 48px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: $font-weight-semibold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #4DD4E1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba($color-brand-teal, 0.25);
+  }
+}
+
+.noResults {
+  text-align: center;
+  padding: 64px 0;
+  color: rgba(10, 14, 23, 0.4);
+  font-size: 18px;
+}
+
+// ═══════════════════════════════════════
+// RELATED JOBS
+// ═══════════════════════════════════════
+
 .relatedJobsSection {
-  background-color: $color-white;
-  padding: $spacing-20 0;
+  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
+  padding: 80px 0;
 }
 
 .relatedJobsContainer {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-6;
-
-  @include breakpoint(lg) {
-    padding: 0 $spacing-20;
-  }
+  padding: 0 40px;
 }
 
 .relatedJobsGrid {
   display: flex;
   flex-direction: column;
-  gap: $spacing-16;
+  gap: 64px;
   align-items: flex-start;
 
   @include breakpoint(lg) {
@@ -87,158 +490,162 @@
 }
 
 .relatedJobsTitle {
-  font-size: $font-size-5xl;
+  font-size: clamp(32px, 3.5vw, 56px);
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
-  line-height: 1;
-  margin-bottom: $spacing-6;
-
-  @include breakpoint(lg) {
-    font-size: 4.5rem;
-  }
+  color: $color-white;
+  line-height: 1.1;
+  margin-bottom: 24px;
 }
 
 .relatedJobsDivider {
-  background-color: $color-black;
+  background: linear-gradient(90deg, $color-brand-teal, $color-purple);
   height: 4px;
   width: 6rem;
-  margin-bottom: 2.25rem;
+  margin-bottom: 24px;
+  border-radius: 2px;
 }
 
 .relatedJobsDescription {
-  font-size: $font-size-xl;
-  color: #4b5563;
-  line-height: 1.75;
-  margin-bottom: $spacing-10;
+  font-size: 20px;
+  color: rgba($color-white, 0.6);
+  line-height: 1.6;
+  margin-bottom: 40px;
 }
 
 .relatedJobsCta {
   @include button-reset;
-  background-color: $color-blue;
-  color: $color-white;
-  padding: 0 $spacing-8;
-  height: 48px;
-  border-radius: $border-radius-full;
-  font-size: $font-size-md;
-  font-weight: $font-weight-medium;
-  transition: background-color $transition-fast;
+  background: $color-brand-teal-base;
+  color: $bg-dark;
+  padding: 16px 36px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: $font-weight-semibold;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: $color-blue-hover;
+    background: #4DD4E1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba($color-brand-teal, 0.25);
   }
 }
 
 .relatedJobsRight {
   flex: 1;
   width: 100%;
-  max-width: 730px;
-  overflow: hidden;
 }
 
-.jobCarousel {
+// ── Job cards grid (OpenRoles style) ──
+.jobCards {
   display: flex;
-  gap: $spacing-4;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding-bottom: $spacing-4;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.jobCardLink {
-  flex-shrink: 0;
-  width: 100%;
-  scroll-snap-align: center;
-  text-decoration: none;
-
-  @include breakpoint(md) {
-    width: 355px;
-  }
+  flex-direction: column;
+  gap: 16px;
 }
 
 .jobCard {
-  position: relative;
-  height: 357px;
-  border-radius: $border-radius-lg;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
   cursor: pointer;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    inset: 0;
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
   }
 }
 
-.jobCardOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(30, 58, 138, 0.8) 0%, transparent 60%);
+.jobCardTop {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: $spacing-6;
-  transition: background $transition-base;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .jobCardLink:hover & {
-    background: linear-gradient(to top, rgba(30, 58, 138, 0.9) 0%, transparent 60%);
+// ── Department pills ──
+.deptPill {
+  font-size: 12px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+.deptEng { background: rgba(32, 201, 219, 0.12); color: #20C9DB; }
+.deptDes { background: rgba(167, 139, 250, 0.12); color: #A78BFA; }
+.deptMkt { background: rgba(52, 199, 123, 0.12); color: #34C77B; }
+.deptSup { background: rgba(245, 166, 35, 0.12); color: #F5A623; }
+.deptQa  { background: rgba(240, 96, 96, 0.12); color: #F06060; }
+
+// ── Arrow circle ──
+.jobCardArrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  .jobCard:hover & {
+    background: #20C9DB;
   }
 
-  h3 {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $color-white;
-    margin-bottom: $spacing-2;
-    line-height: 1.75;
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: rgba(255, 255, 255, 0.3);
+    fill: none;
+    stroke-width: 2;
+    transition: stroke 0.3s ease;
   }
+
+  .jobCard:hover & svg {
+    stroke: #0A0E17;
+  }
+}
+
+.jobCardTitle {
+  font-size: 20px;
+  font-weight: $font-weight-semibold;
+  color: $color-white;
+  line-height: 1.3;
 }
 
 .jobCardMeta {
   display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-2;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
 
   span {
-    color: #bfdbfe;
-    font-size: $font-size-sm;
-    line-height: 1.4;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
   }
 }
 
-.carouselDots {
-  display: flex;
-  justify-content: center;
-  gap: $spacing-2;
-  margin-top: $spacing-6;
-}
+// ═══════════════════════════════════════
+// SHARE SECTION
+// ═══════════════════════════════════════
 
-.dot {
-  @include button-reset;
-  width: 10px;
-  height: 10px;
-  border-radius: $border-radius-full;
-  background-color: $color-neutral-300;
-  transition: all $transition-base;
-
-  &:hover {
-    background-color: $color-neutral-500;
-  }
-}
-
-.dotActive {
-  background-color: $color-blue;
-  width: 2rem;
-}
-
-// Share Section
 .shareSection {
-  background-color: #f9fafb;
-  padding: $spacing-16 0;
+  background: #F7F8FA;
+  padding: 64px 0;
 }
 
 .shareContent {
@@ -246,44 +653,61 @@
 }
 
 .shareTitle {
-  font-size: $font-size-2xl;
+  font-size: 24px;
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
-  margin-bottom: $spacing-6;
+  color: #0A0E17;
+  margin-bottom: 24px;
 }
 
 .shareButtons {
   display: flex;
   justify-content: center;
-  gap: $spacing-4;
+  gap: 16px;
 }
 
 .shareLinkedin {
   @include button-reset;
-  background-color: #0077b5;
+  background: #0077b5;
   color: $color-white;
-  padding: $spacing-4;
-  border-radius: $border-radius-full;
-  transition: background-color $transition-fast;
-  &:hover { background-color: #006399; }
+  padding: 16px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  &:hover { background: #006399; transform: translateY(-2px); }
 }
 
 .shareTwitter {
   @include button-reset;
-  background-color: #1da1f2;
+  background: #1da1f2;
   color: $color-white;
-  padding: $spacing-4;
-  border-radius: $border-radius-full;
-  transition: background-color $transition-fast;
-  &:hover { background-color: #1a8cd8; }
+  padding: 16px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  &:hover { background: #1a8cd8; transform: translateY(-2px); }
 }
 
 .shareEmail {
   @include button-reset;
-  background-color: #4b5563;
-  color: $color-white;
-  padding: $spacing-4;
-  border-radius: $border-radius-full;
-  transition: background-color $transition-fast;
-  &:hover { background-color: #374151; }
+  background: rgba(10, 14, 23, 0.08);
+  color: #0A0E17;
+  padding: 16px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  &:hover { background: rgba(10, 14, 23, 0.15); transform: translateY(-2px); }
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .heroSection {
+    padding: 120px 0 60px;
+  }
+
+  .blogContainer {
+    padding: 0 20px;
+  }
+
+  .gridTitle {
+    font-size: 28px;
+  }
 }

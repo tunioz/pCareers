@@ -3,16 +3,28 @@ import { queryAll, execute, transaction } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import type { CompanySetting } from '@/types';
 
-export async function GET() {
+// Keys safe to expose publicly without auth
+const PUBLIC_SETTINGS_KEYS = new Set([
+  'company_name', 'company_logo', 'company_description', 'company_website',
+  'company_linkedin', 'company_twitter', 'company_instagram', 'company_github',
+  'site_title', 'site_description',
+]);
+
+export async function GET(request: Request) {
   try {
     const settings = queryAll<CompanySetting>(
       'SELECT * FROM company_settings ORDER BY key ASC'
     );
 
-    // Convert array to key-value object for easier consumption
+    // Check if the request is authenticated
+    const user = await getAuthUser();
+
+    // Convert array to key-value object, filtering by auth status
     const settingsMap: Record<string, string> = {};
     for (const setting of settings) {
-      settingsMap[setting.key] = setting.value;
+      if (user || PUBLIC_SETTINGS_KEYS.has(setting.key)) {
+        settingsMap[setting.key] = setting.value;
+      }
     }
 
     return NextResponse.json({

@@ -1,55 +1,51 @@
 @use '@/styles/variables' as *;
-@use '@/styles/mixins' as *;
 
 .section {
-  padding: $spacing-20 0;
-  background-color: $color-blue;
+  background: #0F2237;
+  border-top: 1px solid rgba(23, 190, 208, 0.06);
+  padding: 64px 0;
 }
 
 .container {
-  max-width: $max-content-width;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-6;
-
-  @include breakpoint(lg) {
-    padding: 0 $spacing-12;
-  }
-}
-
-.grid {
+  padding: 0 48px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-8;
-
-  @include breakpoint(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @include breakpoint(lg) {
-    grid-template-columns: repeat(5, 1fr);
-  }
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
 }
 
-.stat {
+.item {
   text-align: center;
 }
 
 .number {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-yellow;
-  margin-bottom: $spacing-2;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
-  }
+  font-size: clamp(40px, 4.5vw, 56px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  background: linear-gradient(90deg, #17BED0 0%, #7B6CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .label {
-  color: rgba($color-white, 0.8);
-  font-size: $font-size-sm;
+  font-size: 15px;
+  color: #8899AA;
+  margin-top: 12px;
+  font-weight: 500;
+}
 
-  @include breakpoint(lg) {
-    font-size: $font-size-md;
+@media (max-width: 1100px) {
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
 }

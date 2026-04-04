@@ -1,12 +1,59 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || (
+  process.env.NODE_ENV === 'production'
+    ? 'MISSING_SECRET'
+    : 'dev-secret-change-in-production'
+);
+
+function isValidToken(token: string): boolean {
+  try {
+    jwt.verify(token, JWT_SECRET);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Admin API routes that require authentication
+const PROTECTED_API_PATTERNS = [
+  '/api/upload',
+  '/api/company',
+  '/api/tags',
+  '/api/categories',
+];
+
+function isProtectedApiRoute(pathname: string, method: string): boolean {
+  // POST/PUT/DELETE on these routes require auth
+  if (method === 'GET') return false;
+
+  for (const pattern of PROTECTED_API_PATTERNS) {
+    if (pathname.startsWith(pattern)) return true;
+  }
+
+  // POST/PUT/DELETE on posts and jobs management
+  if ((pathname.startsWith('/api/posts') || pathname.startsWith('/api/jobs')) && method !== 'GET') {
+    // Allow public job applications
+    if (pathname.match(/^\/api\/jobs\/[^/]+\/apply$/)) return false;
+    return true;
+  }
+
+  // PUT/DELETE on candidate management (not public POST)
+  if (pathname.match(/^\/api\/candidates\/\d+/) && method !== 'GET') {
+    return true;
+  }
+
+  return false;
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method = request.method;
 
-  // Skip API routes, static files, and Next.js internals
+  // Skip static files and Next.js internals
   if (
-    pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/uploads/') ||
     pathname.includes('.') // static files (favicon.ico, etc.)
@@ -14,13 +61,28 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admin routes (except login) require authentication check
-  // The actual auth verification happens in the route handlers;
-  // the middleware just lets everything pass through.
+  const token = request.cookies.get('auth_token')?.value;
+
+  // Protect admin pages (except login)
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    if (!token || !isValidToken(token)) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
+  // Protect sensitive API routes
+  if (pathname.startsWith('/api/') && isProtectedApiRoute(pathname, method)) {
+    if (!token || !isValidToken(token)) {
+      return NextResponse.json(
+        { success: false, error: 'Not authenticated' },
+        { status: 401 }
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  // Match all routes except static files and Next.js internals
   matcher: ['/((?!_next/static|_next/image|favicon.ico|uploads/).*)'],
 };

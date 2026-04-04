@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ImageWithFallback } from '../ImageWithFallback';
+import Image from 'next/image';
 import styles from './CEOQuote.module.scss';
 
 export function CEOQuote() {
@@ -43,15 +43,15 @@ export function CEOQuote() {
             <div className={styles.quoteBlock}>
               <div className={styles.quoteLine} />
               <div className={styles.quoteContent}>
-                <motion.div
-                  className={styles.quoteMark}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                  &ldquo;
-                </motion.div>
                 <p className={styles.quoteText}>
+                  <motion.img
+                    src="/images/left-quote.svg"
+                    alt=""
+                    className={styles.quoteMark}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                  />
                   We are the go-to source for users who want to protect their
                   privacy and control their data.
                 </p>
@@ -68,9 +68,11 @@ export function CEOQuote() {
             transition={{ duration: 0.8 }}
           >
             <div className={styles.imageWrapper}>
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800"
+              <Image
+                src="/images/tunio-zafer.jpg"
                 alt="Tunio Zafer, CEO"
+                width={800}
+                height={900}
               />
             </div>
             <motion.div

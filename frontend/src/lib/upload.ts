@@ -5,6 +5,9 @@ import { randomUUID } from 'node:crypto';
 const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'uploads');
 const MAX_FILE_SIZE = parseInt(process.env.MAX_UPLOAD_SIZE || '10485760', 10); // 10MB default
 
+const ALLOWED_SUB_DIRS = ['images', 'cv', 'candidate-attachments', 'tasks'] as const;
+type AllowedSubDir = typeof ALLOWED_SUB_DIRS[number];
+
 const ALLOWED_IMAGE_TYPES = [
   'image/jpeg',
   'image/png',
@@ -54,6 +57,14 @@ export async function saveUploadedFile(
   file: File,
   subDir: string = 'images'
 ): Promise<UploadResult> {
+  // Validate subDir against allowlist to prevent path traversal
+  if (!ALLOWED_SUB_DIRS.includes(subDir as AllowedSubDir)) {
+    return {
+      success: false,
+      error: `Invalid upload directory: ${subDir}`,
+    };
+  }
+
   // Validate file size
   if (file.size > MAX_FILE_SIZE) {
     return {
@@ -102,6 +113,13 @@ export function deleteUploadedFile(publicUrl: string): boolean {
     // Convert /uploads/images/xxx.jpg to absolute path
     const relativePath = publicUrl.replace(/^\//, '');
     const absolutePath = path.join(process.cwd(), 'public', relativePath);
+
+    // Prevent path traversal — ensure file is within UPLOAD_DIR
+    const resolved = path.resolve(absolutePath);
+    if (!resolved.startsWith(path.resolve(UPLOAD_DIR))) {
+      console.error('Attempted to delete file outside upload directory:', resolved);
+      return false;
+    }
 
     if (fs.existsSync(absolutePath)) {
       fs.unlinkSync(absolutePath);

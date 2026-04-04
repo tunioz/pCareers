@@ -1,182 +1,327 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ═══════════════════════════════════════
+// OPEN ROLES — Marquee Ticker
+// ═══════════════════════════════════════
+
 .section {
-  background-color: #f4f4f4;
-  padding: $spacing-20 0;
+  background: #0A0E17;
+  padding: 80px 0 88px;
+  position: relative;
+  overflow: hidden;
+
+  // Gradient line top
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #20C9DB, #A78BFA, transparent);
+    opacity: 0.4;
+  }
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-4;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
 }
 
+// ── Header ──
 .header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: $spacing-8;
-}
-
-.heading {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: #3a3a3a;
-  margin-bottom: $spacing-4;
-  text-align: center;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
-  }
-}
-
-.subtitle {
-  color: $color-neutral-500;
-  text-align: center;
-  max-width: 857px;
-}
-
-.cardsGrid {
-  display: grid;
-  gap: $spacing-6;
-  margin-bottom: $spacing-12;
-
-  @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @include breakpoint(lg) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.jobCard {
-  position: relative;
-  height: 320px;
-  border-radius: $border-radius-xl;
-  overflow: hidden;
-  cursor: pointer;
-  text-decoration: none;
-  display: block;
-}
-
-.cardBg {
-  position: absolute;
-  inset: 0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.cardOverlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.cardContent {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  padding: $spacing-8;
-}
+  margin-bottom: 48px;
 
-.badges {
-  display: flex;
-  gap: $spacing-2;
-}
-
-.badgeNew {
-  background-color: #fbbf24;
-  color: $color-dark-blue;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-bold;
-  padding: $spacing-1 $spacing-3;
-  border-radius: $border-radius-full;
-}
-
-.badgePriority {
-  background-color: $color-error;
-  color: $color-white;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-bold;
-  padding: $spacing-1 $spacing-3;
-  border-radius: $border-radius-full;
-}
-
-.cardBottom {
-  display: flex;
-  flex-direction: column;
-}
-
-.cardTitle {
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  color: $color-white;
-  margin-bottom: $spacing-2;
-  transition: color $transition-fast;
-
-  .jobCard:hover & {
-    color: $color-primary-cyan;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
   }
 }
 
-.cardSeniority {
-  color: rgba($color-white, 0.8);
-  font-size: $font-size-sm;
-  margin-bottom: $spacing-2;
+.headerLeft {
+  h2 {
+    font-size: 44px;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    line-height: 1.15;
+
+    @media (max-width: 768px) {
+      font-size: 32px;
+    }
+  }
+
+  p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 8px;
+  }
 }
 
-.cardTags {
+.gradientText {
+  background: linear-gradient(135deg, #20C9DB, #A78BFA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.headerRight {
+  flex-shrink: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: $spacing-2;
+  align-items: center;
+  gap: 12px;
 }
 
-.tagDept {
-  background-color: rgba($color-white, 0.2);
-  backdrop-filter: blur(4px);
-  color: $color-white;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-medium;
-  padding: $spacing-1 $spacing-3;
-  border-radius: $border-radius-full;
-  border: 1px solid rgba($color-white, 0.3);
-}
-
-.tagProduct {
-  background-color: rgba($color-primary-cyan, 0.9);
-  color: $color-white;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-bold;
-  padding: $spacing-1 $spacing-3;
-  border-radius: $border-radius-full;
-}
-
-.viewAll {
-  text-align: center;
-}
-
-.viewAllButton {
-  @include button-reset;
-  background-color: $color-blue;
-  color: $color-white;
-  padding: 0 $spacing-8;
-  height: 48px;
-  border-radius: $border-radius-full;
-  font-weight: $font-weight-semibold;
-  font-size: $font-size-md;
-  transition: background-color $transition-fast;
+.viewAllBtn {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: $font-weight-semibold;
+  color: #0A0E17;
+  text-decoration: none;
+  background: #20C9DB;
+  padding: 14px 28px;
+  border-radius: 100px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: $color-blue-hover;
+    background: #A78BFA;
+    gap: 14px;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(167, 139, 250, 0.3);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.5;
+  }
+}
+
+// ── Marquee ──
+.marqueeWrapper {
+  position: relative;
+
+  // Fade edges
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, #0A0E17, transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(270deg, #0A0E17, transparent);
+  }
+}
+
+// ── Nav buttons ──
+.navBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #20C9DB;
+    border-color: #20C9DB;
+
+    svg {
+      stroke: #0A0E17;
+    }
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: rgba(255, 255, 255, 0.6);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s ease;
+  }
+}
+
+.marqueeTrack {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.scrollLeft {
+  animation: marqueeScrollLeft 55s linear infinite;
+}
+
+.scrollRight {
+  animation: marqueeScrollRight 55s linear infinite;
+}
+
+@keyframes marqueeScrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeScrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+// ── Role Card ──
+.card {
+  flex-shrink: 0;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
+  }
+
+  @media (max-width: 768px) {
+    width: 280px;
+  }
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ── Department pills ──
+.deptPill {
+  font-size: 12px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+.eng { background: rgba(32, 201, 219, 0.12); color: #20C9DB; }
+.des { background: rgba(167, 139, 250, 0.12); color: #A78BFA; }
+.mkt { background: rgba(52, 199, 123, 0.12); color: #34C77B; }
+.sup { background: rgba(245, 166, 35, 0.12); color: #F5A623; }
+.qa  { background: rgba(240, 96, 96, 0.12); color: #F06060; }
+
+// ── Arrow circle ──
+.cardArrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  .card:hover & {
+    background: #20C9DB;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: rgba(255, 255, 255, 0.3);
+    fill: none;
+    stroke-width: 2;
+    transition: stroke 0.3s ease;
+  }
+
+  .card:hover & svg {
+    stroke: #0A0E17;
+  }
+}
+
+// ── Card content ──
+.cardTitle {
+  font-size: 20px;
+  font-weight: $font-weight-semibold;
+  color: $color-white;
+  line-height: 1.3;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+}
+
+// ── Bottom hint ──
+.bottomHint {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .section {
+    padding: 56px 0 64px;
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }

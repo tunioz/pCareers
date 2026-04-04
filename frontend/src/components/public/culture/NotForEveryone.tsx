@@ -33,6 +33,18 @@ export function NotForEveryone() {
 
   return (
     <section ref={ref} className={styles.section}>
+      {/* SVG gradient for X icons */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <linearGradient id="xGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F06060" />
+            <stop offset="100%" stopColor="#A78BFA" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div className={styles.watermark}>NOT</div>
+
       <div className={styles.container}>
         <motion.div
           className={styles.header}
@@ -40,7 +52,7 @@ export function NotForEveryone() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <h2 className={styles.heading}>pCloud is not for everyone.</h2>
+          <h2 className={styles.heading}>pCloud is <span className={styles.accentNot}>not</span> for everyone.</h2>
           <p className={styles.subtitle}>And that&apos;s exactly how we like it.</p>
         </motion.div>
 
@@ -51,13 +63,18 @@ export function NotForEveryone() {
               className={styles.card}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
+              transition={{ delay: index * 0.08, duration: 0.5 }}
             >
-              <h3 className={styles.cardTitle}>
-                <span className={styles.ifPrefix}>{card.ifText.split(' ').slice(0, 2).join(' ')}</span>{' '}
-                {card.ifText.split(' ').slice(2).join(' ')}
-              </h3>
-              <p className={styles.cardDescription}>{card.description}</p>
+              <div className={styles.xIcon}>
+                <img src="/images/not-icon.svg" alt="" className={styles.xIconImg} />
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>
+                  <span className={styles.ifPrefix}>{card.ifText.split(' ').slice(0, 2).join(' ')}</span>{' '}
+                  {card.ifText.split(' ').slice(2).join(' ')}
+                </h3>
+                <p className={styles.cardDescription}>{card.description}</p>
+              </div>
             </motion.div>
           ))}
         </div>

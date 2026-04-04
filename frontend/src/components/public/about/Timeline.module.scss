@@ -6,16 +6,16 @@
 .container { max-width: $max-content-width; margin: 0 auto; padding: 0 $spacing-6; position: relative; @include breakpoint(lg) { padding: 0 $spacing-12; } }
 .header { text-align: center; margin-bottom: $spacing-16; }
 .heading { font-size: $font-size-4xl; font-weight: $font-weight-bold; color: $color-white; @include breakpoint(lg) { font-size: $font-size-5xl; } }
-.highlight { color: $color-yellow; }
+.highlight { background: linear-gradient(135deg, $color-brand-teal, $color-purple); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .timeline { position: relative; }
-.timelineLine { display: none; position: absolute; left: 50%; transform: translateX(-50%); height: 100%; width: 4px; background-color: rgba($color-yellow, 0.2); @include breakpoint(lg) { display: block; } }
+.timelineLine { display: none; position: absolute; left: 50%; transform: translateX(-50%); height: 100%; width: 4px; background: linear-gradient(180deg, rgba($color-brand-teal, 0.3), rgba($color-purple, 0.3)); @include breakpoint(lg) { display: block; } }
 .milestones { display: flex; flex-direction: column; gap: $spacing-12; }
 .milestone { display: flex; flex-direction: column; gap: $spacing-8; align-items: center; @include breakpoint(lg) { flex-direction: row; } }
 .milestoneReverse { @include breakpoint(lg) { flex-direction: row-reverse; } }
 .milestoneContent { flex: 1; @include breakpoint(lg) { text-align: right; } }
 .milestoneContentRight { @include breakpoint(lg) { text-align: left; } }
 .milestoneCard { background-color: rgba($color-white, 0.05); backdrop-filter: blur(4px); padding: $spacing-6; border-radius: $border-radius-xl; transition: transform $transition-base, background-color $transition-base; &:hover { transform: scale(1.05); background-color: rgba($color-white, 0.1); } }
-.milestoneYear { color: $color-yellow; font-size: $font-size-3xl; font-weight: $font-weight-bold; margin-bottom: $spacing-2; }
+.milestoneYear { display: inline-block; background: linear-gradient(90deg, $color-brand-teal, $color-purple); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: $font-size-3xl; font-weight: $font-weight-bold; margin-bottom: $spacing-2; }
 .milestoneText { color: rgba($color-white, 0.8); }
-.milestoneIcon { position: relative; z-index: 1; width: 64px; height: 64px; background-color: $color-yellow; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: $color-dark-blue; }
+.milestoneIcon { position: relative; z-index: 1; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; img { width: 64px; height: 64px; } }
 .milestoneSpacer { flex: 1; display: none; @include breakpoint(lg) { display: block; } }

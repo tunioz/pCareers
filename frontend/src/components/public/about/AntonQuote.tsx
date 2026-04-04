@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ImageWithFallback } from '../ImageWithFallback';
+import Image from 'next/image';
 import styles from './AntonQuote.module.scss';
 
 export function AntonQuote() {
@@ -39,15 +39,15 @@ export function AntonQuote() {
             <div className={styles.quoteBlock}>
               <div className={styles.quoteLine} />
               <div className={styles.quoteContent}>
-                <motion.div
-                  className={styles.quoteMark}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                  &ldquo;
-                </motion.div>
                 <p className={styles.quoteText}>
+                  <motion.img
+                    src="/images/left-quote.svg"
+                    alt=""
+                    className={styles.quoteMark}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                  />
                   Every line of code we write is an opportunity to strengthen user trust. Our
                   engineering philosophy is simple: privacy and performance are not trade-offs—they&apos;re requirements.
                 </p>
@@ -64,9 +64,11 @@ export function AntonQuote() {
             transition={{ duration: 0.8 }}
           >
             <div className={styles.imageWrapper}>
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
+              <Image
+                src="/images/anton-titov.jpg"
                 alt="Anton Titov, CTO"
+                width={800}
+                height={900}
               />
             </div>
             <motion.div

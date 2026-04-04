@@ -32,7 +32,10 @@
 }
 
 .highlight {
-  color: $color-blue;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .divider {
@@ -98,8 +101,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(30, 58, 138, 0.85) 0%,
-    rgba(30, 58, 138, 0.3) 50%,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.25) 50%,
     transparent 100%
   );
   transition: background $transition-base;
@@ -108,9 +111,9 @@
 .card:hover .cardOverlay {
   background: linear-gradient(
     to top,
-    rgba(30, 58, 138, 0.9) 0%,
-    rgba(30, 58, 138, 0.4) 60%,
-    rgba(30, 58, 138, 0.1) 100%
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.35) 60%,
+    rgba(0, 0, 0, 0.05) 100%
   );
 }
 

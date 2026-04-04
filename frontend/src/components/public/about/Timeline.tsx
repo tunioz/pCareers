@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Calendar } from 'lucide-react';
+import Image from 'next/image';
 import styles from './Timeline.module.scss';
 
 const milestones = [
@@ -37,8 +37,8 @@ export function Timeline() {
                     <p className={styles.milestoneText}>{item.milestone}</p>
                   </div>
                 </div>
-                <motion.div className={styles.milestoneIcon} initial={{ scale: 0 }} animate={isInView ? { scale: 1 } : {}} transition={{ delay: index * 0.2 + 0.3, type: 'spring' }} whileHover={{ scale: 1.2, rotate: 360 }}>
-                  <Calendar size={28} />
+                <motion.div className={styles.milestoneIcon} initial={{ scale: 0 }} animate={isInView ? { scale: 1 } : {}} transition={{ delay: index * 0.2 + 0.3, type: 'spring' }} whileHover={{ scale: 1.2 }}>
+                  <Image src={`/images/${item.year}.svg`} alt={item.year} width={32} height={32} />
                 </motion.div>
                 <div className={styles.milestoneSpacer} />
               </motion.div>

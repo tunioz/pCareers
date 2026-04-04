@@ -113,7 +113,7 @@ export async function POST(request: Request, context: RouteContext) {
     const result = execute(
       `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
        VALUES (?, ?, ?, ?)`,
-      [candidateId, v.author || user.username, v.content, v.note_type || 'general']
+      [candidateId, user.username, v.content, v.note_type || 'general']
     );
 
     const note = queryOne<CandidateNote>(

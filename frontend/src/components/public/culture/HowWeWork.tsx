@@ -2,7 +2,6 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Users, Zap, Share2, GitMerge, MessageSquare, Play } from 'lucide-react';
 import styles from './HowWeWork.module.scss';
 
 const items = [
@@ -10,37 +9,37 @@ const items = [
     title: 'Small Teams, Big Impact',
     description:
       'Autonomous squads that move fast, own their outcomes, and ship meaningful work every week.',
-    icon: Users,
+    icon: '/images/small-teams-ic.svg',
   },
   {
     title: 'Ship Fast, Learn Faster',
     description:
       'We iterate rapidly, measure outcomes, and use data to guide our next move.',
-    icon: Zap,
+    icon: '/images/ship-fast-ic.svg',
   },
   {
     title: 'Context Over Control',
     description:
       'We share context widely so everyone can make great decisions without waiting for approvals.',
-    icon: Share2,
+    icon: '/images/context-over-control-ic.svg',
   },
   {
     title: 'Cross-Functional Collaboration',
     description:
       'Engineers, designers, and product managers work side by side from day one.',
-    icon: GitMerge,
+    icon: '/images/cross-functional-ic.svg',
   },
   {
     title: 'Debate, Decide, Commit',
     description:
       'We encourage healthy debate, but once a decision is made, we commit fully and move forward.',
-    icon: MessageSquare,
+    icon: '/images/debate-ic.svg',
   },
   {
     title: 'Bias for Action',
     description:
       'We prefer doing over discussing. Progress beats perfection when speed matters.',
-    icon: Play,
+    icon: '/images/bias-for-action-ic.svg',
   },
 ];
 
@@ -63,24 +62,21 @@ export function HowWeWork() {
         </motion.div>
 
         <div className={styles.grid}>
-          {items.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={item.title}
-                className={styles.card}
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-              >
-                <div className={styles.iconWrapper}>
-                  <Icon size={22} />
-                </div>
-                <h3 className={styles.cardTitle}>{item.title}</h3>
-                <p className={styles.cardDescription}>{item.description}</p>
-              </motion.div>
-            );
-          })}
+          {items.map((item, index) => (
+            <motion.div
+              key={item.title}
+              className={styles.card}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
+            >
+              <div className={styles.iconWrapper}>
+                <img src={item.icon} alt={item.title} className={styles.iconImg} />
+              </div>
+              <h3 className={styles.cardTitle}>{item.title}</h3>
+              <p className={styles.cardDescription}>{item.description}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

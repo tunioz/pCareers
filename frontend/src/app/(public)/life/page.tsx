@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
 import { PageHero } from '@/components/public/PageHero';
@@ -38,7 +38,7 @@ export default function LifePage() {
         label="LIFE AT PCLOUD"
         heading="More than a workplace"
         subtitle="See what life at pCloud really looks like"
-        backgroundImage="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920"
+        backgroundImage="/images/life-hero-bg.jpg"
       />
       <PhotoGallery categories={categories} photos={photos} />
       <TeamStories stories={stories} />

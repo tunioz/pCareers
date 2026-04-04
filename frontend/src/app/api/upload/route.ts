@@ -14,7 +14,9 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const subDir = (formData.get('subDir') as string) || 'images';
+    const ALLOWED_SUB_DIRS = ['images', 'cv', 'candidate-attachments', 'tasks'];
+    const rawSubDir = (formData.get('subDir') as string) || 'images';
+    const subDir = ALLOWED_SUB_DIRS.includes(rawSubDir) ? rawSubDir : 'images';
 
     if (!file || file.size === 0) {
       return NextResponse.json(

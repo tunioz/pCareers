@@ -73,28 +73,28 @@
 
 .tagPill {
   @include button-reset;
-  @include focus-ring;
-  padding: $spacing-2 $spacing-5;
-  border-radius: $border-radius-full;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
-  transition: all $transition-fast;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: $font-weight-semibold;
+  border: none;
+  transition: all 0.3s ease;
   user-select: none;
 }
 
 .tagPillInactive {
-  background-color: #f4f4f4;
-  color: $color-neutral-700;
+  background: #EDEEF0;
+  color: rgba(10, 14, 23, 0.5);
 
   &:hover {
-    background-color: $color-neutral-200;
+    color: #0A0E17;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 }
 
 .tagPillActive {
-  background-color: $color-dark-blue;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
   color: $color-white;
-  box-shadow: $shadow-sm;
 }
 
 // ---------------------------------------------------------------------------
@@ -329,7 +329,7 @@
 }
 
 .badgeNew {
-  background-color: $color-blue;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
   color: $color-white;
   font-size: 9px;
   font-weight: $font-weight-bold;
@@ -433,7 +433,10 @@
 }
 
 .whyJoinHighlight {
-  color: $color-yellow;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .benefitsGrid {
@@ -451,37 +454,51 @@
 }
 
 .benefitCard {
-  background-color: rgba($color-white, 0.05);
-  border: 1px solid rgba($color-white, 0.1);
-  border-radius: $border-radius-lg;
-  padding: $spacing-8;
+  background: rgba($color-white, 0.04);
+  border: 1px solid rgba($color-white, 0.08);
+  border-radius: 20px;
+  padding: 40px 28px 32px;
   text-align: center;
-  transition: all $transition-base;
-  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  // Colored accent bar at top
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 4px;
+    border-radius: 0 0 4px 4px;
+  }
 
   &:hover {
-    background-color: rgba($color-white, 0.08);
-    border-color: rgba($color-white, 0.2);
     transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
   }
 }
 
+// Per-card accent bar colors
+.benefitsGrid > :nth-child(4n+1) .benefitCard::before,
+.benefitsGrid > :nth-child(4n+1).benefitCard::before { background: $color-green; }
+.benefitsGrid > :nth-child(4n+2) .benefitCard::before,
+.benefitsGrid > :nth-child(4n+2).benefitCard::before { background: $color-purple; }
+.benefitsGrid > :nth-child(4n+3) .benefitCard::before,
+.benefitsGrid > :nth-child(4n+3).benefitCard::before { background: $color-brand-teal; }
+.benefitsGrid > :nth-child(4n+4) .benefitCard::before,
+.benefitsGrid > :nth-child(4n+4).benefitCard::before { background: $color-amber; }
+
 .benefitIcon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
   @include flex-center;
-  margin: 0 auto $spacing-5;
+  margin: 0 auto 20px;
 }
 
-.benefitIconBlue {
-  background-color: rgba($color-blue, 0.3);
-  color: lighten($color-blue, 20%);
-}
-
-.benefitIconYellow {
-  background-color: rgba($color-yellow, 0.2);
-  color: $color-yellow;
+.benefitIconImg {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .benefitTitle {
@@ -493,7 +510,7 @@
 
 .benefitDescription {
   font-size: $font-size-sm;
-  color: rgba($color-white, 0.6);
+  color: rgba($color-white, 0.5);
   line-height: $line-height-relaxed;
   margin: 0;
 }

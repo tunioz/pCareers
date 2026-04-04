@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { PageHero } from '@/components/public/PageHero';
+import { CultureHero } from '@/components/public/culture/CultureHero';
 import { Manifesto } from '@/components/public/culture/Manifesto';
 import { Values } from '@/components/public/culture/Values';
 import { EngineeringPrinciples } from '@/components/public/culture/EngineeringPrinciples';
@@ -11,19 +11,18 @@ import { Benefits } from '@/components/public/culture/Benefits';
 import { CultureCTA } from '@/components/public/culture/CultureCTA';
 
 export const metadata: Metadata = {
-  title: 'Our Culture',
+  title: 'Our Culture | pCloud Careers',
+  description: 'Discover what it is like to work at pCloud — our engineering principles, how we collaborate, growth opportunities, and what makes us different.',
+  openGraph: {
+    title: 'Our Culture | pCloud Careers',
+    description: 'Discover what it is like to work at pCloud — our engineering principles, growth, and what makes us different.',
+  },
 };
 
 export default function CulturePage() {
   return (
     <>
-      <PageHero
-        label="CULTURE AT PCLOUD"
-        heading="Build products that matter. With people who refuse to compromise."
-        backgroundImage="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920"
-        primaryCta={{ text: 'Explore Open Roles', href: '/careers' }}
-        secondaryCta={{ text: 'See Our Benefits', href: '#benefits' }}
-      />
+      <CultureHero />
       <Manifesto />
       <Values />
       <EngineeringPrinciples />

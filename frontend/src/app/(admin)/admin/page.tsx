@@ -23,17 +23,21 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [postsRes, jobsRes, candidatesRes, teamRes, statsRes] = await Promise.all([
+        const [postsRes, postsPublishedRes, jobsRes, jobsPublishedRes, candidatesRes, teamRes, statsRes] = await Promise.all([
           fetch('/api/posts?perPage=5'),
+          fetch('/api/posts?perPage=1&published=true'),
           fetch('/api/jobs?perPage=5'),
+          fetch('/api/jobs?perPage=1&published=true'),
           fetch('/api/candidates?perPage=5'),
           fetch('/api/team'),
           fetch('/api/candidates/stats'),
         ]);
 
-        const [postsData, jobsData, candidatesData, teamData, statsData] = await Promise.all([
+        const [postsData, postsPublishedData, jobsData, jobsPublishedData, candidatesData, teamData, statsData] = await Promise.all([
           postsRes.json(),
+          postsPublishedRes.json(),
           jobsRes.json(),
+          jobsPublishedRes.json(),
           candidatesRes.json(),
           teamRes.json(),
           statsRes.json(),
@@ -46,8 +50,8 @@ export default function AdminDashboardPage() {
         const recentCandidates = (candidatesData.data || []) as CandidateWithJob[];
         const team = (teamData.data || []) as TeamMember[];
 
-        const publishedPosts = posts.filter((p) => p.is_published).length;
-        const publishedJobs = jobs.filter((j) => j.is_published).length;
+        const publishedPosts = postsPublishedData.meta?.total ?? posts.filter((p) => p.is_published).length;
+        const publishedJobs = jobsPublishedData.meta?.total ?? jobs.filter((j) => j.is_published).length;
 
         // Parse stats from /api/candidates/stats
         const statsPayload = statsData.success ? statsData.data : null;

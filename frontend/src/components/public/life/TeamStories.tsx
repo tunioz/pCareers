@@ -40,7 +40,7 @@ export function TeamStories({ stories }: TeamStoriesProps) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          Our Team Stories
+          Our <span className={styles.highlight}>Team</span> Stories
         </motion.h2>
 
         <div className={styles.grid}>

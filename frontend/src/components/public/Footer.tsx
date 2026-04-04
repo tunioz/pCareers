@@ -37,7 +37,7 @@ export function Footer() {
       <div className={styles.container}>
         <div className={styles.grid}>
           <div>
-            <img src="/images/pcloud-logo-full.svg" alt="pCloud" height={28} className={styles.footerLogo} />
+            <img src="/images/pcloud-logo-white.svg" alt="pCloud" height={28} className={styles.footerLogo} />
             <p className={styles.description}>
               pCloud is a Swiss cloud storage company founded in 2013.
             </p>

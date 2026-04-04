@@ -1,81 +1,183 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.section {
-  background-color: #05183f;
-  padding: $spacing-20 $spacing-6;
+// ═══════════════════════════════════════
+// NOT FOR EVERYONE — Light, strikethrough hover
+// ═══════════════════════════════════════
 
-  @include breakpoint(lg) {
-    padding: $spacing-24 $spacing-20;
+.section {
+  background: $bg-light;
+  padding: 100px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+// Giant watermark
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(200px, 22vw, 380px);
+  font-weight: 900;
+  letter-spacing: -8px;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba($color-purple, 0.08);
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 140px;
   }
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 2;
 }
 
+// ── Header ──
 .header {
   text-align: center;
-  margin-bottom: $spacing-16;
+  margin-bottom: 72px;
 }
 
 .heading {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-white;
-  margin-bottom: $spacing-4;
+  font-size: 48px;
+  font-weight: 800;
+  color: $bg-dark;
+  line-height: 1.1;
+  margin-bottom: 12px;
 
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
+  @media (max-width: 768px) {
+    font-size: 36px;
   }
+}
+
+.accentNot {
+  background: linear-gradient(135deg, $color-coral, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
 }
 
 .subtitle {
-  font-size: $font-size-xl;
-  color: rgba($color-white, 0.6);
-  font-weight: $font-weight-medium;
+  font-size: 20px;
+  color: rgba($bg-dark, 0.35);
+  font-weight: 400;
 }
 
+// ── Grid — 2 columns ──
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-6;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+  max-width: 960px;
+  margin: 0 auto;
 
-  @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
+// ── Item ──
 .card {
-  background-color: rgba($color-white, 0.04);
-  border: 1px solid rgba($color-white, 0.1);
-  border-radius: $border-radius-lg;
-  padding: $spacing-8;
-  transition: all $transition-base;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 28px;
+  align-items: start;
+  padding: 8px 0;
+  position: relative;
 
-  &:hover {
-    background-color: rgba($color-white, 0.07);
-    border-color: rgba($color-white, 0.18);
-    transform: translateY(-2px);
+  &:hover .xIcon {
+    transform: rotate(360deg);
+  }
+
+  &:hover .cardTitle {
+    text-decoration: line-through;
+    text-decoration-color: $color-coral;
+  }
+
+  &:hover .ifPrefix {
+    text-decoration: line-through;
+    text-decoration-color: $color-coral;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
   }
 }
 
+// ── X icon ──
+.xIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 4px;
+  transition: transform 0.6s ease;
+}
+
+.xIconImg {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+// ── Card title with strikethrough ──
 .cardTitle {
-  font-size: $font-size-xl;
+  font-size: 24px;
   font-weight: $font-weight-bold;
-  color: $color-white;
-  margin-bottom: $spacing-4;
-  line-height: $line-height-tight;
+  color: $bg-dark;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  text-decoration: line-through;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.4s ease;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 }
 
 .ifPrefix {
-  color: #E6FF00;
+  background: linear-gradient(135deg, $color-coral, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: $font-weight-semibold;
 }
 
 .cardDescription {
-  font-size: $font-size-md;
-  color: rgba($color-white, 0.65);
-  line-height: $line-height-relaxed;
-  margin: 0;
+  font-size: 16px;
+  color: rgba($bg-dark, 0.5);
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .section {
+    padding: 64px 0 80px;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
 }

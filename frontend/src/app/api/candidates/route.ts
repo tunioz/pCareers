@@ -3,6 +3,7 @@ import { queryAll, queryOne, execute, transaction } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { validateCandidate } from '@/lib/validations';
 import { saveUploadedFile } from '@/lib/upload';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { CandidateWithJob } from '@/types';
 
 /**
@@ -99,6 +100,16 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
+    // Rate limit: 10 attempts per hour per IP
+    const ip = getClientIp(request);
+    const { allowed, retryAfter } = checkRateLimit(`candidate:${ip}`, 10, 60 * 60 * 1000);
+    if (!allowed) {
+      return NextResponse.json(
+        { success: false, error: `Too many submissions. Try again in ${retryAfter} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const contentType = request.headers.get('content-type') || '';
     let data: Record<string, unknown>;
     let cvFile: File | null = null;

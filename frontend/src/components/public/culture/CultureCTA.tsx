@@ -11,44 +11,26 @@ export function CultureCTA() {
 
   return (
     <section ref={ref} className={styles.section}>
-      <div className={styles.bgPattern} />
-
-      <motion.div
-        className={`${styles.floatingCircle} ${styles.circleYellow}`}
-        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className={`${styles.floatingCircle} ${styles.circleWhite}`}
-        animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
+      <div className={`${styles.blob} ${styles.blob1}`} />
+      <div className={`${styles.blob} ${styles.blob2}`} />
+      <div className={`${styles.blob} ${styles.blob3}`} />
       <div className={styles.container}>
-        <motion.h2
-          className={styles.heading}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          Join a Team That{' '}
-          <span className={styles.highlight}>Raises the Bar</span>
-        </motion.h2>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          <Link href="/careers">
-            <motion.button
-              className={styles.button}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Explore Open Roles
-            </motion.button>
-          </Link>
+        <motion.div className={styles.content} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+          <h2 className={styles.heading}>
+            Join a Team That <span className={styles.highlight}>Raises the Bar</span>
+          </h2>
+          <motion.div className={styles.buttons} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3, duration: 0.8 }}>
+            <Link href="/careers">
+              <motion.button className={styles.primaryButton} whileHover={{ scale: 1.05, x: 10 }} whileTap={{ scale: 0.95 }}>
+                Explore Open Roles
+              </motion.button>
+            </Link>
+            <Link href="/about">
+              <motion.button className={styles.secondaryButton} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                Learn More
+              </motion.button>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { queryOne, queryAll, execute, transaction } from '@/lib/db';
 import { saveUploadedFile } from '@/lib/upload';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { Job, CandidateWithJob } from '@/types';
 
 interface RouteContext {
@@ -13,6 +14,16 @@ interface RouteContext {
  */
 export async function POST(request: Request, context: RouteContext) {
   try {
+    // Rate limit: 5 attempts per hour per IP
+    const ip = getClientIp(request);
+    const { allowed, retryAfter } = checkRateLimit(`apply:${ip}`, 5, 60 * 60 * 1000);
+    if (!allowed) {
+      return NextResponse.json(
+        { success: false, error: `Too many applications. Try again in ${retryAfter} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const { id } = await context.params;
     const jobId = parseInt(id, 10);
 

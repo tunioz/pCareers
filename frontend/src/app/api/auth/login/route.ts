@@ -2,10 +2,24 @@ import { NextResponse } from 'next/server';
 import { validateLogin } from '@/lib/validations';
 import { verifyPassword, signToken, setAuthCookie } from '@/lib/auth';
 import { queryOne } from '@/lib/db';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { AdminUser } from '@/types';
+
+// Dummy hash for timing-safe comparison when user doesn't exist
+const DUMMY_HASH = '$2b$12$LJ3m4ys3Lg3Lg3Lg3Lg3LeDummy.Hash.For.Timing.Safety.Only00';
 
 export async function POST(request: Request) {
   try {
+    // Rate limit: 5 attempts per 15 minutes per IP
+    const ip = getClientIp(request);
+    const { allowed, retryAfter } = checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
+    if (!allowed) {
+      return NextResponse.json(
+        { success: false, error: `Too many login attempts. Try again in ${retryAfter} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const validation = validateLogin(body);
 
@@ -23,16 +37,10 @@ export async function POST(request: Request) {
       [username]
     );
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid username or password' },
-        { status: 401 }
-      );
-    }
+    // Always run bcrypt.compare to prevent timing side-channel
+    const isValid = await verifyPassword(password, user?.password_hash || DUMMY_HASH);
 
-    const isValid = await verifyPassword(password, user.password_hash);
-
-    if (!isValid) {
+    if (!user || !isValid) {
       return NextResponse.json(
         { success: false, error: 'Invalid username or password' },
         { status: 401 }

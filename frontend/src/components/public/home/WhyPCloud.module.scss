@@ -1,102 +1,153 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ═══════════════════════════════════════
+// WHY THE TOP 1% CHOOSE PCLOUD
+// ═══════════════════════════════════════
+
 .section {
-  padding: $spacing-20 0;
-  background-color: $color-white;
-}
-
-.container {
-  max-width: $max-content-width;
-  margin: 0 auto;
-  padding: 0 $spacing-6;
-
-  @include breakpoint(lg) {
-    padding: 0 $spacing-12;
-  }
-}
-
-.header {
-  text-align: center;
-  margin-bottom: $spacing-16;
-}
-
-.heading {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: #3a3a3a;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
-  }
-}
-
-.headingHighlight {
-  color: $color-blue;
-}
-
-.grid {
-  display: grid;
-  gap: $spacing-6;
-
-  @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @include breakpoint(lg) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.card {
-  position: relative;
-}
-
-.cardInner {
-  background-color: #f4f4f4;
-  padding: $spacing-8;
-  border-radius: $border-radius-xl;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  transition: transform $transition-base;
-}
-
-.bgAccent {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  filter: blur(48px);
-  opacity: 0.2;
-}
-
-.cardContent {
+  padding: 88px 0 64px;
   position: relative;
   z-index: 1;
 }
 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+// ── Heading ──
+.header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.heading {
+  font-size: 44px;
+  font-weight: $font-weight-bold;
+  color: #000000;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+
+  @media (max-width: 1024px) {
+    font-size: 36px;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 28px;
+  }
+}
+
+.headingHighlight {
+  background: linear-gradient(69deg, rgb(24, 202, 221) 1.3%, rgb(78, 100, 241) 99.3%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ── 4-column card grid ──
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+// ── Card ──
+.card {
+  background: #FFFFFF;
+  border-radius: 32px;
+  padding: 40px 28px 36px;
+  text-align: center;
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 2px 4px 20px 0px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 640px) {
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+}
+
+// ── Icon ──
 .iconWrapper {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: $spacing-6;
+  margin-bottom: 28px;
+  flex-shrink: 0;
+
+  img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+  }
+
+  @media (max-width: 640px) {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 20px;
+
+    img {
+      width: 52px;
+      height: 52px;
+    }
+  }
 }
 
+// ── Card text ──
 .cardTitle {
-  font-size: $font-size-xl;
+  font-size: 22px;
   font-weight: $font-weight-bold;
-  color: #3a3a3a;
-  margin-bottom: $spacing-3;
+  color: #000000;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+
+  @media (max-width: 640px) {
+    font-size: 18px;
+  }
 }
 
 .cardDescription {
-  color: $color-neutral-600;
-  font-size: $font-size-sm;
-  line-height: $line-height-relaxed;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.55;
+  letter-spacing: -0.1px;
+
+  @media (max-width: 640px) {
+    font-size: 14px;
+  }
+}
+
+// ═══════════════════════════════════════
+// RESPONSIVE
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+  .section {
+    padding: 56px 0 40px;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
 }

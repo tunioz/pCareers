@@ -55,7 +55,11 @@
 }
 
 .columnTitle {
-  font-weight: $font-weight-bold;
+  font-size: 13px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba($color-white, 0.4);
   margin-bottom: $spacing-4;
 }
 

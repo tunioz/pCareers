@@ -2,14 +2,15 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 import { ImageWithFallback } from '../ImageWithFallback';
 import styles from './EmployeeSpotlight.module.scss';
 
 const employees = [
   {
-    name: 'Sarah Chen',
-    role: 'Senior Security Engineer',
-    photo: 'https://images.unsplash.com/photo-1573497701119-52dbe8832c17?w=600',
+    name: 'Ivelina Bahchevanova',
+    role: 'Senior QA Engineer',
+    photo: '/images/employee-ivelina.jpg',
     quote: "At pCloud, I get to work on cutting-edge encryption technology that protects millions of users. The team trusts me to make important decisions, and I have the autonomy to innovate.",
   },
   {
@@ -39,9 +40,9 @@ export function EmployeeSpotlight() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <h2 className={styles.heading}>
             The people building <span className={styles.headingHighlight}>pCloud</span>
@@ -58,22 +59,23 @@ export function EmployeeSpotlight() {
               <div key={employee.name} className={styles.slide}>
                 <motion.div
                   className={styles.slideInner}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
                   <div className={styles.photoWrapper}>
                     <ImageWithFallback src={employee.photo} alt={employee.name} />
                   </div>
-                  <div>
+                  <div className={styles.quoteContent}>
                     <p className={styles.quote}>&ldquo;{employee.quote}&rdquo;</p>
                     <div>
                       <h3 className={styles.name}>{employee.name}</h3>
                       <p className={styles.role}>{employee.role}</p>
                     </div>
-                    <a href="/life" className={styles.storyLink}>
+                    <Link href="/life" className={styles.storyLink}>
                       Read story
-                    </a>
+                      <span>&rsaquo;</span>
+                    </Link>
                   </div>
                 </motion.div>
               </div>
@@ -81,12 +83,12 @@ export function EmployeeSpotlight() {
           </motion.div>
 
           <div className={styles.navButtons}>
-            <motion.button onClick={prevSlide} className={styles.navButton} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              &larr;
-            </motion.button>
-            <motion.button onClick={nextSlide} className={styles.navButton} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              &rarr;
-            </motion.button>
+            <button onClick={prevSlide} className={styles.navButton} aria-label="Previous">
+              <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" /></svg>
+            </button>
+            <button onClick={nextSlide} className={styles.navButton} aria-label="Next">
+              <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" /></svg>
+            </button>
           </div>
 
           <div className={styles.indicators}>
@@ -95,6 +97,7 @@ export function EmployeeSpotlight() {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`${styles.indicator} ${currentSlide === index ? styles.indicatorActive : ''}`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>

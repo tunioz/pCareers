@@ -9,7 +9,12 @@ import { Strengths } from '@/components/public/about/Strengths';
 import { AboutCTA } from '@/components/public/about/AboutCTA';
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About Us | pCloud Careers',
+  description: 'Learn about pCloud — the Swiss-based cloud storage company trusted by 24 million users worldwide. Our mission, history, and the team behind the product.',
+  openGraph: {
+    title: 'About Us | pCloud Careers',
+    description: 'Learn about pCloud — the Swiss-based cloud storage company trusted by 24 million users worldwide.',
+  },
 };
 
 export default function AboutPage() {

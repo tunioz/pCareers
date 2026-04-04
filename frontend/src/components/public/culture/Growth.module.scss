@@ -2,109 +2,272 @@
 @use '@/styles/mixins' as *;
 
 .section {
-  background-color: $color-white;
-  padding: $spacing-20 $spacing-6;
+  background: $bg-dark;
+  padding: 120px 80px 140px;
+  position: relative;
+  overflow: hidden;
 
-  @include breakpoint(lg) {
-    padding: $spacing-24 $spacing-20;
+  // Subtle ambient glow behind timeline
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba($color-brand-teal, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 900px) {
+    padding: 80px 32px 100px;
   }
 }
 
-.container {
-  max-width: 1280px;
+// ── Title ──
+.titleArea {
+  text-align: center;
+  margin-bottom: 100px;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 900px) {
+    margin-bottom: 60px;
+  }
+}
+
+.title {
+  font-size: 44px;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  letter-spacing: -0.5px;
+
+  @media (max-width: 900px) {
+    font-size: 32px;
+  }
+}
+
+.accent {
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ── Timeline wrapper ──
+.timelineWrapper {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: $spacing-16;
-}
-
-.heading {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-dark-blue;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-5xl;
-  }
-}
-
-.highlight {
-  color: $color-blue;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-6;
-
-  @include breakpoint(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.card {
-  position: relative;
-  border-radius: $border-radius-xl;
-  padding: $spacing-10;
-  overflow: hidden;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-4;
-
-  @include breakpoint(lg) {
-    padding: $spacing-12;
-  }
-}
-
-.cardBlue {
-  background-color: $color-blue;
-  color: $color-white;
-}
-
-.cardYellow {
-  background-color: #e6ff00;
-  color: $color-dark-blue;
-}
-
-.dotPattern {
+// ── SVG flowing line ──
+.timelineLine {
   position: absolute;
-  inset: 0;
-  opacity: 0.1;
-  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-  background-size: 20px 20px;
+  top: 60px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 1;
+
+  svg {
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    top: -29px;
+    overflow: visible;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+.timelinePath {
+  fill: none;
+  stroke: url(#lineGrad);
+  stroke-width: 2;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+}
+
+.timelineGlow {
+  fill: none;
+  stroke: url(#lineGrad);
+  stroke-width: 8;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  opacity: 0.15;
+  filter: blur(6px);
+}
+
+.animate .timelinePath,
+.animate .timelineGlow {
+  animation: drawPath 2.5s ease-out 0.5s forwards;
+}
+
+@keyframes drawPath {
+  to { stroke-dashoffset: 0; }
+}
+
+// ── Timeline items ──
+.timelineItems {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 24px;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.timelineItem {
+  text-align: center;
+
+  &:hover .itemDesc {
+    color: rgba($color-white, 0.75);
+  }
+}
+
+// ── Node circle ──
+.node {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin: 0 auto 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-dark;
+  border: 2px solid transparent;
+  cursor: default;
+  transition: all 0.4s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--node-color-1), var(--node-color-2));
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: $bg-dark;
+    z-index: -1;
+  }
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 1; inset: -2px; }
+  50% { opacity: 0.5; inset: -8px; }
+}
+
+.nodeIcon {
+  width: 22px;
+  height: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.nodeIconImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+// ── Step number ──
+.stepNum {
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, var(--node-color-1), var(--node-color-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.7;
+}
+
+// ── Item content ──
+.itemTitle {
+  font-size: 20px;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.itemDesc {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba($color-white, 0.55);
+  line-height: 1.65;
+  max-width: 240px;
+  margin: 0 auto;
+  transition: color 0.3s ease;
+}
+
+// ── Particles ──
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFade 4s ease infinite;
   pointer-events: none;
 }
 
-.iconWrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: $border-radius-full;
-  background-color: rgba($color-white, 0.2);
-  @include flex-center;
-  flex-shrink: 0;
+.particle1 {
+  width: 6px; height: 6px;
+  background: $color-brand-teal;
+  top: 30%; left: 12%;
+  animation-delay: 0s;
 }
 
-.cardTitle {
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  position: relative;
-
-  @include breakpoint(lg) {
-    font-size: $font-size-3xl;
-  }
+.particle2 {
+  width: 4px; height: 4px;
+  background: $color-purple;
+  top: 65%; left: 28%;
+  animation-delay: 1.2s;
 }
 
-.cardDescription {
-  font-size: $font-size-md;
-  line-height: $line-height-relaxed;
-  opacity: 0.85;
-  position: relative;
+.particle3 {
+  width: 5px; height: 5px;
+  background: #F5A623;
+  top: 25%; right: 18%;
+  animation-delay: 2.4s;
+}
 
-  @include breakpoint(lg) {
-    font-size: $font-size-lg;
-  }
+.particle4 {
+  width: 3px; height: 3px;
+  background: #34C77B;
+  top: 70%; right: 10%;
+  animation-delay: 0.8s;
+}
+
+.particle5 {
+  width: 4px; height: 4px;
+  background: $color-brand-teal;
+  top: 45%; left: 50%;
+  animation-delay: 1.8s;
+}
+
+@keyframes particleFade {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(1); }
+  50% { opacity: 0.4; transform: translateY(-20px) scale(1.5); }
 }

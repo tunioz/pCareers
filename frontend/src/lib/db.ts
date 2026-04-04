@@ -289,16 +289,6 @@ function initializeSchema(): void {
       FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE
     );
 
-    CREATE TABLE IF NOT EXISTS custom_scores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      score_id INTEGER NOT NULL,
-      criterion_id INTEGER NOT NULL,
-      score INTEGER,
-      notes TEXT,
-      FOREIGN KEY (score_id) REFERENCES candidate_scores(id) ON DELETE CASCADE,
-      FOREIGN KEY (criterion_id) REFERENCES position_criteria(id) ON DELETE CASCADE
-    );
-
     CREATE TABLE IF NOT EXISTS candidate_notes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       candidate_id INTEGER NOT NULL,
@@ -337,6 +327,16 @@ function initializeSchema(): void {
       FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS custom_scores (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      score_id INTEGER NOT NULL,
+      criterion_id INTEGER NOT NULL,
+      score INTEGER,
+      notes TEXT,
+      FOREIGN KEY (score_id) REFERENCES candidate_scores(id) ON DELETE CASCADE,
+      FOREIGN KEY (criterion_id) REFERENCES position_criteria(id) ON DELETE CASCADE
+    );
+
     CREATE TABLE IF NOT EXISTS candidate_references (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       candidate_id INTEGER NOT NULL,
@@ -361,6 +361,7 @@ function initializeSchema(): void {
       status TEXT DEFAULT 'pending',
       requested_at TEXT DEFAULT (datetime('now')),
       completed_at TEXT,
+      expires_at TEXT DEFAULT (datetime('now', '+30 days')),
       FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
     );
 
@@ -502,6 +503,7 @@ function initializeSchema(): void {
     CREATE INDEX IF NOT EXISTS idx_candidates_status ON candidates(status);
     CREATE INDEX IF NOT EXISTS idx_candidates_job ON candidates(job_id);
     CREATE INDEX IF NOT EXISTS idx_candidates_created ON candidates(created_at);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_candidates_email_job ON candidates(email, job_id) WHERE job_id IS NOT NULL;
     CREATE INDEX IF NOT EXISTS idx_candidate_notes_candidate ON candidate_notes(candidate_id);
     CREATE INDEX IF NOT EXISTS idx_candidate_scores_candidate ON candidate_scores(candidate_id);
     CREATE INDEX IF NOT EXISTS idx_candidate_references_candidate ON candidate_references(candidate_id);

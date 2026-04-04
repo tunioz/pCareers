@@ -8,6 +8,8 @@ import styles from './TalentCommunity.module.scss';
 export function TalentCommunity() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [pcloudLink, setPcloudLink] = useState('');
   const [message, setMessage] = useState('');
   const [privacyConsent, setPrivacyConsent] = useState(false);
@@ -17,7 +19,7 @@ export function TalentCommunity() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!privacyConsent || !pcloudLink) return;
+    if (!privacyConsent || !fullName || !email || !pcloudLink) return;
     setSubmitting(true);
     setFormError('');
 
@@ -26,8 +28,8 @@ export function TalentCommunity() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          full_name: 'General Application',
-          email: pcloudLink,
+          full_name: fullName,
+          email: email,
           cover_message: message,
           source: 'Direct',
           portfolio_url: pcloudLink,
@@ -38,6 +40,8 @@ export function TalentCommunity() {
       if (data.success) {
         setSubmitted(true);
         setTimeout(() => {
+          setFullName('');
+          setEmail('');
           setPcloudLink('');
           setMessage('');
           setPrivacyConsent(false);
@@ -55,60 +59,117 @@ export function TalentCommunity() {
 
   return (
     <section ref={ref} className={styles.section}>
-      <div className={styles.bgPattern} />
+      {/* Ambient blobs */}
+      <div className={`${styles.blob} ${styles.blob1}`} />
+      <div className={`${styles.blob} ${styles.blob2}`} />
+      <div className={`${styles.blob} ${styles.blob3}`} />
+
       <div className={styles.container}>
+        {/* Left: motivation */}
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
         >
+          <div className={styles.badge}>
+            <span className={styles.badgeDot} />
+            <span className={styles.badgeText}>We&apos;re always looking for talent</span>
+          </div>
           <h2 className={styles.title}>
             Don&apos;t see what you&apos;re{' '}
             <span className={styles.highlight}>looking for</span>?
           </h2>
           <p className={styles.subtitle}>
-            Just send your details and CV.
+            Just send your details and CV. We review every application and reach out when there&apos;s a match.
           </p>
+          <div className={styles.socialProof}>
+            <div className={styles.avatarStack}>
+              <div className={`${styles.avatar} ${styles.avatarG}`}>G</div>
+              <div className={`${styles.avatar} ${styles.avatarA}`}>A</div>
+              <div className={`${styles.avatar} ${styles.avatarT}`}>T</div>
+              <div className={`${styles.avatar} ${styles.avatarP}`}>P</div>
+              <div className={`${styles.avatar} ${styles.avatarN}`}>N</div>
+            </div>
+            <span className={styles.socialProofText}>
+              Join <strong>50+ people</strong> building the future of cloud
+            </span>
+          </div>
         </motion.div>
 
+        {/* Right: form card */}
         {!submitted ? (
-          <motion.form
-            onSubmit={handleSubmit}
-            className={styles.form}
-            initial={{ opacity: 0, y: 30 }}
+          <motion.div
+            className={styles.formCard}
+            initial={{ opacity: 0, y: 24 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.8 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
           >
-            {formError && (
-              <div className={styles.error}>{formError}</div>
-            )}
+            <div className={styles.formTitle}>Send your application</div>
+            <div className={styles.formSub}>We&apos;ll keep your details on file for future opportunities.</div>
 
-            <div className={styles.fieldGroup}>
-              <input
-                type="url"
-                placeholder="Shared Link in pCloud (paste your CV link) *"
-                value={pcloudLink}
-                onChange={(e) => setPcloudLink(e.target.value)}
-                required
-                className={styles.input}
-              />
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <textarea
-                placeholder="Tell us about yourself, your experience, and what you're looking for... (optional)"
-                value={message}
-                onChange={(e) => setMessage(e.target.value.slice(0, 1000))}
-                className={styles.textarea}
-                rows={4}
-              />
-              {message.length > 0 && (
-                <span className={styles.charCount}>{message.length}/1000</span>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              {formError && (
+                <div className={styles.error}>{formError}</div>
               )}
-            </div>
 
-            <div className={styles.actions}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>
+                  Full Name <span className={styles.req}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  className={styles.input}
+                />
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>
+                  Email <span className={styles.req}>*</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className={styles.input}
+                />
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>
+                  CV Link (pCloud) <span className={styles.req}>*</span>
+                </label>
+                <input
+                  type="url"
+                  placeholder="Paste your CV link from pCloud"
+                  value={pcloudLink}
+                  onChange={(e) => setPcloudLink(e.target.value)}
+                  required
+                  className={styles.input}
+                />
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.fieldLabel}>
+                  About you <span className={styles.optional}>(optional)</span>
+                </label>
+                <textarea
+                  placeholder="Tell us about yourself, your experience, and what you're looking for..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value.slice(0, 1000))}
+                  className={styles.textarea}
+                />
+                {message.length > 0 && (
+                  <span className={styles.charCount}>{message.length}/1000</span>
+                )}
+              </div>
+
               <label className={styles.consent}>
                 <input
                   type="checkbox"
@@ -122,17 +183,15 @@ export function TalentCommunity() {
                 </span>
               </label>
 
-              <motion.button
+              <button
                 type="submit"
                 className={styles.submitBtn}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 disabled={submitting || !privacyConsent}
               >
                 {submitting ? 'Sending...' : 'Send Application'}
-              </motion.button>
-            </div>
-          </motion.form>
+              </button>
+            </form>
+          </motion.div>
         ) : (
           <motion.div
             className={styles.success}
