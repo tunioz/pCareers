@@ -21,7 +21,7 @@ export function Manifesto() {
         {/* Left: Value rows */}
         <div className={styles.items}>
           {values.map((value, index) => (
-            <motion.div key={value.title} className={styles.item} initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: index * 0.1, duration: 0.5 }}>
+            <motion.div key={value.title} className={styles.item} initial={false} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: index * 0.1, duration: 0.5 }}>
               <div className={styles.accent} />
               <div className={styles.number}>{String(index + 1).padStart(2, '0')}</div>
               <div className={styles.itemContent}>
@@ -33,7 +33,7 @@ export function Manifesto() {
         </div>
 
         {/* Right: Heading */}
-        <motion.div className={styles.header} initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}>
+        <motion.div className={styles.header} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}>
           <h2 className={styles.heading}>What It Means to Be <span className={styles.highlight}>pCloud</span></h2>
           <p className={styles.headerDescription}>The principles that shape how we work, build, and hold each other accountable every day.</p>
         </motion.div>

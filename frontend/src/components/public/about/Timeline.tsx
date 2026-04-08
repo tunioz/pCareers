@@ -23,14 +23,14 @@ export function Timeline() {
     <section ref={ref} className={styles.section}>
       <div className={styles.bgPattern} />
       <div className={styles.container}>
-        <motion.div className={styles.header} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+        <motion.div className={styles.header} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
           <h2 className={styles.heading}>13+ years of <span className={styles.highlight}>building trust</span></h2>
         </motion.div>
         <div className={styles.timeline}>
           <div className={styles.timelineLine} />
           <div className={styles.milestones}>
             {milestones.map((item, index) => (
-              <motion.div key={item.year} className={`${styles.milestone} ${index % 2 === 1 ? styles.milestoneReverse : ''}`} initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: index * 0.2, duration: 0.6 }}>
+              <motion.div key={item.year} className={`${styles.milestone} ${index % 2 === 1 ? styles.milestoneReverse : ''}`} initial={false} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: index * 0.2, duration: 0.6 }}>
                 <div className={`${styles.milestoneContent} ${index % 2 === 1 ? styles.milestoneContentRight : ''}`}>
                   <div className={styles.milestoneCard}>
                     <div className={styles.milestoneYear}>{item.year}</div>

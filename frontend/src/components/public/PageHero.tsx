@@ -23,19 +23,19 @@ export function PageHero({ label, heading, backgroundImage, subtitle, primaryCta
       </div>
       <div className={styles.content}>
         <div className={styles.inner}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <div className={styles.label}>{label}</div>
           </motion.div>
-          <motion.h1 className={styles.heading} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }}>
+          <motion.h1 className={styles.heading} initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.8 }}>
             {heading}
           </motion.h1>
           {subtitle && (
-            <motion.p className={styles.subtitle} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }}>
+            <motion.p className={styles.subtitle} initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }}>
               {subtitle}
             </motion.p>
           )}
           {(primaryCta || secondaryCta) && (
-            <motion.div className={styles.buttons} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
+            <motion.div className={styles.buttons} initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
               {primaryCta && (
                 <Link href={primaryCta.href}>
                   <motion.button className={styles.primaryButton} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>{primaryCta.text}</motion.button>

@@ -39,7 +39,7 @@ export function TypicalDay() {
         {/* Left: full-height image */}
         <motion.div
           className={styles.imageCol}
-          initial={{ opacity: 0, x: -40 }}
+          initial={false}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -58,7 +58,7 @@ export function TypicalDay() {
         {/* Right: coral content */}
         <motion.div
           className={styles.contentCol}
-          initial={{ opacity: 0, x: 40 }}
+          initial={false}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -70,7 +70,7 @@ export function TypicalDay() {
                 <motion.div
                   key={item.time}
                   className={styles.timelineItem}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.3 + index * 0.15, duration: 0.6 }}
                 >

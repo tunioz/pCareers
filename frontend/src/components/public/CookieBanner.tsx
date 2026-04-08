@@ -53,11 +53,14 @@ export function CookieBanner() {
     <div
       className={`${styles.banner} ${visible ? styles.visible : ''}`}
       role="dialog"
-      aria-label="Cookie consent"
+      aria-modal="false"
+      aria-labelledby="cookie-banner-title"
+      aria-describedby="cookie-banner-text"
       aria-hidden={!visible}
     >
+      <span id="cookie-banner-title" className="visually-hidden">Cookie consent</span>
       <div className={styles.container}>
-        <p className={styles.text}>
+        <p id="cookie-banner-text" className={styles.text}>
           We use cookies to improve your experience. Essential cookies are always
           active. You can accept or reject optional analytics cookies.
         </p>

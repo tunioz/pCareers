@@ -18,12 +18,12 @@ export function WhatWeDo() {
   return (
     <section ref={ref} className={styles.section}>
       <div className={styles.container}>
-        <motion.div className={styles.header} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+        <motion.div className={styles.header} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
           <h2 className={styles.heading}>Cloud storage built on <span className={styles.highlight}>security, privacy, and reliable.</span></h2>
         </motion.div>
         <div className={styles.grid}>
           {products.map((product, index) => (
-            <motion.div key={product.name} className={styles.card} initial={{ opacity: 0, y: 50 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: index * 0.2, duration: 0.6 }} whileHover={{ y: -10, transition: { duration: 0.3 } }}>
+            <motion.div key={product.name} className={styles.card} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: index * 0.2, duration: 0.6 }} whileHover={{ y: -10, transition: { duration: 0.3 } }}>
               <div className={styles.cardImage}>
                 <ImageWithFallback src={product.image} alt={product.name} />
                 <div className={styles.cardGradient} />

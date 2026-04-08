@@ -21,6 +21,52 @@ body {
   line-height: $line-height-normal;
   color: $color-neutral-900;
   background-color: $color-white;
+  overflow-x: hidden;
+}
+
+// Inherit font stack in form elements
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+// Balance headings where supported
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+// Respect reduced motion preference globally
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Skip to main content link
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: $spacing-4;
+  background: $color-primary-cyan;
+  color: $color-white;
+  padding: $spacing-3 $spacing-5;
+  z-index: 9999;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+
+  &:focus {
+    top: $spacing-4;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -39,6 +85,14 @@ body {
 :focus-visible {
   outline: 2px solid $color-primary-cyan;
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+// Default focus ring for buttons and links (overrideable per-component)
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid $color-primary-cyan;
+  outline-offset: 3px;
 }
 
 // ---------------------------------------------------------------------------

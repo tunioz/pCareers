@@ -48,7 +48,7 @@ export function NotForEveryone() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -61,7 +61,7 @@ export function NotForEveryone() {
             <motion.div
               key={card.ifText}
               className={styles.card}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: index * 0.08, duration: 0.5 }}
             >

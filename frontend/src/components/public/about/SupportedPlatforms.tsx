@@ -25,7 +25,7 @@ export function SupportedPlatforms() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -47,7 +47,7 @@ export function SupportedPlatforms() {
               >
                 <motion.div
                   className={`${styles.card} ${platform.cardClass}`}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={false}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: index * 0.08, duration: 0.5 }}
                   whileHover={{ y: -4 }}
@@ -59,7 +59,7 @@ export function SupportedPlatforms() {
                 </motion.div>
                 <motion.span
                   className={`${styles.viewRole} ${platform.linkClass}`}
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   animate={isInView ? { opacity: 0.7 } : {}}
                   transition={{ delay: index * 0.08 + 0.3, duration: 0.5 }}
                 >

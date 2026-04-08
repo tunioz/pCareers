@@ -21,7 +21,7 @@ export function Social() {
       <div className={styles.container}>
         <motion.h2
           className={styles.heading}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -29,7 +29,7 @@ export function Social() {
         </motion.h2>
         <motion.p
           className={styles.subtitle}
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.15, duration: 0.6 }}
         >
@@ -44,7 +44,7 @@ export function Social() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialLink}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.1, y: -5 }}

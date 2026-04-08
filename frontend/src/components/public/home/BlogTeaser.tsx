@@ -41,7 +41,7 @@ export function BlogTeaser({ posts }: BlogTeaserProps) {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
@@ -58,7 +58,7 @@ export function BlogTeaser({ posts }: BlogTeaserProps) {
           {/* Featured wide card */}
           {featured && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.1, duration: 0.5 }}
             >
@@ -104,7 +104,7 @@ export function BlogTeaser({ posts }: BlogTeaserProps) {
           {rest.map((post, index) => (
             <motion.div
               key={post.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
             >

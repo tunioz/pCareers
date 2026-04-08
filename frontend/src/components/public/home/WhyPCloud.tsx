@@ -37,7 +37,7 @@ export function WhyPCloud() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
@@ -51,7 +51,7 @@ export function WhyPCloud() {
             <motion.div
               key={reason.title}
               className={styles.card}
-              initial={{ opacity: 0, y: 24 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.1 + index * 0.1, duration: 0.6 }}
             >

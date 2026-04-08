@@ -10,7 +10,7 @@ export function AboutHero() {
       <div className={styles.content}>
         <div className={styles.inner}>
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
@@ -19,7 +19,7 @@ export function AboutHero() {
 
           <motion.h1
             className={styles.heading}
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.5 }}
           >
@@ -28,7 +28,7 @@ export function AboutHero() {
 
           <motion.p
             className={styles.description}
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
@@ -37,7 +37,7 @@ export function AboutHero() {
 
           <motion.div
             className={styles.buttons}
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.5 }}
           >
@@ -52,7 +52,7 @@ export function AboutHero() {
 
         <motion.div
           className={styles.visual}
-          initial={{ opacity: 0, x: 24 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >

@@ -68,7 +68,7 @@ export function TalentCommunity() {
         {/* Left: motivation */}
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
@@ -101,7 +101,7 @@ export function TalentCommunity() {
         {!submitted ? (
           <motion.div
             className={styles.formCard}
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
@@ -195,7 +195,7 @@ export function TalentCommunity() {
         ) : (
           <motion.div
             className={styles.success}
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={false}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', duration: 0.6 }}
           >

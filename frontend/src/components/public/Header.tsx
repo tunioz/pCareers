@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -10,6 +10,25 @@ import styles from './Header.module.scss';
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  // Close mobile menu on Escape key and on route change
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    }
+    document.addEventListener('keydown', handleKeydown);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -68,7 +87,7 @@ export function Header() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3 }}
@@ -80,7 +99,7 @@ export function Header() {
                 return (
                   <motion.div
                     key={link.name}
-                    initial={{ opacity: 0, x: 50 }}
+                    initial={false}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
@@ -95,7 +114,7 @@ export function Header() {
                 );
               })}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >

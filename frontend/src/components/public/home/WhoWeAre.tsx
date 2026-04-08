@@ -17,7 +17,7 @@ export function WhoWeAre() {
           {/* Box 1 - Title */}
           <motion.div
             className={styles.titleBox}
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
@@ -38,7 +38,7 @@ export function WhoWeAre() {
           {/* Box 2 - Image */}
           <motion.div
             className={styles.imageBox}
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
@@ -51,7 +51,7 @@ export function WhoWeAre() {
           {/* Box 3 - Mission */}
           <motion.div
             className={styles.contentBox}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={false}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
@@ -78,7 +78,7 @@ export function WhoWeAre() {
           {/* Box 4 - Image wide */}
           <motion.div
             className={`${styles.imageBox} ${styles.imageBoxWide}`}
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
@@ -91,7 +91,7 @@ export function WhoWeAre() {
           {/* Box 5 - Vision */}
           <motion.div
             className={`${styles.contentBox} ${styles.contentBoxSmall}`}
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
@@ -110,7 +110,7 @@ export function WhoWeAre() {
           {/* Box 6 - Goals */}
           <motion.div
             className={`${styles.contentBox} ${styles.contentBoxSmall}`}
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.5, duration: 0.6 }}
           >

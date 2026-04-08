@@ -22,12 +22,12 @@ export function WhyTrust() {
     <section ref={ref} className={styles.section}>
       <div className={styles.bgImage} />
       <div className={styles.container}>
-        <motion.div className={styles.header} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+        <motion.div className={styles.header} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
           <h2 className={styles.heading}>Why engineers trust <span className={styles.highlight}>pCloud</span></h2>
         </motion.div>
         <div className={styles.grid}>
           {features.map((feature, index) => (
-              <motion.div key={feature.title} className={styles.feature} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: index * 0.1, duration: 0.6 }}>
+              <motion.div key={feature.title} className={styles.feature} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: index * 0.1, duration: 0.6 }}>
                 <div className={styles.iconWrapper}>
                   <Image src={feature.icon} alt={feature.title} width={48} height={48} />
                 </div>

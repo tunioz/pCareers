@@ -21,7 +21,7 @@ export function EngineeringProof() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
@@ -33,7 +33,7 @@ export function EngineeringProof() {
 
         <motion.div
           className={styles.statsRow}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.45, duration: 0.6 }}
         >
@@ -47,7 +47,7 @@ export function EngineeringProof() {
 
         <motion.div
           className={styles.links}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.55, duration: 0.6 }}
         >

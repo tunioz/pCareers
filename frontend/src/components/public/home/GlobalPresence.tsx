@@ -14,7 +14,7 @@ export function GlobalPresence() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -23,7 +23,7 @@ export function GlobalPresence() {
             <span className={styles.highlight}>worldwide.</span>
           </h2>
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
@@ -41,7 +41,7 @@ export function GlobalPresence() {
 
         <motion.div
           className={styles.mapContainer}
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={false}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
@@ -60,7 +60,7 @@ export function GlobalPresence() {
 
           <motion.p
             className={styles.subtitle}
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 1.5, duration: 0.8 }}
           >

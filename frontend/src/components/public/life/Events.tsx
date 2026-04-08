@@ -44,7 +44,7 @@ export function Events() {
       <div className={styles.container}>
         <motion.h2
           className={styles.heading}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -56,7 +56,7 @@ export function Events() {
             <motion.div
               key={event.title}
               className={styles.card}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.15 * index, duration: 0.6 }}
             >

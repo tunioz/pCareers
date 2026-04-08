@@ -40,7 +40,7 @@ export function EmployeeSpotlight() {
       <div className={styles.container}>
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
@@ -59,7 +59,7 @@ export function EmployeeSpotlight() {
               <div key={employee.name} className={styles.slide}>
                 <motion.div
                   className={styles.slideInner}
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={false}
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >

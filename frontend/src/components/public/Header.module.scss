@@ -75,10 +75,20 @@
   text-decoration: none;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: color 0.3s ease, text-shadow 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 $spacing-2;
 
   &:hover {
     color: $color-brand-teal;
     text-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-teal;
+    outline-offset: 4px;
+    border-radius: 4px;
   }
 }
 
@@ -120,12 +130,21 @@
 
 .mobileToggle {
   @include button-reset;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #A0B1C2;
-  padding: $spacing-2;
+  width: 44px;
+  height: 44px;
 
   @include breakpoint(lg) {
     display: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-brand-teal;
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 

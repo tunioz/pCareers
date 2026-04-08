@@ -75,7 +75,7 @@ export function Growth() {
 
       <motion.div
         className={styles.titleArea}
-        initial={{ opacity: 0, y: 30 }}
+        initial={false}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8 }}
       >
@@ -109,7 +109,7 @@ export function Growth() {
                 '--node-color-1': nodeColors[index].c1,
                 '--node-color-2': nodeColors[index].c2,
               } as React.CSSProperties}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.8 + index * 0.4, duration: 0.6 }}
             >

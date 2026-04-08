@@ -16,7 +16,7 @@ export function AntonQuote() {
           {/* Left Content */}
           <motion.div
             className={styles.left}
-            initial={{ opacity: 0, x: -50 }}
+            initial={false}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
@@ -44,7 +44,7 @@ export function AntonQuote() {
                     src="/images/left-quote.svg"
                     alt=""
                     className={styles.quoteMark}
-                    initial={{ opacity: 0, scale: 0.5 }}
+                    initial={false}
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ delay: 0.3, duration: 0.6 }}
                   />
@@ -59,7 +59,7 @@ export function AntonQuote() {
           {/* Right Image */}
           <motion.div
             className={styles.right}
-            initial={{ opacity: 0, x: 50 }}
+            initial={false}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
@@ -73,7 +73,7 @@ export function AntonQuote() {
             </div>
             <motion.div
               className={styles.verticalLabel}
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ delay: 0.5, duration: 0.8 }}
             >

@@ -15,9 +15,9 @@ export function AboutCTA() {
       <div className={`${styles.blob} ${styles.blob2}`} />
       <div className={`${styles.blob} ${styles.blob3}`} />
       <div className={styles.container}>
-        <motion.div className={styles.content} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+        <motion.div className={styles.content} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
           <h2 className={styles.heading}>Ready to build something that <span className={styles.highlight}>matters?</span></h2>
-          <motion.div className={styles.buttons} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3, duration: 0.8 }}>
+          <motion.div className={styles.buttons} initial={false} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.3, duration: 0.8 }}>
             <Link href="/careers">
               <motion.button className={styles.primaryButton} whileHover={{ scale: 1.05, x: 10 }} whileTap={{ scale: 0.95 }}>View open positions</motion.button>
             </Link>

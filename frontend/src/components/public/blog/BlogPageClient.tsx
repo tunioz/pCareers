@@ -69,7 +69,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
       {/* Hero */}
       <section ref={heroRef} className={styles.heroSection}>
         <div className={styles.heroContainer}>
-          <motion.div className={styles.heroContent} initial={{ opacity: 0, y: 30 }} animate={isHeroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
+          <motion.div className={styles.heroContent} initial={false} animate={isHeroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
             <h1 className={styles.heroTitle}>Under the <span className={styles.heroAccent}>hood</span></h1>
             <p className={styles.heroSubtitle}>How we build infrastructure for 24 million users. No fluff. Real engineering.</p>
           </motion.div>
@@ -80,7 +80,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
       {featuredPost && (
         <section className={styles.featuredSection}>
           <div className={styles.blogContainer}>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+            <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
               <Link href={`/blog/${featuredPost.slug}`} className={styles.cardWide}>
                 <div className={styles.wideImg}>
                   <div className={styles.wideImgInner}>
@@ -142,7 +142,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
               {displayedPosts.map((post, index) => (
                 <motion.div
                   key={post.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
@@ -194,7 +194,7 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
           <div className={styles.relatedJobsContainer}>
             <motion.div
               className={styles.relatedJobsGrid}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isJobsInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8 }}
             >

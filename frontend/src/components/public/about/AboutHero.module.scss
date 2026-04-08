@@ -147,7 +147,7 @@
 // ═══════════════════════════════════════
 // RESPONSIVE
 // ═══════════════════════════════════════
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .section {
     padding: 140px 0 80px;
     min-height: 440px;
@@ -167,6 +167,7 @@
     max-width: 542px;
     height: auto;
     aspect-ratio: 542 / 446;
+    box-shadow: none;
   }
 }
 

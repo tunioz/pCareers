@@ -195,6 +195,29 @@ export function RolePreview({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Apply modal: escape key to close, focus trap on open
+  useEffect(() => {
+    if (!showApplyModal) return;
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !applySubmitting) {
+        setShowApplyModal(false);
+      }
+    }
+    document.addEventListener('keydown', handleKeydown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    // Auto-focus first input shortly after modal mounts
+    const timer = setTimeout(() => {
+      const firstInput = document.querySelector<HTMLInputElement>('.' + styles.applyModal + ' input');
+      firstInput?.focus();
+    }, 100);
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+      document.body.style.overflow = prevOverflow;
+      clearTimeout(timer);
+    };
+  }, [showApplyModal, applySubmitting]);
+
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!applyConsent || !applyFullName || !applyEmail || !applyPcloudLink) return;
@@ -270,7 +293,7 @@ export function RolePreview({
       <section className={styles.hero}>
         <div className={styles.heroContainer}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
@@ -281,7 +304,7 @@ export function RolePreview({
               {pills.map((pill, index) => (
                 <motion.span
                   key={pill}
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                   className={styles.metaPill}
@@ -305,7 +328,7 @@ export function RolePreview({
             <div className={styles.leftColumn}>
               {/* A. About the Role */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
@@ -324,7 +347,7 @@ export function RolePreview({
               {/* B. The Challenges */}
               {challengeItems.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 }}
@@ -339,7 +362,7 @@ export function RolePreview({
                     {challengeItems.map((challenge, index) => (
                       <motion.li
                         key={index}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={false}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
@@ -356,7 +379,7 @@ export function RolePreview({
               {/* C. Your Team */}
               {job.team_name && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -408,7 +431,7 @@ export function RolePreview({
               {/* D. What You'll Learn */}
               {job.what_youll_learn && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 }}
@@ -429,7 +452,7 @@ export function RolePreview({
 
               {/* E. What We're Looking For */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
@@ -447,7 +470,7 @@ export function RolePreview({
                       {requirementItems.map((item, index) => (
                         <motion.li
                           key={index}
-                          initial={{ opacity: 0, x: -20 }}
+                          initial={false}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: index * 0.1 }}
@@ -468,7 +491,7 @@ export function RolePreview({
                         {niceToHaveItems.map((item, index) => (
                           <motion.li
                             key={index}
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={false}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
@@ -486,7 +509,7 @@ export function RolePreview({
 
               {/* F. What We Offer */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
@@ -506,7 +529,7 @@ export function RolePreview({
                     {benefitsToShow.map((benefit, index) => (
                       <motion.div
                         key={benefit.title}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={false}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 }}
@@ -525,7 +548,7 @@ export function RolePreview({
               {/* G. Working Process Highlights */}
               {processSteps.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.6 }}
@@ -545,7 +568,7 @@ export function RolePreview({
                       {processSteps.map((step, index) => (
                         <motion.div
                           key={step.id}
-                          initial={{ opacity: 0, x: -20 }}
+                          initial={false}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: index * 0.1 }}
@@ -564,7 +587,7 @@ export function RolePreview({
             {/* RIGHT COLUMN - Sidebar */}
             <div className={styles.sidebar}>
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
@@ -587,7 +610,7 @@ export function RolePreview({
                       {showSidebarShareMenu && (
                         <motion.div
                           className={styles.shareDropdownSidebar}
-                          initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                          initial={false}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -8, scale: 0.95 }}
                           transition={{ duration: 0.15 }}
@@ -632,7 +655,7 @@ export function RolePreview({
           <div className={styles.processSectionContainer}>
             <motion.div
               className={styles.processSectionHeader}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isProcessInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8 }}
             >
@@ -652,7 +675,7 @@ export function RolePreview({
                   <motion.div
                     key={stage.id}
                     className={styles.stageCard}
-                    initial={{ opacity: 0, y: 50 }}
+                    initial={false}
                     animate={isProcessInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: index * 0.1, duration: 0.6 }}
                   >
@@ -692,7 +715,7 @@ export function RolePreview({
             {interviewTemplate && (
               <motion.div
                 className={styles.overallTimeline}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={false}
                 animate={isProcessInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
@@ -735,7 +758,7 @@ export function RolePreview({
           <div className={styles.pcloudBarContainer}>
             <motion.div
               className={styles.pcloudBarHeader}
-              initial={{ opacity: 0, y: 30 }}
+              initial={false}
               animate={isPCloudBarInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8 }}
             >
@@ -751,7 +774,7 @@ export function RolePreview({
                 <motion.div
                   key={criterion.id}
                   className={styles.pcloudBarCard}
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={false}
                   animate={isPCloudBarInView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                 >
@@ -778,14 +801,14 @@ export function RolePreview({
         {showApplyModal && (
           <motion.div
             className={styles.applyOverlay}
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => !applySubmitting && setShowApplyModal(false)}
           >
             <motion.div
               className={styles.applyModal}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              initial={false}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.95 }}
               transition={{ duration: 0.3 }}

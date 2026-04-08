@@ -65,7 +65,7 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
       <div className={styles.container}>
         <motion.h2
           className={styles.heading}
-          initial={{ opacity: 0, y: 30 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
@@ -73,7 +73,7 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
         </motion.h2>
         <motion.p
           className={styles.subheading}
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.8 }}
         >
@@ -99,7 +99,7 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
             <motion.div
               key={photo.id}
               className={`${styles.gridItem} ${index === 2 || index === 5 ? styles.gridItemTall : ''}`}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={false}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: index * 0.04, duration: 0.5 }}
               onClick={() => openLightbox(filtered.indexOf(photo))}
@@ -133,7 +133,7 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
         {currentPhoto && lightboxIndex !== null && (
           <motion.div
             className={styles.lightbox}
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
@@ -154,7 +154,7 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
             <motion.div
               className={styles.lightboxContent}
               key={currentPhoto.id}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={false}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.2 }}
