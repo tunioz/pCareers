@@ -139,7 +139,7 @@
 
 .subtitle {
   font-size: 18px;
-  color: rgba($color-white, 0.45);
+  color: rgba($color-white, 0.75);
   line-height: 1.6;
   margin-bottom: 36px;
 }
@@ -182,7 +182,7 @@
 
 .socialProofText {
   font-size: 15px;
-  color: rgba($color-white, 0.45);
+  color: rgba($color-white, 0.75);
   line-height: 1.4;
 
   strong {
@@ -228,7 +228,7 @@
 
 .formSub {
   font-size: 14px;
-  color: rgba($color-white, 0.35);
+  color: rgba($color-white, 0.75);
   margin-bottom: 28px;
 }
 
@@ -257,7 +257,7 @@
   display: block;
   font-size: 13px;
   font-weight: $font-weight-medium;
-  color: rgba($color-white, 0.5);
+  color: rgba($color-white, 0.75);
   margin-bottom: 8px;
 }
 
@@ -267,7 +267,7 @@
 
 .optional {
   font-weight: 400;
-  color: rgba($color-white, 0.25);
+  color: rgba($color-white, 0.75);
 }
 
 .input {
@@ -367,7 +367,7 @@
 
 .consentText {
   font-size: 13px;
-  color: rgba($color-white, 0.35);
+  color: rgba($color-white, 0.75);
   line-height: 1.5;
 
   a {

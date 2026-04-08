@@ -41,7 +41,6 @@
 }
 
 .footerLogo {
-  filter: brightness(0) invert(1);
   height: 28px;
   width: auto;
   display: block;
@@ -59,7 +58,7 @@
   font-weight: $font-weight-semibold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: rgba($color-white, 0.4);
+  color: $color-white;
   margin-bottom: $spacing-4;
 }
 
@@ -90,9 +89,11 @@
 
 .socialLink {
   color: rgba($color-white, 0.7);
-  transition: color $transition-fast, transform $transition-fast;
+  opacity: 0.5;
+  transition: opacity $transition-fast, color $transition-fast, transform $transition-fast;
 
   &:hover {
+    opacity: 1;
     color: $color-white;
     transform: translateY(-4px);
   }

@@ -132,6 +132,9 @@
   font-weight: $font-weight-bold;
   color: $color-white;
   line-height: 1.35;
+  min-height: calc(1.35em * 2);
+  display: flex;
+  align-items: flex-end;
 }
 
 .cardDescription {
@@ -139,7 +142,7 @@
   z-index: 1;
   margin-top: 10px;
   font-size: 14px;
-  color: rgba($color-white, 0.55);
+  color: rgba($color-white, 0.75);
   line-height: 1.65;
 }
 

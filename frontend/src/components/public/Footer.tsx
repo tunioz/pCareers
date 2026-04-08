@@ -1,6 +1,5 @@
 'use client';
 
-import { Linkedin, Twitter, Instagram, Github } from 'lucide-react';
 import Link from 'next/link';
 import styles from './Footer.module.scss';
 
@@ -22,10 +21,10 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { name: 'LinkedIn', icon: Linkedin, href: 'https://www.linkedin.com/company/pcloud/' },
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/paborcloud' },
-    { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/pcloud/' },
-    { name: 'GitHub', icon: Github, href: 'https://github.com/pcloud' },
+    { name: 'LinkedIn', icon: '/images/social/linkedin.svg', href: 'https://www.linkedin.com/company/pcloud/' },
+    { name: 'X', icon: '/images/social/x.svg', href: 'https://twitter.com/paborcloud' },
+    { name: 'Instagram', icon: '/images/social/instagram.svg', href: 'https://www.instagram.com/pcloud/' },
+    { name: 'GitHub', icon: '/images/social/github.svg', href: 'https://github.com/pcloud' },
   ];
 
   function handleCookieSettings() {
@@ -96,7 +95,7 @@ export function Footer() {
                   className={styles.socialLink}
                   aria-label={social.name}
                 >
-                  <social.icon size={20} />
+                  <img src={social.icon} alt={social.name} width={20} height={20} />
                 </a>
               ))}
             </div>

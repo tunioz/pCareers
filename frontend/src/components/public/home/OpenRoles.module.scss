@@ -85,18 +85,18 @@
   gap: 10px;
   font-size: 16px;
   font-weight: $font-weight-semibold;
-  color: #0A0E17;
+  color: #FFFFFF;
   text-decoration: none;
-  background: #20C9DB;
-  padding: 14px 28px;
+  background: #17BED0;
+  padding: 16px 32px;
   border-radius: 100px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: #A78BFA;
+    background: #4DD4E1;
     gap: 14px;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(167, 139, 250, 0.3);
+    box-shadow: 0 8px 30px rgba(23, 190, 208, 0.25);
   }
 
   svg {

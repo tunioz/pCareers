@@ -2,7 +2,7 @@
 @use '@/styles/mixins' as *;
 
 .section {
-  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
+  background: $color-white;
   padding: 100px 0 120px;
   position: relative;
   overflow: hidden;
@@ -73,7 +73,7 @@
 .heading {
   font-size: clamp(32px, 3.5vw, 52px);
   font-weight: $font-weight-bold;
-  color: $color-white;
+  color: $bg-dark;
   line-height: 1.15;
   margin-bottom: 48px;
   letter-spacing: -0.02em;
@@ -102,7 +102,7 @@
   gap: 10px;
   padding: 16px 36px;
   background: $color-brand-teal-base;
-  color: $bg-dark;
+  color: $color-white;
   font-size: 16px;
   font-weight: $font-weight-semibold;
   font-family: inherit;
@@ -123,20 +123,20 @@
   align-items: center;
   gap: 8px;
   padding: 16px 32px;
-  background: transparent;
-  color: $color-white;
+  background: rgba($color-brand-teal, 0.05);
+  color: $color-brand-teal;
   font-size: 16px;
   font-weight: $font-weight-medium;
   font-family: inherit;
   border-radius: 100px;
-  border: 1px solid rgba($color-white, 0.2);
+  border: 1px solid rgba($color-brand-teal, 0.4);
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba($color-brand-teal, 0.4);
-    background: rgba($color-brand-teal, 0.05);
-    color: $color-brand-teal;
+    background: $color-brand-teal-base;
+    border-color: $color-brand-teal-base;
+    color: $color-white;
   }
 }
 

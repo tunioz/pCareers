@@ -170,7 +170,7 @@
   font-weight: 800;
   line-height: 1;
   letter-spacing: -1px;
-  background: linear-gradient(135deg, rgba($color-brand-teal, 0.15), rgba($color-purple, 0.1));
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

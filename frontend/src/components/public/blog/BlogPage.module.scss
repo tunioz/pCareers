@@ -12,7 +12,7 @@
 
 // ── Hero ──
 .heroSection {
-  background: linear-gradient(160deg, $bg-dark 0%, $bg-dark-section 50%, $bg-dark-card 100%);
+  background: #F7F8FA;
   padding: 140px 0 80px;
   position: relative;
   overflow: hidden;
@@ -83,22 +83,25 @@
 .heroTitle {
   font-size: clamp(36px, 4vw, 56px);
   font-weight: $font-weight-bold;
-  color: $color-white;
+  color: #000000;
   margin-bottom: 16px;
   letter-spacing: -0.02em;
 }
 
 .heroAccent {
-  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #000000;
+  background: none;
+  -webkit-text-fill-color: #000000;
 }
 
 .heroSubtitle {
   font-size: 20px;
-  color: rgba($color-white, 0.6);
   line-height: 1.6;
+  background: linear-gradient(135deg, $color-brand-teal, $color-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
 // ── Shared ──
@@ -110,7 +113,7 @@
 
 // ── Featured Section ──
 .featuredSection {
-  padding: 64px 0 0;
+  padding: 0;
 }
 
 // ── Wide featured card (from BlogTeaser) ──
@@ -428,7 +431,7 @@
 .loadMoreButton {
   @include button-reset;
   background: $color-brand-teal-base;
-  color: $bg-dark;
+  color: $color-white;
   padding: 0 32px;
   height: 48px;
   border-radius: 100px;
@@ -515,7 +518,7 @@
 .relatedJobsCta {
   @include button-reset;
   background: $color-brand-teal-base;
-  color: $bg-dark;
+  color: $color-white;
   padding: 16px 36px;
   border-radius: 100px;
   font-size: 16px;
@@ -622,7 +625,7 @@
   align-items: center;
   gap: 16px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.5);
 
   span {
     display: inline-flex;

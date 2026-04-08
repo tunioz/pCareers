@@ -12,9 +12,9 @@ import styles from './CareersPage.module.scss';
 // ---------------------------------------------------------------------------
 interface CareersPageProps {
   jobs: Job[];
-  departments: string[];
-  products: string[];
-  seniorities: string[];
+  departments?: string[];
+  products?: string[];
+  seniorities?: string[];
   allTags: string[];
 }
 
@@ -56,9 +56,6 @@ const BENEFITS = [
 // ---------------------------------------------------------------------------
 export function CareersPage({
   jobs,
-  departments,
-  products,
-  seniorities,
   allTags,
 }: CareersPageProps) {
   // -- Refs for scroll-triggered animations
@@ -71,16 +68,10 @@ export function CareersPage({
 
   // -- Filter state
   const [activeTags, setActiveTags] = useState<string[]>([]);
-  const [department, setDepartment] = useState('All');
-  const [product, setProduct] = useState('All');
-  const [seniority, setSeniority] = useState('All');
 
   // -- Derived: filtered jobs
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
-      if (department !== 'All' && job.department !== department) return false;
-      if (product !== 'All' && job.product !== product) return false;
-      if (seniority !== 'All' && job.seniority !== seniority) return false;
       if (activeTags.length > 0) {
         const jobTags = job.tags
           ? job.tags.split(',').map((t) => t.trim().toLowerCase())
@@ -92,26 +83,13 @@ export function CareersPage({
       }
       return true;
     });
-  }, [jobs, department, product, seniority, activeTags]);
-
-  const hasActiveFilters =
-    department !== 'All' ||
-    product !== 'All' ||
-    seniority !== 'All' ||
-    activeTags.length > 0;
+  }, [jobs, activeTags]);
 
   // -- Handlers
   const handleTagToggle = (tag: string) => {
     setActiveTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
-  };
-
-  const handleClearAll = () => {
-    setDepartment('All');
-    setProduct('All');
-    setSeniority('All');
-    setActiveTags([]);
   };
 
   return (
@@ -166,77 +144,6 @@ export function CareersPage({
           </div>
         </section>
       )}
-
-      {/* ================================================================= */}
-      {/* 3. Filter Controls */}
-      {/* ================================================================= */}
-      <section className={styles.filtersSection}>
-        <div className={styles.filtersContainer}>
-          <div className={styles.filtersRow}>
-            <div className={styles.filtersLeft}>
-              <select
-                className={styles.filterSelect}
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                aria-label="Filter by department"
-              >
-                <option value="All">Department</option>
-                {departments.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                className={styles.filterSelect}
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                aria-label="Filter by product"
-              >
-                <option value="All">Product</option>
-                {products.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                className={styles.filterSelect}
-                value={seniority}
-                onChange={(e) => setSeniority(e.target.value)}
-                aria-label="Filter by seniority"
-              >
-                <option value="All">Seniority</option>
-                {seniorities.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-
-              {hasActiveFilters && (
-                <button
-                  type="button"
-                  className={styles.clearAllButton}
-                  onClick={handleClearAll}
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            <div className={styles.filtersRight}>
-              <span className={styles.resultsCount}>
-                {filteredJobs.length}{' '}
-                {filteredJobs.length === 1 ? 'role' : 'roles'} found
-              </span>
-{/* Department View — planned for future release */}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ================================================================= */}
       {/* 4. Jobs List — grouped by department */}

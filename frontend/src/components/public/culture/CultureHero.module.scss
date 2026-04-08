@@ -12,16 +12,14 @@
   align-items: center;
   overflow: hidden;
   padding: 160px 0 100px;
-  background: url('/images/bg-hero-culture.jpg') center center / cover no-repeat;
-  background-color: $bg-dark;
+  background: $bg-dark;
 
-  // Dark overlay
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba($bg-dark, 0.65);
-    z-index: 1;
+    background: url('/images/bg-hero-culture.jpg') right center / cover no-repeat;
+    z-index: 0;
   }
 }
 
@@ -29,13 +27,37 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
 }
 
 .inner {
   max-width: 620px;
+  position: relative;
+  z-index: 3;
+}
+
+.visual {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.heroImage {
+  width: 542px;
+  height: 446px;
+  max-width: 100%;
+  display: block;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 100vmax rgba($bg-dark, 0.6);
 }
 
 .label {
@@ -64,7 +86,7 @@
 
 .description {
   font-size: 18px;
-  color: rgba($color-white, 0.55);
+  color: rgba($color-white, 0.75);
   line-height: 1.7;
   margin-bottom: 36px;
   max-width: 500px;
@@ -84,7 +106,7 @@
   gap: 10px;
   padding: 16px 32px;
   background: $color-brand-teal-base;
-  color: $bg-dark;
+  color: $color-white;
   font-size: 16px;
   font-weight: $font-weight-semibold;
   font-family: inherit;
@@ -129,6 +151,22 @@
   .section {
     padding: 140px 0 80px;
     min-height: 440px;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .visual {
+    justify-content: center;
+  }
+
+  .heroImage {
+    width: 100%;
+    max-width: 542px;
+    height: auto;
+    aspect-ratio: 542 / 446;
   }
 }
 

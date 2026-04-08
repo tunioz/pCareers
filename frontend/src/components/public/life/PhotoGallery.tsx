@@ -71,6 +71,14 @@ export function PhotoGallery({ categories, photos }: PhotoGalleryProps) {
         >
           Life at pCloud
         </motion.h2>
+        <motion.p
+          className={styles.subheading}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.1, duration: 0.8 }}
+        >
+          More than a workplace
+        </motion.p>
 
         <div className={styles.pills}>
           {filters.map((f) => (

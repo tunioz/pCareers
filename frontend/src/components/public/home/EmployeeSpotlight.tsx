@@ -16,13 +16,13 @@ const employees = [
   {
     name: 'Marcus Johnson',
     role: 'Principal Backend Engineer',
-    photo: 'https://images.unsplash.com/photo-1769636930047-4478f12cf430?w=600',
+    photo: '/images/employee-marcus.jpg',
     quote: 'Building infrastructure that stores 500+ petabytes of data across 175+ countries is incredibly challenging and rewarding. What I love most is the engineering culture.',
   },
   {
     name: 'Yuki Tanaka',
     role: 'Product Designer',
-    photo: 'https://images.unsplash.com/photo-1770363758469-386b78e979e2?w=600',
+    photo: '/images/employee-yuki.jpg',
     quote: "What drew me to pCloud was the mission: making privacy accessible to everyone. As a designer, I appreciate how the team values user experience as much as security.",
   },
 ];

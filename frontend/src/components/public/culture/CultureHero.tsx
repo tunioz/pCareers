@@ -49,6 +49,15 @@ export function CultureHero() {
             </Link>
           </motion.div>
         </div>
+
+        <motion.div
+          className={styles.visual}
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className={styles.heroImage} aria-hidden="true" />
+        </motion.div>
       </div>
     </section>
   );

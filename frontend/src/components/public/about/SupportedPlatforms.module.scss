@@ -37,7 +37,7 @@
 
 .subtitle {
   font-size: 18px;
-  color: rgba($color-white, 0.45);
+  color: rgba($color-white, 0.75);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.7;
@@ -69,7 +69,7 @@
 
 // ── Card ──
 .card {
-  background: rgba($color-white, 0.04);
+  background: rgba($color-white, 0.15);
   border: 1px solid rgba($color-white, 0.08);
   border-radius: 16px;
   padding: 32px 16px;
@@ -151,25 +151,25 @@
 .cardWeb {
   &::before { background: $color-brand-teal; }
 }
-.viewRoleWeb { color: $color-brand-teal; }
+.viewRoleWeb { color: $color-brand-teal-base; }
 
 // iOS — neutral/gray
 .cardIos {
   &::before { background: rgba($color-white, 0.3); }
 }
-.viewRoleIos { color: rgba($color-white, 0.5); }
+.viewRoleIos { color: $color-brand-teal-base; }
 
 // Android — green
 .cardAndroid {
   &::before { background: $color-green; }
 }
-.viewRoleAndroid { color: $color-green; }
+.viewRoleAndroid { color: $color-brand-teal-base; }
 
 // macOS — purple
 .cardMacos {
   &::before { background: $color-purple; }
 }
-.viewRoleMacos { color: $color-purple; }
+.viewRoleMacos { color: $color-brand-teal-base; }
 
 // Windows — brand teal base
 .cardWindows {
@@ -181,7 +181,7 @@
 .cardLinux {
   &::before { background: $color-amber; }
 }
-.viewRoleLinux { color: $color-amber; }
+.viewRoleLinux { color: $color-brand-teal-base; }
 
 // ═══════════════════════════════════════
 // RESPONSIVE

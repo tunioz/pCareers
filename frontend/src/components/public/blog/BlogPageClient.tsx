@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { ChevronDown, Linkedin, Twitter, Mail } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '../ImageWithFallback';
 import type { Post, Job } from '@/types';
@@ -68,9 +68,6 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
     <div className={styles.page}>
       {/* Hero */}
       <section ref={heroRef} className={styles.heroSection}>
-        <div className={`${styles.blob} ${styles.blob1}`} />
-        <div className={`${styles.blob} ${styles.blob2}`} />
-        <div className={`${styles.blob} ${styles.blob3}`} />
         <div className={styles.heroContainer}>
           <motion.div className={styles.heroContent} initial={{ opacity: 0, y: 30 }} animate={isHeroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}>
             <h1 className={styles.heroTitle}>Under the <span className={styles.heroAccent}>hood</span></h1>
@@ -248,31 +245,6 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
         </section>
       )}
 
-      {/* Share our blog */}
-      <section className={styles.shareSection}>
-        <div className={styles.blogContainer}>
-          <motion.div
-            className={styles.shareContent}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h3 className={styles.shareTitle}>Share our blog</h3>
-            <div className={styles.shareButtons}>
-              <motion.button className={styles.shareLinkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on LinkedIn" onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}>
-                <Linkedin size={24} />
-              </motion.button>
-              <motion.button className={styles.shareTwitter} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share on Twitter" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`, '_blank')}>
-                <Twitter size={24} />
-              </motion.button>
-              <motion.button className={styles.shareEmail} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Share via Email" onClick={() => window.open(`mailto:?subject=pCloud Engineering Blog&body=${encodeURIComponent(window.location.href)}`)}>
-                <Mail size={24} />
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }

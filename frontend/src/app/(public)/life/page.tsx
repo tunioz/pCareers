@@ -1,12 +1,10 @@
 export const revalidate = 60;
 import type { Metadata } from 'next';
 import { queryAll } from '@/lib/db';
-import { PageHero } from '@/components/public/PageHero';
 import { PhotoGallery } from '@/components/public/life/PhotoGallery';
 import { TeamStories } from '@/components/public/life/TeamStories';
 import { TypicalDay } from '@/components/public/life/TypicalDay';
 import { Events } from '@/components/public/life/Events';
-import { Social } from '@/components/public/life/Social';
 import { LifeCTA } from '@/components/public/life/LifeCTA';
 import type { GalleryCategory, GalleryPhotoWithCategory, TeamStory } from '@/types';
 
@@ -34,17 +32,10 @@ export default function LifePage() {
 
   return (
     <>
-      <PageHero
-        label="LIFE AT PCLOUD"
-        heading="More than a workplace"
-        subtitle="See what life at pCloud really looks like"
-        backgroundImage="/images/life-hero-bg.jpg"
-      />
       <PhotoGallery categories={categories} photos={photos} />
       <TeamStories stories={stories} />
       <TypicalDay />
       <Events />
-      <Social />
       <LifeCTA />
     </>
   );

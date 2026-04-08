@@ -291,69 +291,6 @@ export function RolePreview({
               ))}
             </div>
 
-            {/* Buttons */}
-            <div className={styles.heroButtons}>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={styles.btnApply}
-                onClick={() => setShowApplyModal(true)}
-              >
-                Apply Now
-              </motion.button>
-              <div className={styles.shareWrapper} ref={shareMenuRef}>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={styles.btnOutlined}
-                  onClick={() => setShowShareMenu((prev) => !prev)}
-                >
-                  <Share2 size={20} />
-                  Share
-                </motion.button>
-                <AnimatePresence>
-                  {showShareMenu && (
-                    <motion.div
-                      className={styles.shareDropdown}
-                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <button
-                        className={styles.shareDropdownItem}
-                        onClick={() => { handleCopyLink(); setShowShareMenu(false); }}
-                      >
-                        {copiedLink ? <Check size={18} /> : <Link2 size={18} />}
-                        {copiedLink ? 'Copied!' : 'Copy link'}
-                      </button>
-                      <button
-                        className={styles.shareDropdownItem}
-                        onClick={() => { handleShareLinkedIn(); setShowShareMenu(false); }}
-                      >
-                        <Linkedin size={18} />
-                        LinkedIn
-                      </button>
-                      <button
-                        className={styles.shareDropdownItem}
-                        onClick={() => { handleShareTwitter(); setShowShareMenu(false); }}
-                      >
-                        <Twitter size={18} />
-                        Twitter / X
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={styles.btnOutlined}
-              >
-                <Bookmark size={20} />
-                Save
-              </motion.button>
-            </div>
           </motion.div>
         </div>
       </section>

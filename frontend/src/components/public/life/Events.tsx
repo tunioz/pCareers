@@ -63,7 +63,6 @@ export function Events() {
               <div className={styles.cardImage}>
                 <img src={event.image} alt={event.title} />
               </div>
-              <span className={styles.datePill}>{event.date}</span>
               <h3 className={styles.cardTitle}>{event.title}</h3>
               <p className={styles.cardDescription}>{event.description}</p>
             </motion.div>
