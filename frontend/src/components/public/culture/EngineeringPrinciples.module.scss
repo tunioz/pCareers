@@ -4,6 +4,19 @@
 .section {
   background: $color-white;
   padding: $spacing-20 $spacing-6;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, $bg-dark, transparent);
+    pointer-events: none;
+    opacity: 0.08;
+  }
 
   @include breakpoint(lg) {
     padding: $spacing-24 $spacing-20;

@@ -32,7 +32,7 @@ export function CultureHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            We believe great work comes from trust, ownership, and deep focus. Here&apos;s what it&apos;s like to be part of the team.
+            We believe great work comes from trust, ownership, and deep focus. No micromanagement. No bureaucracy. Just engineers who care about what they build and teams that back each other. Here&apos;s what it&apos;s like to be part of pCloud.
           </motion.p>
 
           <motion.div

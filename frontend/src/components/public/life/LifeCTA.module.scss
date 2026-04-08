@@ -6,6 +6,19 @@
   padding: 100px 0 120px;
   position: relative;
   overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, $bg-dark, transparent);
+    pointer-events: none;
+    opacity: 0.08;
+    z-index: 0;
+  }
 }
 
 // ── Ambient blobs ──

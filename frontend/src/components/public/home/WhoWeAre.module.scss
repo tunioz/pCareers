@@ -241,10 +241,11 @@
 
 // ── Accent underlines on h3 ──
 .boxTitle {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: $font-weight-bold;
   color: $color-white;
   margin-bottom: 20px;
+  line-height: 1.25;
 
   &::after {
     content: '';
