@@ -491,6 +491,74 @@ function initializeSchema(): void {
       FOREIGN KEY (task_id) REFERENCES technical_tasks(id) ON DELETE CASCADE
     );
 
+    -- ═══════════════════════════════════════════════════════════════════
+    -- AI AUDIT LOG — track all Claude/AI calls for compliance and cost
+    -- ═══════════════════════════════════════════════════════════════════
+    CREATE TABLE IF NOT EXISTS ai_audit_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      skill TEXT NOT NULL,
+      user_username TEXT NOT NULL,
+      candidate_id INTEGER,
+      model TEXT NOT NULL,
+      tokens_in INTEGER DEFAULT 0,
+      tokens_out INTEGER DEFAULT 0,
+      cost_usd REAL DEFAULT 0,
+      duration_ms INTEGER DEFAULT 0,
+      success INTEGER DEFAULT 1,
+      error_message TEXT,
+      prompt_preview TEXT,
+      output_preview TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    -- ═══════════════════════════════════════════════════════════════════
+    -- INTERVIEW KITS — structured question banks per role/stage
+    -- ═══════════════════════════════════════════════════════════════════
+    CREATE TABLE IF NOT EXISTS interview_kits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT,
+      role_type TEXT,              -- "Backend Engineer", "Designer", etc.
+      stage TEXT NOT NULL,         -- "screening", "technical", "culture", "final"
+      duration_minutes INTEGER DEFAULT 60,
+      focus_dimensions TEXT,       -- JSON array: ["technical_depth", "problem_solving"]
+      instructions TEXT,           -- Interviewer prep notes
+      is_published INTEGER DEFAULT 1,
+      ai_generated INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS interview_kit_questions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      kit_id INTEGER NOT NULL,
+      sort_order INTEGER DEFAULT 0,
+      question TEXT NOT NULL,
+      category TEXT,               -- "behavioral", "technical", "systems", "coding"
+      expected_signal TEXT,        -- what a strong answer demonstrates
+      follow_up TEXT,              -- suggested follow-up prompts
+      dimension TEXT,              -- which scorecard dimension this maps to
+      difficulty TEXT DEFAULT 'medium', -- easy / medium / hard
+      FOREIGN KEY (kit_id) REFERENCES interview_kits(id) ON DELETE CASCADE
+    );
+
+    -- Link a candidate's interview to a kit
+    CREATE TABLE IF NOT EXISTS candidate_interview_sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      candidate_id INTEGER NOT NULL,
+      kit_id INTEGER,
+      interviewer_name TEXT NOT NULL,
+      stage TEXT NOT NULL,
+      scheduled_at TEXT,
+      completed_at TEXT,
+      raw_notes TEXT,              -- freeform notes before AI draft
+      score_id INTEGER,            -- link to candidate_scores after submission
+      status TEXT DEFAULT 'scheduled', -- scheduled / in_progress / completed / cancelled
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE,
+      FOREIGN KEY (kit_id) REFERENCES interview_kits(id) ON DELETE SET NULL
+    );
+
     -- Indexes for common queries
     CREATE INDEX IF NOT EXISTS idx_legal_pages_slug ON legal_pages(slug);
     CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug);
@@ -509,6 +577,11 @@ function initializeSchema(): void {
     CREATE INDEX IF NOT EXISTS idx_candidate_references_candidate ON candidate_references(candidate_id);
     CREATE INDEX IF NOT EXISTS idx_candidate_history_candidate ON candidate_history(candidate_id);
     CREATE INDEX IF NOT EXISTS idx_candidate_attachments_candidate ON candidate_attachments(candidate_id);
+    CREATE INDEX IF NOT EXISTS idx_ai_audit_user_date ON ai_audit_log(user_username, created_at);
+    CREATE INDEX IF NOT EXISTS idx_ai_audit_skill ON ai_audit_log(skill);
+    CREATE INDEX IF NOT EXISTS idx_ai_audit_candidate ON ai_audit_log(candidate_id);
+    CREATE INDEX IF NOT EXISTS idx_interview_kit_questions_kit ON interview_kit_questions(kit_id, sort_order);
+    CREATE INDEX IF NOT EXISTS idx_candidate_sessions_candidate ON candidate_interview_sessions(candidate_id);
     CREATE INDEX IF NOT EXISTS idx_team_order ON team_members(sort_order);
     CREATE INDEX IF NOT EXISTS idx_interview_stages_template ON interview_stages(template_id, stage_number);
     CREATE INDEX IF NOT EXISTS idx_candidate_values_order ON candidate_values(sort_order);
