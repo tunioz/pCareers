@@ -85,12 +85,12 @@
 }
 
 .tagPillInactive {
-  background: rgba($color-brand-teal, 0.08);
-  color: $color-brand-teal-dark;
+  background: #EDEEF0;
+  color: rgba(10, 14, 23, 0.75);
   min-height: 44px;
 
   &:hover {
-    background: rgba($color-brand-teal, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
   }
 
@@ -99,6 +99,16 @@
     outline-offset: 2px;
   }
 }
+
+// Rotating light background colors for the tag pills
+.tagsRow .tagPillInactive:nth-child(8n + 1) { background: #E0F7FA; color: #006064; }
+.tagsRow .tagPillInactive:nth-child(8n + 2) { background: #F3E5F5; color: #6A1B9A; }
+.tagsRow .tagPillInactive:nth-child(8n + 3) { background: #FFF3E0; color: #E65100; }
+.tagsRow .tagPillInactive:nth-child(8n + 4) { background: #E8F5E9; color: #1B5E20; }
+.tagsRow .tagPillInactive:nth-child(8n + 5) { background: #FCE4EC; color: #880E4F; }
+.tagsRow .tagPillInactive:nth-child(8n + 6) { background: #E3F2FD; color: #0D47A1; }
+.tagsRow .tagPillInactive:nth-child(8n + 7) { background: #FFF9C4; color: #827717; }
+.tagsRow .tagPillInactive:nth-child(8n + 0) { background: #F1F8E9; color: #33691E; }
 
 .tagPillActive {
   background: linear-gradient(135deg, $color-brand-teal, $color-purple);
