@@ -47,7 +47,8 @@ import { useToast } from '@/components/admin/Toast';
 import { CandidateAiAnalysisPanel } from '@/components/admin/CandidateAiAnalysisPanel';
 import { InterviewSessionsPanel } from '@/components/admin/InterviewSessionsPanel';
 import { AiProfileCard } from '@/components/admin/AiProfileCard';
-import { Sparkles } from 'lucide-react';
+import { CandidateEmailsPanel } from '@/components/admin/CandidateEmailsPanel';
+import { Sparkles, ShieldAlert, DownloadCloud } from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 import type {
   CandidateWithJob,
@@ -935,6 +936,55 @@ export default function CandidateDossierPage() {
             candidateId={candidate.id}
             currentUsername={currentUsername || 'admin'}
           />
+
+          <CandidateEmailsPanel
+            candidateId={candidate.id}
+            candidateName={candidate.full_name}
+          />
+
+          {/* GDPR controls */}
+          <div style={{ border: '1px solid #FEE2E2', borderRadius: '12px', padding: '20px', background: '#FEF2F2' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#991B1B', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldAlert size={16} />
+              GDPR controls
+            </h3>
+            <p style={{ margin: '6px 0 12px', fontSize: '12px', color: '#7F1D1D' }}>
+              Export or permanently delete all candidate data to comply with GDPR data subject requests.
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <a
+                href={`/api/candidates/${candidate.id}/gdpr-export`}
+                download
+                style={{ padding: '8px 14px', background: '#FFFFFF', color: '#1F2937', border: '1px solid #D1D5DB', borderRadius: '8px', textDecoration: 'none', fontSize: '13px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <DownloadCloud size={14} />
+                Export all data (JSON)
+              </a>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!confirm(`PERMANENTLY delete all data for ${candidate.full_name}? This cannot be undone. Audit log entries will be retained for compliance.`)) return;
+                  if (!confirm('This is a GDPR deletion. Are you ABSOLUTELY sure?')) return;
+                  try {
+                    const res = await fetch(`/api/candidates/${candidate.id}/gdpr-delete`, { method: 'POST' });
+                    const json = await res.json();
+                    if (json.success) {
+                      showToast('success', 'Candidate data permanently deleted');
+                      router.push('/admin/candidates');
+                    } else {
+                      showToast('error', json.error || 'Deletion failed');
+                    }
+                  } catch {
+                    showToast('error', 'Network error');
+                  }
+                }}
+                style={{ padding: '8px 14px', background: '#DC2626', color: '#FFFFFF', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <ShieldAlert size={14} />
+                GDPR delete (permanent)
+              </button>
+            </div>
+          </div>
 
           {/* LinkedIn profile paste area */}
           <div style={{

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Calendar, User, Clock, Lock, CheckCircle, Loader2, Plus } from 'lucide-react';
+import { Calendar, User, Clock, Lock, CheckCircle, Loader2, Plus, Download } from 'lucide-react';
 
 interface Session {
   id: number;
@@ -276,23 +276,47 @@ export function InterviewSessionsPanel({ candidateId, currentUsername }: Props) 
                     </div>
                   )}
                 </div>
-                {isOwn && !isCompleted && (
-                  <a
-                    href={`/admin/candidates/${candidateId}?session=${s.id}`}
-                    style={{
-                      padding: '6px 12px',
-                      background: '#17BED0',
-                      color: '#FFFFFF',
-                      borderRadius: '6px',
-                      textDecoration: 'none',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Open
-                  </a>
-                )}
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  {s.scheduled_at && (
+                    <a
+                      href={`/api/candidates/${candidateId}/sessions/${s.id}/ics`}
+                      download
+                      title="Download .ics calendar file"
+                      style={{
+                        padding: '6px 10px',
+                        background: '#F3F4F6',
+                        color: '#374151',
+                        borderRadius: '6px',
+                        textDecoration: 'none',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <Download size={12} />
+                      .ics
+                    </a>
+                  )}
+                  {isOwn && !isCompleted && (
+                    <a
+                      href={`/admin/candidates/${candidateId}?session=${s.id}`}
+                      style={{
+                        padding: '6px 12px',
+                        background: '#17BED0',
+                        color: '#FFFFFF',
+                        borderRadius: '6px',
+                        textDecoration: 'none',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Open
+                    </a>
+                  )}
+                </div>
               </div>
             );
           })}

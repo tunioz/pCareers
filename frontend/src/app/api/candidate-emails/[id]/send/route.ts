@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { queryOne, execute } from '@/lib/db';
 import { getAuthenticatedUser, hasPermission } from '@/lib/permissions';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { sendEmail, isEmailConfigured } from '@/lib/email';
 import type { Candidate } from '@/types';
 
 interface RouteContext {
@@ -85,18 +86,53 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    // ─── SMTP delivery hook ───
-    // TODO: Integrate with SendGrid/Resend/Postmark. For now, we just record
-    // that the email was "sent" by this user. The actual delivery will be a
-    // separate configuration step once an SMTP provider is chosen.
-    //
-    // Example integration (commented):
-    //   await sendViaResend({
-    //     to: candidate.email,
-    //     subject: email.subject,
-    //     text: email.body,
-    //     from: 'careers@pcloud.com',
-    //   });
+    // ─── Real email delivery via Resend ───
+    if (!isEmailConfigured()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Email provider is not configured. Set RESEND_API_KEY env var and verify your sending domain at resend.com.',
+        },
+        { status: 503 }
+      );
+    }
+
+    const deliveryResult = await sendEmail({
+      to: candidate.email,
+      subject: email.subject,
+      text: email.body,
+    });
+
+    if (!deliveryResult.ok) {
+      execute(
+        `UPDATE candidate_emails SET status = 'failed', updated_at = datetime('now') WHERE id = ?`,
+        [emailId]
+      );
+
+      logAudit({
+        userId: user.userId,
+        userUsername: user.username,
+        userRole: user.role,
+        action: 'email_sent',
+        entityType: 'candidate',
+        entityId: email.candidate_id,
+        details: {
+          email_id: emailId,
+          email_type: email.email_type,
+          to: candidate.email,
+          status: 'failed',
+          error: deliveryResult.error,
+        },
+        ipAddress: getClientIp(request),
+        userAgent: getUserAgent(request),
+      });
+
+      return NextResponse.json(
+        { success: false, error: `Email delivery failed: ${deliveryResult.error}` },
+        { status: 502 }
+      );
+    }
 
     execute(
       `UPDATE candidate_emails SET
@@ -120,6 +156,7 @@ export async function POST(request: Request, context: RouteContext) {
         email_type: email.email_type,
         to: candidate.email,
         subject: email.subject,
+        message_id: deliveryResult.messageId,
       },
       ipAddress: getClientIp(request),
       userAgent: getUserAgent(request),
@@ -131,7 +168,7 @@ export async function POST(request: Request, context: RouteContext) {
         email_id: emailId,
         status: 'sent',
         sent_to: candidate.email,
-        note: 'Email marked as sent. SMTP provider integration is pending (configure SendGrid/Resend/Postmark).',
+        message_id: deliveryResult.messageId,
       },
     });
   } catch (err) {

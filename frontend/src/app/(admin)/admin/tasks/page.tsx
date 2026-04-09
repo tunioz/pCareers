@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ClipboardCheck, Plus, Edit, Trash2, X, EyeOff } from 'lucide-react';
+import { ClipboardCheck, Plus, Edit, Trash2, X, EyeOff, Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/admin/Toast';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import styles from '@/styles/admin.module.scss';
@@ -26,6 +26,41 @@ export default function TasksPage() {
   const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
   const [blindMode, setBlindMode] = useState(false);
+  const [analyzingId, setAnalyzingId] = useState<number | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<{
+    taskId: number;
+    analysis: {
+      task_analysis?: {
+        skills_evaluated?: string[];
+        difficulty?: string;
+        estimated_time?: string;
+        evaluation_criteria?: Array<{ criterion: string; weight: string; what_to_look_for: string }>;
+        common_pitfalls?: string[];
+        stretch_goals?: string[];
+      };
+    };
+  } | null>(null);
+
+  async function runAnalyze(taskId: number) {
+    setAnalyzingId(taskId);
+    try {
+      const res = await fetch('/api/ai/analyze-task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_id: taskId }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setAnalysisResult({ taskId, analysis: json.data.analysis });
+      } else {
+        showToast('error', json.error || 'Analysis failed');
+      }
+    } catch (err) {
+      showToast('error', err instanceof Error ? err.message : 'Network error');
+    } finally {
+      setAnalyzingId(null);
+    }
+  }
 
   const loadTasks = useCallback(async () => {
     try {
@@ -196,6 +231,15 @@ export default function TasksPage() {
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                  <button
+                    className={`${styles.btnGhost} ${styles.btnSmall}`}
+                    onClick={() => runAnalyze(task.id)}
+                    disabled={analyzingId === task.id}
+                    title="Analyze task with AI"
+                    style={{ color: '#17BED0' }}
+                  >
+                    {analyzingId === task.id ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                  </button>
                   <button className={`${styles.btnGhost} ${styles.btnSmall}`} onClick={() => openEdit(task)}>
                     <Edit size={14} />
                   </button>
@@ -210,6 +254,110 @@ export default function TasksPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* AI Analysis Result Modal */}
+      {analysisResult && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}
+          onClick={() => setAnalysisResult(null)}
+        >
+          <div
+            style={{ background: '#FFFFFF', borderRadius: '16px', maxWidth: '720px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: '28px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h2 style={{ margin: 0, fontSize: '18px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Sparkles size={18} color="#17BED0" />
+                AI Task Analysis
+              </h2>
+              <button type="button" onClick={() => setAnalysisResult(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', color: '#6B7280' }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            {analysisResult.analysis.task_analysis && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <span style={{ padding: '4px 10px', background: '#F3F4F6', borderRadius: '100px', fontSize: '12px', fontWeight: 600 }}>
+                    {analysisResult.analysis.task_analysis.difficulty || '—'}
+                  </span>
+                  <span style={{ padding: '4px 10px', background: '#F3F4F6', borderRadius: '100px', fontSize: '12px' }}>
+                    Est. {analysisResult.analysis.task_analysis.estimated_time || '—'}
+                  </span>
+                </div>
+
+                {analysisResult.analysis.task_analysis.skills_evaluated && analysisResult.analysis.task_analysis.skills_evaluated.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', fontWeight: 600, marginBottom: '6px' }}>
+                      Skills evaluated
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {analysisResult.analysis.task_analysis.skills_evaluated.map((s: string, i: number) => (
+                        <span key={i} style={{ padding: '4px 10px', background: '#E0F7FA', color: '#006064', borderRadius: '100px', fontSize: '12px', fontWeight: 500 }}>
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {analysisResult.analysis.task_analysis.evaluation_criteria && analysisResult.analysis.task_analysis.evaluation_criteria.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '11px', textTransform: 'uppercase', color: '#6B7280', fontWeight: 600, marginBottom: '6px' }}>
+                      Evaluation criteria
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {analysisResult.analysis.task_analysis.evaluation_criteria.map((c, i: number) => (
+                        <div key={i} style={{ padding: '12px', background: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                            <strong style={{ fontSize: '13px' }}>{c.criterion}</strong>
+                            <span style={{
+                              padding: '1px 6px',
+                              fontSize: '10px',
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                              borderRadius: '3px',
+                              background: c.weight === 'high' ? '#FEE2E2' : c.weight === 'medium' ? '#FEF3C7' : '#E5E7EB',
+                              color: c.weight === 'high' ? '#991B1B' : c.weight === 'medium' ? '#92400E' : '#374151',
+                            }}>
+                              {c.weight}
+                            </span>
+                          </div>
+                          <p style={{ margin: 0, fontSize: '12px', color: '#6B7280', lineHeight: 1.5 }}>
+                            {c.what_to_look_for}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {analysisResult.analysis.task_analysis.common_pitfalls && analysisResult.analysis.task_analysis.common_pitfalls.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '11px', textTransform: 'uppercase', color: '#D97706', fontWeight: 600, marginBottom: '6px' }}>
+                      Common pitfalls
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#1F2937', lineHeight: 1.6 }}>
+                      {analysisResult.analysis.task_analysis.common_pitfalls.map((p: string, i: number) => <li key={i}>{p}</li>)}
+                    </ul>
+                  </div>
+                )}
+
+                {analysisResult.analysis.task_analysis.stretch_goals && analysisResult.analysis.task_analysis.stretch_goals.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '11px', textTransform: 'uppercase', color: '#059669', fontWeight: 600, marginBottom: '6px' }}>
+                      Stretch goals
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#1F2937', lineHeight: 1.6 }}>
+                      {analysisResult.analysis.task_analysis.stretch_goals.map((g: string, i: number) => <li key={i}>{g}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
