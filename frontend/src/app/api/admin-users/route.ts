@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getAuthUser, hashPassword } from '@/lib/auth';
+import { hashPassword } from '@/lib/auth';
 import { queryAll, queryOne, execute } from '@/lib/db';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { requirePermission, getAuthenticatedUser } from '@/lib/permissions';
 
 export interface AdminUserRow {
   id: number;
@@ -23,11 +24,15 @@ const VALID_ROLES = ['admin', 'recruiter', 'interviewer', 'hiring_manager'] as c
 /**
  * GET /api/admin-users
  * List all admin users (no password hashes).
+ * Interviewer cannot view user list.
  */
 export async function GET() {
-  const user = await getAuthUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+  }
+  if (user.role === 'interviewer') {
+    return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
   }
 
   try {
@@ -46,13 +51,16 @@ export async function GET() {
 
 /**
  * POST /api/admin-users
- * Create a new admin user.
+ * Create a new admin user. Only admins can create users.
  * Body: { username, password, full_name, email, role, title, photo }
  */
 export async function POST(request: Request) {
-  const currentUser = await getAuthUser();
+  const currentUser = await requirePermission('users:manage');
   if (!currentUser) {
-    return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    return NextResponse.json(
+      { success: false, error: 'Only admins can create users' },
+      { status: 403 }
+    );
   }
 
   try {

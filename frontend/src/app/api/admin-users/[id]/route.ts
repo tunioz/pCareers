@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getAuthUser, hashPassword } from '@/lib/auth';
+import { hashPassword } from '@/lib/auth';
 import { queryOne, execute } from '@/lib/db';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { requirePermission, getAuthenticatedUser } from '@/lib/permissions';
 import type { AdminUserRow } from '../route';
 
 interface RouteContext {
@@ -11,9 +12,12 @@ interface RouteContext {
 const VALID_ROLES = ['admin', 'recruiter', 'interviewer', 'hiring_manager'] as const;
 
 export async function GET(_request: Request, context: RouteContext) {
-  const user = await getAuthUser();
+  const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+  }
+  if (user.role === 'interviewer') {
+    return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
   }
 
   const { id } = await context.params;
@@ -33,9 +37,12 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PUT(request: Request, context: RouteContext) {
-  const currentUser = await getAuthUser();
+  const currentUser = await requirePermission('users:manage');
   if (!currentUser) {
-    return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    return NextResponse.json(
+      { success: false, error: 'Only admins can update users' },
+      { status: 403 }
+    );
   }
 
   try {
@@ -114,9 +121,12 @@ export async function PUT(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const currentUser = await getAuthUser();
+  const currentUser = await requirePermission('users:manage');
   if (!currentUser) {
-    return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    return NextResponse.json(
+      { success: false, error: 'Only admins can delete users' },
+      { status: 403 }
+    );
   }
 
   try {

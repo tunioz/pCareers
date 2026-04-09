@@ -3,6 +3,7 @@ import { queryOne, queryAll, execute } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { validateCandidateUpdate } from '@/lib/validations';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { getAuthenticatedUser, stripSensitiveFields, hasPermission } from '@/lib/permissions';
 import type { Candidate, CandidateWithJob, CandidateNote, CandidateScore, CandidateHistory } from '@/types';
 
 interface RouteContext {
@@ -14,7 +15,7 @@ interface RouteContext {
  */
 export async function GET(request: Request, context: RouteContext) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
@@ -47,6 +48,12 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
+    // Strip salary and sensitive fields from interviewers
+    const filteredCandidate = stripSensitiveFields(
+      candidate as unknown as Record<string, unknown>,
+      user.role
+    ) as unknown as CandidateWithJob;
+
     // Get recent notes count
     const notesCount = queryOne<{ count: number }>(
       'SELECT COUNT(*) as count FROM candidate_notes WHERE candidate_id = ?',
@@ -62,11 +69,13 @@ export async function GET(request: Request, context: RouteContext) {
     return NextResponse.json({
       success: true,
       data: {
-        ...candidate,
+        ...filteredCandidate,
         _counts: {
           notes: notesCount?.count || 0,
           scores: scoresCount?.count || 0,
         },
+        _viewer_role: user.role,
+        _can_see_salary: hasPermission(user.role, 'candidates:view_salary'),
       },
     });
   } catch (error) {
@@ -188,11 +197,17 @@ export async function PUT(request: Request, context: RouteContext) {
  */
 export async function DELETE(request: Request, context: RouteContext) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
         { status: 401 }
+      );
+    }
+    if (!hasPermission(user.role, 'candidates:delete')) {
+      return NextResponse.json(
+        { success: false, error: 'Only admins can delete candidates' },
+        { status: 403 }
       );
     }
 

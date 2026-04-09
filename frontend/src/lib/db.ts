@@ -654,6 +654,27 @@ function initializeSchema(): void {
       FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
     );
     CREATE INDEX IF NOT EXISTS idx_candidate_analysis_candidate ON candidate_analysis(candidate_id, created_at);
+
+    -- CANDIDATE EMAILS — draft/edit/send workflow for offer/rejection/invite emails
+    CREATE TABLE IF NOT EXISTS candidate_emails (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      candidate_id INTEGER NOT NULL,
+      email_type TEXT NOT NULL,
+      subject TEXT,
+      body TEXT,
+      status TEXT NOT NULL DEFAULT 'draft',
+      ai_generated INTEGER DEFAULT 0,
+      ai_prompt_context TEXT,
+      sent_at TEXT,
+      sent_by TEXT,
+      sent_to_email TEXT,
+      created_by TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_candidate_emails_candidate ON candidate_emails(candidate_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_candidate_emails_status ON candidate_emails(status);
   `);
 
   runMigrations();

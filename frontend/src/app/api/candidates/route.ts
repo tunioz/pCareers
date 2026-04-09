@@ -4,6 +4,7 @@ import { getAuthUser } from '@/lib/auth';
 import { validateCandidate } from '@/lib/validations';
 import { saveUploadedFile } from '@/lib/upload';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { getAuthenticatedUser, stripSensitiveFromArray } from '@/lib/permissions';
 import type { CandidateWithJob } from '@/types';
 
 /**
@@ -12,7 +13,7 @@ import type { CandidateWithJob } from '@/types';
  */
 export async function GET(request: Request) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
@@ -80,10 +81,15 @@ export async function GET(request: Request) {
       [...queryParams, perPage, offset]
     );
 
+    const filtered = stripSensitiveFromArray(
+      candidates as unknown as Record<string, unknown>[],
+      user.role
+    ) as unknown as CandidateWithJob[];
+
     return NextResponse.json({
       success: true,
-      data: candidates,
-      meta: { page, perPage, total, totalPages },
+      data: filtered,
+      meta: { page, perPage, total, totalPages, viewer_role: user.role },
     });
   } catch (error) {
     console.error('Get candidates error:', error);
