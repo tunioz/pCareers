@@ -30,7 +30,16 @@ function initializeSchema(): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
-      created_at TEXT DEFAULT (datetime('now'))
+      -- Profile fields
+      full_name TEXT,
+      email TEXT,
+      photo TEXT,
+      role TEXT NOT NULL DEFAULT 'admin',  -- admin, recruiter, interviewer, hiring_manager
+      title TEXT,                          -- e.g. "Senior Recruiter", "Head of Engineering"
+      is_active INTEGER DEFAULT 1,
+      last_login_at TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
     );
 
     CREATE TABLE IF NOT EXISTS categories (
@@ -607,7 +616,75 @@ function initializeSchema(): void {
     CREATE INDEX IF NOT EXISTS idx_position_criteria_job ON position_criteria(job_id, sort_order);
     CREATE INDEX IF NOT EXISTS idx_custom_scores_score ON custom_scores(score_id);
     CREATE INDEX IF NOT EXISTS idx_custom_scores_criterion ON custom_scores(criterion_id);
+
+    -- AUDIT LOG — record every admin action (who, when, what)
+    CREATE TABLE IF NOT EXISTS audit_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      user_username TEXT NOT NULL,
+      user_role TEXT,
+      action TEXT NOT NULL,
+      entity_type TEXT,
+      entity_id INTEGER,
+      details TEXT,
+      ip_address TEXT,
+      user_agent TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES admin_users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_audit_log_user ON audit_log(user_username, created_at);
+    CREATE INDEX IF NOT EXISTS idx_audit_log_entity ON audit_log(entity_type, entity_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_log_action ON audit_log(action);
+
+    -- CANDIDATE ANALYSIS CACHE — unified AI analysis results
+    CREATE TABLE IF NOT EXISTS candidate_analysis (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      candidate_id INTEGER NOT NULL,
+      generated_by TEXT NOT NULL,
+      overall_summary TEXT,
+      strengths TEXT,
+      concerns TEXT,
+      red_flags TEXT,
+      recommendation TEXT,
+      confidence TEXT,
+      sources_analyzed TEXT,
+      model TEXT,
+      cost_usd REAL,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_candidate_analysis_candidate ON candidate_analysis(candidate_id, created_at);
   `);
+
+  runMigrations();
+}
+
+function runMigrations(): void {
+  const addCol = (table: string, column: string, definition: string) => {
+    try {
+      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    } catch (e) {
+      if (e instanceof Error && !e.message.includes('duplicate column')) {
+        console.warn(`Migration warning on ${table}.${column}:`, e.message);
+      }
+    }
+  };
+
+  addCol('admin_users', 'full_name', 'TEXT');
+  addCol('admin_users', 'email', 'TEXT');
+  addCol('admin_users', 'photo', 'TEXT');
+  addCol('admin_users', 'role', "TEXT NOT NULL DEFAULT 'admin'");
+  addCol('admin_users', 'title', 'TEXT');
+  addCol('admin_users', 'is_active', 'INTEGER DEFAULT 1');
+  addCol('admin_users', 'last_login_at', 'TEXT');
+  addCol('admin_users', 'updated_at', "TEXT DEFAULT (datetime('now'))");
+
+  addCol('candidates', 'linkedin_profile_text', 'TEXT');
+
+  addCol('candidate_scores', 'session_id', 'INTEGER');
+  addCol('candidate_scores', 'interviewer_user_id', 'INTEGER');
+  addCol('candidate_scores', 'submitted_at', 'TEXT');
+  addCol('candidate_scores', 'raw_notes', 'TEXT');
 }
 
 // Run schema initialization
