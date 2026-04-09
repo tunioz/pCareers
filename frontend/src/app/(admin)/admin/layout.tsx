@@ -27,6 +27,10 @@ import {
   ClipboardCheck,
   CalendarDays,
   UserPlus,
+  BookOpen,
+  Shield,
+  Activity,
+  TrendingUp,
 } from 'lucide-react';
 import { ToastProvider } from '@/components/admin/Toast';
 import styles from '@/styles/admin.module.scss';
@@ -45,8 +49,10 @@ const navItems: NavItem[] = [
   { href: '/admin/tags', label: 'Tags', icon: <Tag size={20} /> },
   { href: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={20} />, section: 'Careers' },
   { href: '/admin/products', label: 'Products', icon: <Package size={20} /> },
-  { href: '/admin/candidates', label: 'Candidates', icon: <Users size={20} /> },
+  { href: '/admin/candidates', label: 'Candidates', icon: <Users size={20} />, section: 'ATS' },
+  { href: '/admin/interview-kits', label: 'Interview Kits', icon: <BookOpen size={20} /> },
   { href: '/admin/analytics', label: 'Analytics', icon: <BarChart3 size={20} /> },
+  { href: '/admin/analytics/funnel', label: 'Hiring Funnel', icon: <TrendingUp size={20} /> },
   { href: '/admin/email-templates', label: 'Email Templates', icon: <Mail size={20} /> },
   { href: '/admin/tasks', label: 'Tasks', icon: <ClipboardCheck size={20} /> },
   { href: '/admin/calendar', label: 'Calendar', icon: <CalendarDays size={20} /> },
@@ -56,6 +62,8 @@ const navItems: NavItem[] = [
   { href: '/admin/team', label: 'Team', icon: <UserCircle size={20} />, section: 'Other' },
   { href: '/admin/tech-stacks', label: 'Tech Stacks', icon: <Cpu size={20} /> },
   { href: '/admin/legal', label: 'Legal Pages', icon: <Scale size={20} /> },
+  { href: '/admin/users', label: 'Admin Users', icon: <Shield size={20} />, section: 'System' },
+  { href: '/admin/audit-log', label: 'Audit Log', icon: <Activity size={20} /> },
   { href: '/admin/settings', label: 'Settings', icon: <Settings size={20} /> },
 ];
 
@@ -73,7 +81,9 @@ function getBreadcrumbs(pathname: string) {
       jobs: 'Jobs',
       applications: 'Applications',
       candidates: 'Candidates',
+      'interview-kits': 'Interview Kits',
       analytics: 'Analytics',
+      funnel: 'Hiring Funnel',
       'email-templates': 'Email Templates',
       tasks: 'Tasks',
       calendar: 'Calendar',
@@ -85,6 +95,8 @@ function getBreadcrumbs(pathname: string) {
       team: 'Team',
       'life-content': 'Life Content',
       legal: 'Legal Pages',
+      users: 'Admin Users',
+      'audit-log': 'Audit Log',
       settings: 'Settings',
       new: 'New',
       edit: 'Edit',

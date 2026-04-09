@@ -44,6 +44,10 @@ import {
 } from '@/components/admin/StatusBadge';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import { useToast } from '@/components/admin/Toast';
+import { CandidateAiAnalysisPanel } from '@/components/admin/CandidateAiAnalysisPanel';
+import { InterviewSessionsPanel } from '@/components/admin/InterviewSessionsPanel';
+import { AiProfileCard } from '@/components/admin/AiProfileCard';
+import { Sparkles } from 'lucide-react';
 import styles from '@/styles/admin.module.scss';
 import type {
   CandidateWithJob,
@@ -64,10 +68,11 @@ import type {
   PositionCriterion,
 } from '@/types';
 
-type TabKey = 'overview' | 'profile' | 'evaluation' | 'decision' | 'timeline' | 'references' | 'notes';
+type TabKey = 'overview' | 'ai' | 'profile' | 'evaluation' | 'decision' | 'timeline' | 'references' | 'notes';
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: 'overview', label: 'Overview', icon: <Users size={14} /> },
+  { key: 'ai', label: 'AI Analysis', icon: <Sparkles size={14} /> },
   { key: 'profile', label: 'Profile', icon: <User size={14} /> },
   { key: 'evaluation', label: 'Evaluation', icon: <Star size={14} /> },
   { key: 'decision', label: 'Decision', icon: <Award size={14} /> },
@@ -144,6 +149,9 @@ export default function CandidateDossierPage() {
   const [candidate, setCandidate] = useState<CandidateWithJob | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
+  const [currentUsername, setCurrentUsername] = useState<string>('');
+  const [linkedinText, setLinkedinText] = useState<string>('');
+  const [savingLinkedin, setSavingLinkedin] = useState(false);
 
   // Sub-data
   const [scores, setScores] = useState<CandidateScore[]>([]);
@@ -247,6 +255,9 @@ export default function CandidateDossierPage() {
       const data = await res.json();
       if (data.success) {
         setCandidate(data.data);
+        if (data.data.linkedin_profile_text) {
+          setLinkedinText(data.data.linkedin_profile_text);
+        }
       } else {
         showToast('error', 'Candidate not found');
         router.push('/admin/candidates');
@@ -257,6 +268,45 @@ export default function CandidateDossierPage() {
       setLoading(false);
     }
   }, [candidateId, router, showToast]);
+
+  // Fetch current user
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.success && data.data?.username) {
+          setCurrentUsername(data.data.username);
+        }
+      } catch {
+        // ignore
+      }
+    })();
+  }, []);
+
+  // Save LinkedIn profile text
+  const saveLinkedinText = useCallback(async () => {
+    if (!candidate) return;
+    setSavingLinkedin(true);
+    try {
+      const res = await fetch(`/api/candidates/${candidate.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkedin_profile_text: linkedinText }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('success', 'LinkedIn profile saved');
+        await loadCandidate();
+      } else {
+        showToast('error', json.error || 'Failed to save');
+      }
+    } catch {
+      showToast('error', 'Network error');
+    } finally {
+      setSavingLinkedin(false);
+    }
+  }, [candidate, linkedinText, loadCandidate, showToast]);
 
   const loadScores = useCallback(async () => {
     const res = await fetch(`/api/candidates/${candidateId}/scores`);
@@ -862,6 +912,80 @@ export default function CandidateDossierPage() {
                   <p>{candidate.earliest_start}</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Tab — unified analysis, interview sessions, LinkedIn paste */}
+      {activeTab === 'ai' && candidate && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <CandidateAiAnalysisPanel candidateId={candidate.id} />
+
+          <AiProfileCard
+            candidateId={candidate.id}
+            hasCv={!!candidate.cv_path}
+            existingSummary={candidate.professional_summary || null}
+            existingSkills={candidate.parsed_skills || null}
+            existingExperience={candidate.parsed_experience || null}
+            onRefresh={() => loadCandidate()}
+          />
+
+          <InterviewSessionsPanel
+            candidateId={candidate.id}
+            currentUsername={currentUsername || 'admin'}
+          />
+
+          {/* LinkedIn profile paste area */}
+          <div style={{
+            border: '1px solid #E5E7EB',
+            borderRadius: '12px',
+            padding: '20px',
+            background: '#FFFFFF',
+          }}>
+            <div style={{ marginBottom: '12px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Linkedin size={16} color="#0A66C2" />
+                LinkedIn Profile Text
+              </h3>
+              <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6B7280' }}>
+                Paste raw text from the candidate&apos;s LinkedIn &quot;About&quot;, &quot;Experience&quot;, and &quot;Skills&quot; sections.
+                AI will include this in the unified analysis.
+              </p>
+            </div>
+            <textarea
+              value={linkedinText}
+              onChange={(e) => setLinkedinText(e.target.value)}
+              rows={8}
+              placeholder="Paste LinkedIn profile text here..."
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '1px solid #D1D5DB',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontFamily: 'inherit',
+                resize: 'vertical',
+              }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+              <button
+                type="button"
+                onClick={saveLinkedinText}
+                disabled={savingLinkedin}
+                style={{
+                  padding: '8px 16px',
+                  background: savingLinkedin ? '#9CA3AF' : '#17BED0',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: savingLinkedin ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {savingLinkedin ? 'Saving…' : 'Save LinkedIn profile'}
+              </button>
             </div>
           </div>
         </div>

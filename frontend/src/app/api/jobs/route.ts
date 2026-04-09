@@ -3,6 +3,7 @@ import { queryAll, queryOne, execute } from '@/lib/db';
 import { validateJob } from '@/lib/validations';
 import { getAuthUser } from '@/lib/auth';
 import { createUniqueSlug } from '@/lib/slugify';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Job } from '@/types';
 
 export async function GET(request: Request) {
@@ -151,6 +152,17 @@ export async function POST(request: Request) {
     );
 
     const newJob = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [result.lastInsertRowid]);
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'create',
+      entityType: 'job',
+      entityId: newJob?.id,
+      details: { title: newJob?.title, slug: newJob?.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json(
       { success: true, data: newJob },

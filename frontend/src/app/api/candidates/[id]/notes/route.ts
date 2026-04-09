@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { queryOne, queryAll, execute } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { validateCandidateNote } from '@/lib/validations';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Candidate, CandidateNote } from '@/types';
 
 interface RouteContext {
@@ -120,6 +121,21 @@ export async function POST(request: Request, context: RouteContext) {
       'SELECT * FROM candidate_notes WHERE id = ?',
       [result.lastInsertRowid]
     );
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'create',
+      entityType: 'candidate',
+      entityId: candidateId,
+      details: {
+        sub_entity: 'note',
+        note_id: note?.id,
+        note_type: v.note_type || 'general',
+      },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json(
       { success: true, data: note },

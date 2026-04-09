@@ -351,6 +351,7 @@ export interface CandidateUpdateInput {
   rejection_notes?: string;
   keep_in_talent_pool?: number;
   is_archived?: number;
+  linkedin_profile_text?: string;
 }
 
 export function validateCandidateUpdate(data: unknown): ValidationResult<CandidateUpdateInput> {
@@ -402,6 +403,7 @@ export function validateCandidateUpdate(data: unknown): ValidationResult<Candida
   if (d.rejection_notes !== undefined) result.rejection_notes = typeof d.rejection_notes === 'string' ? d.rejection_notes.trim() : undefined;
   if (d.keep_in_talent_pool !== undefined) result.keep_in_talent_pool = isBooleanLike(d.keep_in_talent_pool) ? d.keep_in_talent_pool : undefined;
   if (d.is_archived !== undefined) result.is_archived = isBooleanLike(d.is_archived) ? d.is_archived : undefined;
+  if (d.linkedin_profile_text !== undefined) result.linkedin_profile_text = typeof d.linkedin_profile_text === 'string' ? d.linkedin_profile_text.slice(0, 20000) : undefined;
 
   return { success: true, data: result };
 }

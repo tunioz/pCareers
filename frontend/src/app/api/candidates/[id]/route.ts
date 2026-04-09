@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { queryOne, queryAll, execute } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import { validateCandidateUpdate } from '@/lib/validations';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Candidate, CandidateWithJob, CandidateNote, CandidateScore, CandidateHistory } from '@/types';
 
 interface RouteContext {
@@ -158,6 +159,17 @@ export async function PUT(request: Request, context: RouteContext) {
       [candidateId]
     );
 
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'update',
+      entityType: 'candidate',
+      entityId: candidateId,
+      details: { fields: Object.keys(validation.data!) },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
     return NextResponse.json({
       success: true,
       data: updated,
@@ -206,8 +218,30 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
+    // Fetch identifying info before deleting for audit trail
+    const fullRecord = queryOne<Candidate>(
+      'SELECT full_name, email, status, job_id FROM candidates WHERE id = ?',
+      [candidateId]
+    );
+
     // CASCADE will delete notes, scores, references, history, attachments
     execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'delete',
+      entityType: 'candidate',
+      entityId: candidateId,
+      details: {
+        deleted_name: fullRecord?.full_name,
+        deleted_email: fullRecord?.email,
+        last_status: fullRecord?.status,
+        job_id: fullRecord?.job_id,
+      },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json({
       success: true,

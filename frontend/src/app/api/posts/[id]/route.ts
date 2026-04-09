@@ -3,6 +3,7 @@ import { queryOne, queryAll, execute, transaction } from '@/lib/db';
 import { validatePost } from '@/lib/validations';
 import { getAuthUser } from '@/lib/auth';
 import { createUniqueSlug } from '@/lib/slugify';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Post, Tag } from '@/types';
 
 interface RouteContext {
@@ -168,6 +169,17 @@ export async function PUT(request: Request, context: RouteContext) {
       [postId]
     );
 
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'update',
+      entityType: 'post',
+      entityId: postId,
+      details: { title: updated?.title, slug: updated?.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
     return NextResponse.json({
       success: true,
       data: {
@@ -204,7 +216,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Post>('SELECT id FROM posts WHERE id = ?', [postId]);
+    const existing = queryOne<Post>('SELECT id, title, slug FROM posts WHERE id = ?', [postId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
@@ -214,6 +226,17 @@ export async function DELETE(request: Request, context: RouteContext) {
 
     // CASCADE will delete post_tags automatically
     execute('DELETE FROM posts WHERE id = ?', [postId]);
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'delete',
+      entityType: 'post',
+      entityId: postId,
+      details: { title: existing.title, slug: existing.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json({
       success: true,

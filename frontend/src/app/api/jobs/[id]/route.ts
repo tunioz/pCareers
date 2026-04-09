@@ -3,6 +3,7 @@ import { queryOne, execute } from '@/lib/db';
 import { validateJob } from '@/lib/validations';
 import { getAuthUser } from '@/lib/auth';
 import { createUniqueSlug } from '@/lib/slugify';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Job } from '@/types';
 
 interface RouteContext {
@@ -175,6 +176,17 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const updated = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
 
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'update',
+      entityType: 'job',
+      entityId: jobId,
+      details: { title: updated?.title, slug: updated?.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
     return NextResponse.json({
       success: true,
       data: updated,
@@ -208,7 +220,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Job>('SELECT id FROM jobs WHERE id = ?', [jobId]);
+    const existing = queryOne<Job>('SELECT id, title, slug FROM jobs WHERE id = ?', [jobId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Job not found' },
@@ -217,6 +229,17 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     execute('DELETE FROM jobs WHERE id = ?', [jobId]);
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'delete',
+      entityType: 'job',
+      entityId: jobId,
+      details: { title: existing.title, slug: existing.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json({
       success: true,

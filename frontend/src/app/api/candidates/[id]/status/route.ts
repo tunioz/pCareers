@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { queryOne, execute, transaction } from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Candidate, CandidateWithJob, CandidateStatus } from '@/types';
 import { CANDIDATE_STATUSES } from '@/types';
 
@@ -127,6 +128,22 @@ export async function PUT(request: Request, context: RouteContext) {
        WHERE c.id = ?`,
       [candidateId]
     );
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'status_change',
+      entityType: 'candidate',
+      entityId: candidateId,
+      details: {
+        from: existing.status,
+        to: newStatus,
+        rejection_reason: newStatus === 'rejected' ? body.rejection_reason : null,
+        notes: body.notes,
+      },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json({
       success: true,

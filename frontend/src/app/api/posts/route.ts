@@ -3,6 +3,7 @@ import { queryAll, queryOne, execute, transaction } from '@/lib/db';
 import { validatePost } from '@/lib/validations';
 import { getAuthUser } from '@/lib/auth';
 import { createUniqueSlug } from '@/lib/slugify';
+import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
 import type { Post, PostWithTags, Tag } from '@/types';
 
 export async function GET(request: Request) {
@@ -171,6 +172,17 @@ export async function POST(request: Request) {
       'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
       [result]
     );
+
+    logAudit({
+      userId: user.userId,
+      userUsername: user.username,
+      action: 'create',
+      entityType: 'post',
+      entityId: newPost?.id,
+      details: { title: newPost?.title, slug: newPost?.slug },
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
 
     return NextResponse.json(
       {
