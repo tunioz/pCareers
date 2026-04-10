@@ -55,7 +55,7 @@ export async function GET(request: Request) {
 
     // ─── 2. Time-to-hire (overall) ───
     const tthRows = await queryAll<{ days: number }>(
-      `SELECT CAST(julianday(h.created_at) - julianday(c.created_at) AS INTEGER) as days
+      `SELECT CAST(EXTRACT(EPOCH FROM (h.created_at::timestamp - c.created_at::timestamp)) / 86400 AS INTEGER) as days
        FROM candidates c
        JOIN candidate_history h ON h.candidate_id = c.id AND h.to_status = 'hired'
        WHERE c.status = 'hired' AND c.is_archived = 0 AND c.created_at >= ?`,
@@ -77,7 +77,7 @@ export async function GET(request: Request) {
       `SELECT
          j.id as job_id,
          j.title as job_title,
-         ROUND(AVG(CAST(julianday(h.created_at) - julianday(c.created_at) AS REAL)), 0) as avg_days,
+         ROUND(AVG(EXTRACT(EPOCH FROM (h.created_at::timestamp - c.created_at::timestamp)) / 86400)::numeric, 0) as avg_days,
          COUNT(*) as hired_count
        FROM candidates c
        JOIN jobs j ON j.id = c.job_id
@@ -205,10 +205,13 @@ export async function GET(request: Request) {
     const stageVelocity = (await queryAll<{ stage: string; avg_days: number }>(
       `SELECT
          from_status as stage,
-         ROUND(AVG(CAST(julianday(
-           (SELECT MIN(h2.created_at) FROM candidate_history h2
-            WHERE h2.candidate_id = h1.candidate_id AND h2.created_at > h1.created_at)
-         ) - julianday(h1.created_at) AS REAL)), 1) as avg_days
+         ROUND(AVG(
+           EXTRACT(EPOCH FROM (
+             (SELECT MIN(h2.created_at::timestamp) FROM candidate_history h2
+              WHERE h2.candidate_id = h1.candidate_id AND h2.created_at > h1.created_at)
+             - h1.created_at::timestamp
+           )) / 86400
+         )::numeric, 1) as avg_days
        FROM candidate_history h1
        WHERE from_status IN ('new', 'screening', 'phone_screen', 'technical', 'team_interview', 'culture_chat', 'offer')
        AND candidate_id IN (SELECT id FROM candidates WHERE created_at >= ?)

@@ -49,7 +49,7 @@ export async function GET() {
     // Average time-to-hire (days from application to hired)
     const timeToHireRow = await queryOne<{ avg_days: number }>(
       `SELECT AVG(
-        CAST((julianday(h.created_at) - julianday(c.created_at)) AS REAL)
+        EXTRACT(EPOCH FROM (h.created_at::timestamp - c.created_at::timestamp)) / 86400
       ) as avg_days
       FROM candidates c
       JOIN candidate_history h ON h.candidate_id = c.id AND h.to_status = 'hired'
@@ -60,7 +60,7 @@ export async function GET() {
     // Average time-to-first-action (days from new to screening)
     const timeToFirstRow = await queryOne<{ avg_days: number }>(
       `SELECT AVG(
-        CAST((julianday(h.created_at) - julianday(c.created_at)) AS REAL)
+        EXTRACT(EPOCH FROM (h.created_at::timestamp - c.created_at::timestamp)) / 86400
       ) as avg_days
       FROM candidates c
       JOIN candidate_history h ON h.candidate_id = c.id AND h.to_status = 'screening' AND h.from_status = 'new'

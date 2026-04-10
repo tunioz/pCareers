@@ -153,7 +153,7 @@ export async function GET(request: Request) {
     // ─── Time to hire (for hired candidates) ───
     const timeToHireRows = await queryAll<{ days: number }>(
       `SELECT
-         CAST(julianday(status_changed_at) - julianday(created_at) AS INTEGER) as days
+         CAST(EXTRACT(EPOCH FROM (status_changed_at::timestamp - created_at::timestamp)) / 86400 AS INTEGER) as days
        FROM candidates
        WHERE ${whereSql} AND status = 'hired'`,
       params

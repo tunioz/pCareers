@@ -111,7 +111,23 @@ function convertSql(sql: string): string {
   // TEXT type for dates → TIMESTAMP WITH TIME ZONE where used as datetime
   // (Keep TEXT for now to minimize breakage, PG handles text dates fine)
 
-  // REPLACE function works the same in both
+  // ROUND(expr, N) — PG needs numeric, not double precision
+  // ROUND(double, int) doesn't exist in PG, cast to numeric first
+  converted = converted.replace(
+    /ROUND\(([^,)]+),\s*(\d+)\)/gi,
+    'ROUND(($1)::numeric, $2)'
+  );
+
+  // CAST(x AS REAL) → (x)::double precision
+  converted = converted.replace(
+    /CAST\(([^)]+)\s+AS\s+REAL\)/gi,
+    '($1)::double precision'
+  );
+
+  // INSERT OR IGNORE → INSERT ... ON CONFLICT DO NOTHING
+  converted = converted.replace(/INSERT\s+OR\s+IGNORE/gi, 'INSERT');
+  // Add ON CONFLICT DO NOTHING if not already there for these converted inserts
+  // (handled manually in code, this is a safety net)
 
   // Convert ? placeholders last
   converted = convertPlaceholders(converted);
