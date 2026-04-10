@@ -9,6 +9,7 @@ import {
   type AnalyzeInputs,
 } from '@/lib/ai/prompts/analyze-candidate';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { fetchProfileUrls } from '@/lib/url-fetcher';
 import type { Candidate, Job } from '@/types';
 
 /**
@@ -84,28 +85,52 @@ export async function POST(request: Request) {
       [candidateId]
     );
 
+    // Fetch online profiles (LinkedIn, GitHub, portfolio, website) in parallel
+    const profileUrls: { label: string; url: string }[] = [];
+    if (candidate.linkedin_url) profileUrls.push({ label: 'LinkedIn', url: candidate.linkedin_url });
+    if (candidate.github_url) profileUrls.push({ label: 'GitHub', url: candidate.github_url });
+    if (candidate.portfolio_url) profileUrls.push({ label: 'Portfolio', url: candidate.portfolio_url });
+    if (candidate.website_url) profileUrls.push({ label: 'Website', url: candidate.website_url });
+
+    const fetchedProfiles = await fetchProfileUrls(profileUrls);
+    const onlineProfiles = fetchedProfiles.filter(p => p.text);
+
+    // Task submissions
+    const taskSubmissions = queryAll<{ task_title: string; notes: string | null; score: number | null; reviewer_notes: string | null; status: string }>(
+      `SELECT t.title as task_title, s.notes, s.score, s.reviewer_notes, s.status
+       FROM candidate_task_submissions s
+       JOIN technical_tasks t ON t.id = s.task_id
+       WHERE s.candidate_id = ?`,
+      [candidateId]
+    );
+
     const sourcesAnalyzed = {
       has_parsed_cv: !!candidate.parsed_skills,
       has_linkedin: !!candidate.linkedin_profile_text,
+      online_profiles_fetched: onlineProfiles.length,
+      online_profiles_failed: fetchedProfiles.filter(p => !p.text).map(p => `${p.label}: ${p.error || 'no content'}`),
       admin_notes: adminNotes.length,
       scorecards: scorecards.length,
       references: references.length,
+      task_submissions: taskSubmissions.length,
     };
 
     // Require at least some data
     const totalDataPoints =
       (sourcesAnalyzed.has_parsed_cv ? 1 : 0) +
       (sourcesAnalyzed.has_linkedin ? 1 : 0) +
+      onlineProfiles.length +
       sourcesAnalyzed.admin_notes +
       sourcesAnalyzed.scorecards +
-      sourcesAnalyzed.references;
+      sourcesAnalyzed.references +
+      taskSubmissions.length;
 
     if (totalDataPoints === 0) {
       return NextResponse.json(
         {
           success: false,
           error:
-            'No data to analyze. Parse the CV, add notes, complete interviews, or request references first.',
+            'No data to analyze. Parse the CV, add notes/links, complete interviews, or request references first.',
         },
         { status: 400 }
       );
@@ -116,11 +141,15 @@ export async function POST(request: Request) {
     const prompt = buildAnalyzeCandidatePrompt({
       candidateFirstName: firstName,
       jobTitle: job?.title || 'Unknown role',
+      jobDescription: job?.description || undefined,
+      jobRequirements: job?.requirements || undefined,
       parsedSkills: candidate.parsed_skills,
       parsedExperience: candidate.parsed_experience,
       parsedEducation: candidate.parsed_education,
       professionalSummary: candidate.professional_summary,
       linkedinProfile: candidate.linkedin_profile_text,
+      onlineProfiles,
+      taskSubmissions,
       adminNotes,
       scorecards,
       references,

@@ -14,12 +14,14 @@ Your job: read ALL available data about a candidate and produce an honest, compr
 
 DATA YOU WILL RECEIVE (any subset may be present):
 - Parsed CV profile (skills, experience, education)
-- LinkedIn profile text (if provided)
+- LinkedIn profile text (if pasted manually)
+- Online profiles (fetched live from LinkedIn, GitHub, portfolio, personal website URLs)
+- Job description and requirements (the role being evaluated for)
 - Admin notes and attachments
 - Interview scorecards from multiple interviewers (if multiple, synthesize consensus vs disagreement)
 - Interviewer raw notes
 - Reference check responses with ratings and written feedback
-- Technical task submission notes
+- Technical task submissions with scores and reviewer notes
 
 RULES:
 1. Be honest. A weak candidate gets a weak assessment. A strong candidate gets a strong one.
@@ -29,7 +31,15 @@ RULES:
 5. NEVER use protected characteristics (age, gender, nationality, accent, appearance).
 6. NEVER use "culture fit" — say "culture add" (what unique strengths they bring).
 7. Rate confidence honestly. If data is thin, say "low confidence".
-8. Output STRICT JSON. No markdown, no commentary.`;
+8. When evaluating online profiles (GitHub, portfolio, website), look for:
+   - Quality and recency of code/projects (GitHub repos, contributions, stars)
+   - Relevance of projects to the role's requirements
+   - Technical depth and breadth demonstrated
+   - Open source contributions, writing, speaking
+   - Consistency between CV claims and public profile evidence
+9. Compare the candidate against the JOB DESCRIPTION and REQUIREMENTS if provided.
+   Specifically call out which requirements are met, partially met, or missing.
+10. Output STRICT JSON. No markdown, no commentary.`;
 
 export const ANALYZE_CANDIDATE_SCHEMA_HINT = `{
   "overall_summary": "string — 3-5 sentence synthesis of the whole candidate",
@@ -51,6 +61,13 @@ export const ANALYZE_CANDIDATE_SCHEMA_HINT = `{
   "reference_synthesis": {
     "overall_sentiment": "enthusiastic | positive | neutral | mixed | negative | none",
     "key_signals": ["array of 0-4 synthesized signals from all references"]
+  },
+  "online_profile_insights": ["array of 0-4 notable findings from GitHub/portfolio/website, e.g. 'Active GitHub with 12 repos in Go, 340+ contributions last year', 'Portfolio shows 3 production apps with clean UI'"],
+  "job_fit": {
+    "requirements_met": ["list of job requirements clearly satisfied by evidence"],
+    "requirements_partial": ["list of requirements partially or weakly evidenced"],
+    "requirements_missing": ["list of requirements with no evidence"],
+    "overall_fit": "strong | good | moderate | weak"
   },
   "data_gaps": ["array of important things the team doesn't know yet"],
   "recommendation": "strong_hire | hire | lean_hire | no_hire | strong_no_hire",
@@ -80,6 +97,13 @@ export interface CandidateAnalysis {
     overall_sentiment: 'enthusiastic' | 'positive' | 'neutral' | 'mixed' | 'negative' | 'none';
     key_signals: string[];
   };
+  online_profile_insights: string[];
+  job_fit: {
+    requirements_met: string[];
+    requirements_partial: string[];
+    requirements_missing: string[];
+    overall_fit: 'strong' | 'good' | 'moderate' | 'weak';
+  };
   data_gaps: string[];
   recommendation: 'strong_hire' | 'hire' | 'lean_hire' | 'no_hire' | 'strong_no_hire';
   recommendation_rationale: string;
@@ -90,11 +114,15 @@ export interface CandidateAnalysis {
 export interface AnalyzeInputs {
   candidateFirstName: string;
   jobTitle: string;
+  jobDescription?: string;
+  jobRequirements?: string;
   parsedSkills?: string | null;
   parsedExperience?: string | null;
   parsedEducation?: string | null;
   professionalSummary?: string | null;
   linkedinProfile?: string | null;
+  onlineProfiles?: Array<{ label: string; url: string; text: string | null }>;
+  taskSubmissions?: Array<{ task_title: string; notes: string | null; score: number | null; reviewer_notes: string | null; status: string }>;
   adminNotes: Array<{ author: string; content: string; note_type: string; created_at: string }>;
   scorecards: Array<{
     interviewer_name: string;
@@ -132,6 +160,20 @@ export function buildAnalyzeCandidatePrompt(inputs: AnalyzeInputs): string {
   parts.push(`SCHEMA:\n${ANALYZE_CANDIDATE_SCHEMA_HINT}\n\n`);
   parts.push(`CANDIDATE: ${inputs.candidateFirstName}\nROLE: ${inputs.jobTitle}\n\n`);
 
+  // Job context — what we're evaluating against
+  if (inputs.jobDescription) {
+    const desc = inputs.jobDescription.length > 2000
+      ? inputs.jobDescription.slice(0, 2000) + '...[truncated]'
+      : inputs.jobDescription;
+    parts.push(`=== JOB DESCRIPTION ===\n${desc}\n\n`);
+  }
+  if (inputs.jobRequirements) {
+    const reqs = inputs.jobRequirements.length > 1500
+      ? inputs.jobRequirements.slice(0, 1500) + '...[truncated]'
+      : inputs.jobRequirements;
+    parts.push(`=== JOB REQUIREMENTS ===\n${reqs}\n\n`);
+  }
+
   if (inputs.professionalSummary) {
     parts.push(`=== PROFESSIONAL SUMMARY ===\n${inputs.professionalSummary}\n\n`);
   }
@@ -159,6 +201,32 @@ export function buildAnalyzeCandidatePrompt(inputs: AnalyzeInputs): string {
         ? inputs.linkedinProfile.slice(0, 3000) + '...[truncated]'
         : inputs.linkedinProfile;
     parts.push(`=== LINKEDIN PROFILE ===\n${linkedin}\n\n`);
+  }
+
+  // Online profiles (fetched live from URLs)
+  if (inputs.onlineProfiles && inputs.onlineProfiles.length > 0) {
+    parts.push(`=== ONLINE PROFILES (fetched live) ===\n`);
+    for (const profile of inputs.onlineProfiles) {
+      if (profile.text) {
+        const text = profile.text.length > 3000
+          ? profile.text.slice(0, 3000) + '...[truncated]'
+          : profile.text;
+        parts.push(`\n--- ${profile.label} (${profile.url}) ---\n${text}\n`);
+      }
+    }
+    parts.push('\n');
+  }
+
+  // Technical task submissions
+  if (inputs.taskSubmissions && inputs.taskSubmissions.length > 0) {
+    parts.push(`=== TECHNICAL TASK SUBMISSIONS (${inputs.taskSubmissions.length}) ===\n`);
+    for (const ts of inputs.taskSubmissions) {
+      parts.push(`\n--- Task: ${ts.task_title} (status: ${ts.status}) ---\n`);
+      if (ts.score != null) parts.push(`Score: ${ts.score}/10\n`);
+      if (ts.notes) parts.push(`Candidate notes: ${ts.notes.slice(0, 1000)}\n`);
+      if (ts.reviewer_notes) parts.push(`Reviewer notes: ${ts.reviewer_notes.slice(0, 1000)}\n`);
+    }
+    parts.push('\n');
   }
 
   if (inputs.adminNotes.length > 0) {

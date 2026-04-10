@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sparkles, Loader2, AlertCircle, RefreshCw, CheckCircle, AlertTriangle, XCircle, Info } from 'lucide-react';
+import { Sparkles, Loader2, AlertCircle, RefreshCw, CheckCircle, AlertTriangle, XCircle, Info, Globe, Target } from 'lucide-react';
 
 interface Props {
   candidateId: number;
@@ -20,6 +20,13 @@ interface Analysis {
   reference_synthesis?: {
     overall_sentiment: string;
     key_signals: string[];
+  };
+  online_profile_insights?: string[];
+  job_fit?: {
+    requirements_met: string[];
+    requirements_partial: string[];
+    requirements_missing: string[];
+    overall_fit: string;
   };
   data_gaps?: string[];
   recommendation: string;
@@ -239,6 +246,57 @@ export function CandidateAiAnalysisPanel({ candidateId }: Props) {
               <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#1F2937', lineHeight: 1.6 }}>
                 {analysis.red_flags.map((s, i) => <li key={i}>{s}</li>)}
               </ul>
+            </div>
+          )}
+
+          {analysis.online_profile_insights && analysis.online_profile_insights.length > 0 && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                <Globe size={14} color="#3B82F6" />
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#3B82F6' }}>
+                  Online profile insights
+                </span>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#1F2937', lineHeight: 1.6 }}>
+                {analysis.online_profile_insights.map((s, i) => <li key={i}>{s}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {analysis.job_fit && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                <Target size={14} color="#8B5CF6" />
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#8B5CF6' }}>
+                  Job fit: {analysis.job_fit.overall_fit}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', fontSize: '12px' }}>
+                {analysis.job_fit.requirements_met.length > 0 && (
+                  <div style={{ background: '#ECFDF5', borderRadius: '8px', padding: '10px' }}>
+                    <div style={{ fontWeight: 600, color: '#065F46', marginBottom: '4px' }}>Met</div>
+                    <ul style={{ margin: 0, paddingLeft: '16px', color: '#047857', lineHeight: 1.5 }}>
+                      {analysis.job_fit.requirements_met.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {analysis.job_fit.requirements_partial.length > 0 && (
+                  <div style={{ background: '#FFFBEB', borderRadius: '8px', padding: '10px' }}>
+                    <div style={{ fontWeight: 600, color: '#92400E', marginBottom: '4px' }}>Partial</div>
+                    <ul style={{ margin: 0, paddingLeft: '16px', color: '#B45309', lineHeight: 1.5 }}>
+                      {analysis.job_fit.requirements_partial.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {analysis.job_fit.requirements_missing.length > 0 && (
+                  <div style={{ background: '#FEF2F2', borderRadius: '8px', padding: '10px' }}>
+                    <div style={{ fontWeight: 600, color: '#991B1B', marginBottom: '4px' }}>Missing</div>
+                    <ul style={{ margin: 0, paddingLeft: '16px', color: '#DC2626', lineHeight: 1.5 }}>
+                      {analysis.job_fit.requirements_missing.map((s, i) => <li key={i}>{s}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
