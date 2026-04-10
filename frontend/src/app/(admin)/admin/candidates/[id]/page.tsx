@@ -662,6 +662,33 @@ export default function CandidateDossierPage() {
     }
   };
 
+  // CV upload handler
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !candidate) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`/api/candidates/${candidateId}/cv`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('success', 'CV uploaded');
+        await loadCandidate();
+      } else {
+        showToast('error', data.error || 'Failed to upload CV');
+      }
+    } catch {
+      showToast('error', 'Failed to upload CV');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   // File upload handler
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1007,20 +1034,42 @@ export default function CandidateDossierPage() {
 
           {/* CV */}
           <div className={styles.dossierSection}>
-            <h3>Resume / CV</h3>
-            {candidate.cv_path ? (
-              <a
-                href={candidate.cv_path}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.btnSecondary}
-                style={{ display: 'inline-flex' }}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3>Resume / CV</h3>
+              <label
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  padding: '6px 12px', fontSize: '12px', cursor: 'pointer',
+                  background: '#17BED0', color: '#fff', borderRadius: '6px', fontWeight: 600,
+                }}
               >
-                <Download size={14} />
-                {candidate.cv_original_name || 'Download CV'}
-              </a>
+                <Upload size={12} />
+                {candidate.cv_path ? 'Replace CV' : 'Upload CV'}
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt,.rtf"
+                  style={{ display: 'none' }}
+                  onChange={handleCvUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+            {candidate.cv_path ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                <FileText size={16} color="#6B7280" />
+                <a
+                  href={candidate.cv_path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#17BED0', fontSize: '14px', textDecoration: 'underline' }}
+                >
+                  {candidate.cv_original_name || 'Download CV'}
+                </a>
+              </div>
             ) : (
-              <p style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>No CV uploaded</p>
+              <p style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic', marginTop: '8px' }}>
+                No CV uploaded yet. Upload a PDF, DOC, or DOCX file.
+              </p>
             )}
           </div>
 
