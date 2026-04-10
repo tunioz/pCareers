@@ -154,6 +154,22 @@ export default function CandidateDossierPage() {
   const [linkedinText, setLinkedinText] = useState<string>('');
   const [savingLinkedin, setSavingLinkedin] = useState(false);
 
+  // Overview inline edit
+  const [editingOverview, setEditingOverview] = useState(false);
+  const [overviewForm, setOverviewForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    linkedin_url: '',
+    github_url: '',
+    portfolio_url: '',
+    website_url: '',
+    source: '',
+    work_model: '',
+    earliest_start: '',
+  });
+  const [overviewSaving, setOverviewSaving] = useState(false);
+
   // Sub-data
   const [scores, setScores] = useState<CandidateScore[]>([]);
   const [compositeScore, setCompositeScore] = useState<number | null>(null);
@@ -308,6 +324,49 @@ export default function CandidateDossierPage() {
       setSavingLinkedin(false);
     }
   }, [candidate, linkedinText, loadCandidate, showToast]);
+
+  // Open overview edit form
+  const startEditOverview = () => {
+    if (!candidate) return;
+    setOverviewForm({
+      full_name: candidate.full_name || '',
+      email: candidate.email || '',
+      phone: candidate.phone || '',
+      linkedin_url: candidate.linkedin_url || '',
+      github_url: candidate.github_url || '',
+      portfolio_url: candidate.portfolio_url || '',
+      website_url: candidate.website_url || '',
+      source: candidate.source || '',
+      work_model: candidate.work_model || '',
+      earliest_start: candidate.earliest_start || '',
+    });
+    setEditingOverview(true);
+  };
+
+  // Save overview edits
+  const saveOverview = async () => {
+    if (!candidate) return;
+    setOverviewSaving(true);
+    try {
+      const res = await fetch(`/api/candidates/${candidate.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(overviewForm),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('success', 'Candidate updated');
+        setEditingOverview(false);
+        await loadCandidate();
+      } else {
+        showToast('error', json.error || 'Failed to update');
+      }
+    } catch {
+      showToast('error', 'Network error');
+    } finally {
+      setOverviewSaving(false);
+    }
+  };
 
   const loadScores = useCallback(async () => {
     const res = await fetch(`/api/candidates/${candidateId}/scores`);
@@ -790,47 +849,150 @@ export default function CandidateDossierPage() {
         <div>
           {/* Personal Info */}
           <div className={styles.dossierSection}>
-            <h3>Personal Information</h3>
-            <div className={styles.dossierInfoGrid}>
-              <div className={styles.dossierInfoItem}>
-                <label>Email</label>
-                <a href={`mailto:${candidate.email}`}>{candidate.email}</a>
-              </div>
-              {candidate.phone && (
-                <div className={styles.dossierInfoItem}>
-                  <label>Phone</label>
-                  <p>{candidate.phone}</p>
-                </div>
-              )}
-              {candidate.linkedin_url && (
-                <div className={styles.dossierInfoItem}>
-                  <label>LinkedIn</label>
-                  <a href={candidate.linkedin_url} target="_blank" rel="noopener noreferrer">
-                    {candidate.linkedin_url.replace(/https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/\/$/, '')}
-                  </a>
-                </div>
-              )}
-              {candidate.github_url && (
-                <div className={styles.dossierInfoItem}>
-                  <label>GitHub</label>
-                  <a href={candidate.github_url} target="_blank" rel="noopener noreferrer">
-                    {candidate.github_url.replace(/https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '')}
-                  </a>
-                </div>
-              )}
-              {candidate.portfolio_url && (
-                <div className={styles.dossierInfoItem}>
-                  <label>Portfolio</label>
-                  <a href={candidate.portfolio_url} target="_blank" rel="noopener noreferrer">View Portfolio</a>
-                </div>
-              )}
-              {candidate.website_url && (
-                <div className={styles.dossierInfoItem}>
-                  <label>Website</label>
-                  <a href={candidate.website_url} target="_blank" rel="noopener noreferrer">Visit Website</a>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3>Personal Information</h3>
+              {!editingOverview ? (
+                <button className={styles.btnSecondary} onClick={startEditOverview} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', padding: '6px 12px' }}>
+                  <Edit size={12} /> Edit
+                </button>
+              ) : (
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button className={styles.btnSecondary} onClick={() => setEditingOverview(false)} style={{ fontSize: '12px', padding: '6px 12px' }}>Cancel</button>
+                  <button className={styles.btnPrimary} onClick={saveOverview} disabled={overviewSaving} style={{ fontSize: '12px', padding: '6px 12px' }}>
+                    {overviewSaving ? 'Saving...' : 'Save'}
+                  </button>
                 </div>
               )}
             </div>
+
+            {editingOverview ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px' }}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Full Name</label>
+                  <input className={styles.formInput} value={overviewForm.full_name} onChange={(e) => setOverviewForm({ ...overviewForm, full_name: e.target.value })} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Email</label>
+                  <input className={styles.formInput} type="email" value={overviewForm.email} onChange={(e) => setOverviewForm({ ...overviewForm, email: e.target.value })} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Phone</label>
+                  <input className={styles.formInput} value={overviewForm.phone} onChange={(e) => setOverviewForm({ ...overviewForm, phone: e.target.value })} placeholder="+359..." />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Source</label>
+                  <select className={styles.formInput} value={overviewForm.source} onChange={(e) => setOverviewForm({ ...overviewForm, source: e.target.value })}>
+                    <option value="Direct">Direct</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Referral">Referral</option>
+                    <option value="Job Board">Job Board</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                  <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Linkedin size={14} color="#0A66C2" /> LinkedIn URL</label>
+                  <input className={styles.formInput} value={overviewForm.linkedin_url} onChange={(e) => setOverviewForm({ ...overviewForm, linkedin_url: e.target.value })} placeholder="https://linkedin.com/in/..." />
+                </div>
+                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                  <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Github size={14} /> GitHub URL</label>
+                  <input className={styles.formInput} value={overviewForm.github_url} onChange={(e) => setOverviewForm({ ...overviewForm, github_url: e.target.value })} placeholder="https://github.com/..." />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Globe size={14} /> Portfolio URL</label>
+                  <input className={styles.formInput} value={overviewForm.portfolio_url} onChange={(e) => setOverviewForm({ ...overviewForm, portfolio_url: e.target.value })} placeholder="https://..." />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ExternalLink size={14} /> Website URL</label>
+                  <input className={styles.formInput} value={overviewForm.website_url} onChange={(e) => setOverviewForm({ ...overviewForm, website_url: e.target.value })} placeholder="https://..." />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Work Model</label>
+                  <select className={styles.formInput} value={overviewForm.work_model} onChange={(e) => setOverviewForm({ ...overviewForm, work_model: e.target.value })}>
+                    <option value="On-site Sofia">On-site Sofia</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Earliest Start</label>
+                  <input className={styles.formInput} type="date" value={overviewForm.earliest_start} onChange={(e) => setOverviewForm({ ...overviewForm, earliest_start: e.target.value })} />
+                </div>
+              </div>
+            ) : (
+              <div className={styles.dossierInfoGrid}>
+                <div className={styles.dossierInfoItem}>
+                  <label>Email</label>
+                  <a href={`mailto:${candidate.email}`}>{candidate.email}</a>
+                </div>
+                {candidate.phone && (
+                  <div className={styles.dossierInfoItem}>
+                    <label>Phone</label>
+                    <p>{candidate.phone}</p>
+                  </div>
+                )}
+                {candidate.linkedin_url ? (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Linkedin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />LinkedIn</label>
+                    <a href={candidate.linkedin_url} target="_blank" rel="noopener noreferrer">
+                      {candidate.linkedin_url.replace(/https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/\/$/, '')}
+                    </a>
+                  </div>
+                ) : (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Linkedin size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />LinkedIn</label>
+                    <p style={{ color: '#9CA3AF', fontStyle: 'italic' }}>Not provided</p>
+                  </div>
+                )}
+                {candidate.github_url ? (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Github size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />GitHub</label>
+                    <a href={candidate.github_url} target="_blank" rel="noopener noreferrer">
+                      {candidate.github_url.replace(/https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '')}
+                    </a>
+                  </div>
+                ) : (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Github size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />GitHub</label>
+                    <p style={{ color: '#9CA3AF', fontStyle: 'italic' }}>Not provided</p>
+                  </div>
+                )}
+                {candidate.portfolio_url ? (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Portfolio</label>
+                    <a href={candidate.portfolio_url} target="_blank" rel="noopener noreferrer">View Portfolio</a>
+                  </div>
+                ) : (
+                  <div className={styles.dossierInfoItem}>
+                    <label><Globe size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Portfolio</label>
+                    <p style={{ color: '#9CA3AF', fontStyle: 'italic' }}>Not provided</p>
+                  </div>
+                )}
+                {candidate.website_url ? (
+                  <div className={styles.dossierInfoItem}>
+                    <label><ExternalLink size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Website</label>
+                    <a href={candidate.website_url} target="_blank" rel="noopener noreferrer">Visit Website</a>
+                  </div>
+                ) : (
+                  <div className={styles.dossierInfoItem}>
+                    <label><ExternalLink size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />Website</label>
+                    <p style={{ color: '#9CA3AF', fontStyle: 'italic' }}>Not provided</p>
+                  </div>
+                )}
+                {candidate.work_model && (
+                  <div className={styles.dossierInfoItem}>
+                    <label>Work Model</label>
+                    <p>{candidate.work_model}</p>
+                  </div>
+                )}
+                {candidate.earliest_start && (
+                  <div className={styles.dossierInfoItem}>
+                    <label>Earliest Start</label>
+                    <p>{candidate.earliest_start}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Cover Message */}
@@ -844,9 +1006,9 @@ export default function CandidateDossierPage() {
           )}
 
           {/* CV */}
-          {candidate.cv_path && (
-            <div className={styles.dossierSection}>
-              <h3>Resume / CV</h3>
+          <div className={styles.dossierSection}>
+            <h3>Resume / CV</h3>
+            {candidate.cv_path ? (
               <a
                 href={candidate.cv_path}
                 target="_blank"
@@ -857,8 +1019,10 @@ export default function CandidateDossierPage() {
                 <Download size={14} />
                 {candidate.cv_original_name || 'Download CV'}
               </a>
-            </div>
-          )}
+            ) : (
+              <p style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>No CV uploaded</p>
+            )}
+          </div>
 
           {/* Source & Referral */}
           <div className={styles.dossierSection}>

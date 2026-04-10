@@ -34,6 +34,7 @@ describe('permissions', () => {
   });
 
   it('unknown role has no permissions', () => {
-    expect(hasPermission('unknown_role' as string, 'candidates:view')).toBe(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(hasPermission('unknown_role' as any, 'candidates:view')).toBe(false);
   });
 });
