@@ -1,25 +1,20 @@
 FROM node:20-bookworm-slim
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 make g++ && \
-    rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 
 COPY frontend/ .
-COPY data/ ./data/
 
-# Build with in-memory DB
+# Build with build mode (skips DB connection during build)
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV NEXT_BUILD_MODE=1
-ENV DB_DIR=/app/data
 RUN npx next build
 
-# UNSET build mode for runtime so real DB is used
+# Runtime: unset build mode so real PostgreSQL is used
+# DATABASE_URL is injected by Railway at runtime
 ENV NEXT_BUILD_MODE=
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
