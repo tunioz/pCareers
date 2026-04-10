@@ -4,19 +4,18 @@ import bg from '@/i18n/bg.json';
 import en from '@/i18n/en.json';
 
 describe('i18n', () => {
-  it('returns Bulgarian translation by default', () => {
-    expect(t('nav.home')).toBe('Начало');
-    expect(t('nav.careers')).toBe('Кариери');
+  it('returns English translation by default', () => {
+    expect(t('nav.home')).toBe('Home');
+    expect(t('nav.careers')).toBe('Careers');
   });
 
-  it('returns English translation when locale is en', () => {
-    expect(t('nav.home', 'en')).toBe('Home');
-    expect(t('nav.careers', 'en')).toBe('Careers');
+  it('returns Bulgarian translation when locale is bg', () => {
+    expect(t('nav.home', 'bg')).toBe('Начало');
+    expect(t('nav.careers', 'bg')).toBe('Кариери');
   });
 
-  it('falls back to English for missing bg keys', () => {
-    // If a key exists in en but not bg, should return en value
-    expect(t('nonexistent.key', 'bg')).toBe('nonexistent.key');
+  it('falls back to English for missing keys', () => {
+    expect(t('nonexistent.key')).toBe('nonexistent.key');
   });
 
   it('returns the key itself for completely missing keys', () => {
@@ -26,10 +25,10 @@ describe('i18n', () => {
 
   it('scopedT works for namespaced translations', () => {
     const tc = scopedT('careers');
-    expect(tc('title')).toBe('Отворени позиции');
+    expect(tc('title')).toBe('Open Positions');
 
-    const tcEn = scopedT('careers', 'en');
-    expect(tcEn('title')).toBe('Open Positions');
+    const tcBg = scopedT('careers', 'bg');
+    expect(tcBg('title')).toBe('Отворени позиции');
   });
 
   it('bg and en have the same top-level keys', () => {

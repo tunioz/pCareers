@@ -5,7 +5,7 @@ export type Locale = 'bg' | 'en';
 
 const translations: Record<Locale, Record<string, unknown>> = { bg, en };
 
-const DEFAULT_LOCALE: Locale = 'bg';
+const DEFAULT_LOCALE: Locale = 'en';
 
 /**
  * Get a nested translation value by dot-separated key.
