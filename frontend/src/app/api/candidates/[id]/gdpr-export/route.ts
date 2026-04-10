@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { queryOne, queryAll } from '@/lib/db';
 import { getAuthenticatedUser, hasPermission } from '@/lib/permissions';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { checkRateLimit, getClientIp as getRateLimitIp } from '@/lib/rate-limit';
 import type { Candidate } from '@/types';
 
 interface RouteContext {
@@ -20,6 +21,16 @@ interface RouteContext {
  * Only admin and recruiter can generate GDPR exports.
  */
 export async function GET(request: Request, context: RouteContext) {
+  // Rate limit: max 10 GDPR exports per hour per IP
+  const ip = getRateLimitIp(request);
+  const rl = checkRateLimit(`gdpr-export:${ip}`, 10, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { success: false, error: `Rate limit exceeded. Retry after ${rl.retryAfter}s` },
+      { status: 429 }
+    );
+  }
+
   const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });

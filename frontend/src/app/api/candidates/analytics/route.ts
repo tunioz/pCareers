@@ -68,27 +68,36 @@ export async function GET() {
     );
     const avg_time_to_first_action = timeToFirstRow?.avg_days ? Math.round(timeToFirstRow.avg_days * 10) / 10 : 0;
 
-    // Stage conversion rates
+    // Stage conversion rates — single queries instead of N+1 loop
     const PIPELINE_ORDER = ['new', 'screening', 'phone_screen', 'technical', 'team_interview', 'culture_chat', 'offer', 'hired'];
-    const stage_conversions: { from_stage: string; to_stage: string; count: number; percentage: number }[] = [];
 
+    // Count how many candidates touched each stage (appeared as from_status or to_status)
+    const stageTotals = queryAll<{ stage: string; count: number }>(
+      `SELECT stage, COUNT(*) as count FROM (
+        SELECT from_status as stage FROM candidate_history WHERE from_status IS NOT NULL
+        UNION ALL
+        SELECT to_status as stage FROM candidate_history WHERE to_status IS NOT NULL
+      ) GROUP BY stage`
+    );
+    const stageTotalMap: Record<string, number> = {};
+    for (const row of stageTotals) stageTotalMap[row.stage] = row.count;
+
+    // Count transitions between consecutive stages
+    const transitions = queryAll<{ from_status: string; to_status: string; count: number }>(
+      `SELECT from_status, to_status, COUNT(*) as count
+       FROM candidate_history
+       WHERE from_status IS NOT NULL AND to_status IS NOT NULL
+       GROUP BY from_status, to_status`
+    );
+    const transMap: Record<string, number> = {};
+    for (const row of transitions) transMap[`${row.from_status}->${row.to_status}`] = row.count;
+
+    const stage_conversions: { from_stage: string; to_stage: string; count: number; percentage: number }[] = [];
     for (let i = 0; i < PIPELINE_ORDER.length - 1; i++) {
       const from_stage = PIPELINE_ORDER[i];
       const to_stage = PIPELINE_ORDER[i + 1];
-
-      const fromCount = queryOne<{ count: number }>(
-        `SELECT COUNT(*) as count FROM candidate_history WHERE from_status = ? OR to_status = ?`,
-        [from_stage, from_stage]
-      );
-
-      const transitionCount = queryOne<{ count: number }>(
-        `SELECT COUNT(*) as count FROM candidate_history WHERE from_status = ? AND to_status = ?`,
-        [from_stage, to_stage]
-      );
-
-      const total = fromCount?.count || 0;
-      const moved = transitionCount?.count || 0;
-
+      const total = stageTotalMap[from_stage] || 0;
+      const moved = transMap[`${from_stage}->${to_stage}`] || 0;
       stage_conversions.push({
         from_stage,
         to_stage,

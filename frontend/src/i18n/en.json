@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "home": "Home",
+    "blog": "Blog",
+    "careers": "Careers",
+    "team": "Team",
+    "about": "About",
+    "culture": "Culture",
+    "life": "Life at pCloud"
+  },
+  "common": {
+    "readMore": "Read more",
+    "viewAll": "View all",
+    "loadMore": "Load More",
+    "apply": "Apply",
+    "applyNow": "Apply Now",
+    "sendApplication": "Send Application",
+    "sending": "Sending...",
+    "seeOpenRoles": "See open roles",
+    "joinNow": "Join Now",
+    "learnMore": "Learn More",
+    "share": "Share",
+    "saveJob": "Save job",
+    "close": "Close",
+    "back": "Back",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "noResults": "No results",
+    "minRead": "min read",
+    "daysAgo": "days",
+    "postedAgo": "Posted"
+  },
+  "home": {
+    "heroTitle": "Building the future of cloud storage",
+    "heroSubtitle": "24 million people trust us. Join the team that makes it possible.",
+    "impactTitle": "Our impact",
+    "whoWeAre": "Who we are",
+    "whyPCloud": "Why pCloud",
+    "openRoles": "Open Roles",
+    "engineeringProof": "Engineering culture",
+    "blogTeaser": "From the blog",
+    "talentCommunity": "Talent Community"
+  },
+  "careers": {
+    "title": "Open Positions",
+    "subtitle": "Find the role for you",
+    "whyJoin": "Why join pCloud?",
+    "viewPosition": "View position",
+    "noOpenPositions": "No open positions at the moment",
+    "department": "Department",
+    "location": "Location",
+    "type": "Type",
+    "seniority": "Level"
+  },
+  "jobDetail": {
+    "requirements": "Requirements",
+    "whatWeLookFor": "What We Look For",
+    "thePCloudBar": "The pCloud Bar",
+    "ourProcess": "Our Process",
+    "benefits": "Benefits",
+    "sharePosition": "Share position",
+    "aboutRole": "About the role",
+    "teamInfo": "About the team"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "How we build infrastructure for millions of users",
+    "relatedArticles": "Related Articles",
+    "categories": "Categories"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "13 years. 24 million users. Zero compromises.",
+    "mission": "Founded with a mission",
+    "learnOurStory": "Learn our story"
+  },
+  "culture": {
+    "title": "Our Culture",
+    "subtitle": "Build products that matter",
+    "values": "Our Values",
+    "principles": "Engineering Principles",
+    "howWeWork": "How We Work",
+    "growth": "Growth",
+    "seeOurBenefits": "See Our Benefits"
+  },
+  "life": {
+    "title": "Life at pCloud",
+    "subtitle": "More than a workplace",
+    "gallery": "Gallery",
+    "stories": "Team Stories",
+    "events": "Events",
+    "typicalDay": "Typical Day"
+  },
+  "form": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "cvLink": "CV Link (pCloud)",
+    "message": "Message",
+    "messagePlaceholder": "Tell us why you want to join...",
+    "privacyConsent": "I agree to the",
+    "privacyPolicy": "Privacy Policy",
+    "applicationSent": "Application sent!",
+    "applicationError": "Error sending. Please try again."
+  },
+  "footer": {
+    "company": "Company",
+    "careers": "Careers",
+    "engineering": "Engineering",
+    "copyright": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "cookie": {
+    "message": "This site uses cookies to improve your experience.",
+    "accept": "Accept",
+    "decline": "Decline"
+  }
+}

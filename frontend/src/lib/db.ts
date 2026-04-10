@@ -698,7 +698,14 @@ function runMigrations(): void {
   addCol('admin_users', 'title', 'TEXT');
   addCol('admin_users', 'is_active', 'INTEGER DEFAULT 1');
   addCol('admin_users', 'last_login_at', 'TEXT');
-  addCol('admin_users', 'updated_at', "TEXT DEFAULT (datetime('now'))");
+  // SQLite ALTER TABLE ADD COLUMN cannot use non-constant defaults like datetime('now'),
+  // so we add as nullable TEXT and backfill existing rows with a constant.
+  addCol('admin_users', 'updated_at', 'TEXT');
+  try {
+    db.exec(`UPDATE admin_users SET updated_at = datetime('now') WHERE updated_at IS NULL`);
+  } catch {
+    // ignore
+  }
 
   addCol('candidates', 'linkedin_profile_text', 'TEXT');
 
@@ -706,6 +713,12 @@ function runMigrations(): void {
   addCol('candidate_scores', 'interviewer_user_id', 'INTEGER');
   addCol('candidate_scores', 'submitted_at', 'TEXT');
   addCol('candidate_scores', 'raw_notes', 'TEXT');
+
+  addCol('candidate_interview_sessions', 'location', 'TEXT');
+  addCol('candidate_interview_sessions', 'meet_link', 'TEXT');
+  addCol('candidate_interview_sessions', 'duration_minutes', 'INTEGER');
+
+  addCol('candidate_emails', 'session_id', 'INTEGER');
 }
 
 // Run schema initialization

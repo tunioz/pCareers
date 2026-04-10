@@ -7,6 +7,8 @@
     "build": "NEXT_BUILD_MODE=1 timeout 900 next build || true",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "seed": "tsx --tsconfig tsconfig.json src/lib/seed.ts"
   },
   "dependencies": {
@@ -48,7 +50,9 @@
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
   }
 }

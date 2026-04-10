@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { queryOne, queryAll, execute, transaction } from '@/lib/db';
 import { getAuthenticatedUser, hasPermission } from '@/lib/permissions';
 import { logAudit, getClientIp, getUserAgent } from '@/lib/audit';
+import { checkRateLimit, getClientIp as getRateLimitIp } from '@/lib/rate-limit';
 import { deleteUploadedFile } from '@/lib/upload';
 import type { Candidate } from '@/types';
 
@@ -25,6 +26,16 @@ interface RouteContext {
  * Only admin can perform GDPR deletion.
  */
 export async function POST(request: Request, context: RouteContext) {
+  // Rate limit: max 5 GDPR deletions per hour per IP (destructive operation)
+  const ip = getRateLimitIp(request);
+  const rl = checkRateLimit(`gdpr-delete:${ip}`, 5, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { success: false, error: `Rate limit exceeded. Retry after ${rl.retryAfter}s` },
+      { status: 429 }
+    );
+  }
+
   const user = await getAuthenticatedUser();
   if (!user) {
     return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });

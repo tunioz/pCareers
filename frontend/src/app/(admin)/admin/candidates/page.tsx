@@ -84,6 +84,8 @@ export default function CandidatesPage() {
   // Board view data
   const [boardCandidates, setBoardCandidates] = useState<CandidateWithJob[]>([]);
   const [terminalExpanded, setTerminalExpanded] = useState(false);
+  const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
 
   // Jobs for filter dropdown
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -139,6 +141,52 @@ export default function CandidatesPage() {
       setLoading(false);
     }
   }, [page, statusFilter, jobFilter, sourceFilter, search, showToast]);
+
+  // Drag-drop: move candidate to new pipeline stage
+  const handleDrop = useCallback(async (candidateId: number, newStatus: string) => {
+    setDragOverStatus(null);
+    setDraggingId(null);
+    const candidate = boardCandidates.find(c => c.id === candidateId);
+    if (!candidate || candidate.status === newStatus) return;
+
+    // Rejection requires a reason — prompt user
+    let rejectionReason: string | undefined;
+    if (newStatus === 'rejected') {
+      const reason = prompt('Rejection reason (required):');
+      if (!reason) return; // Cancelled
+      rejectionReason = reason;
+    }
+
+    // Optimistic update
+    const prevStatus = candidate.status;
+    const prevChangedAt = candidate.status_changed_at;
+    setBoardCandidates(prev =>
+      prev.map(c => c.id === candidateId ? { ...c, status: newStatus as CandidateStatus, status_changed_at: new Date().toISOString() } : c)
+    );
+
+    try {
+      const res = await fetch(`/api/candidates/${candidateId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, rejection_reason: rejectionReason }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setBoardCandidates(prev =>
+          prev.map(c => c.id === candidateId ? { ...c, status: prevStatus, status_changed_at: prevChangedAt } : c)
+        );
+        showToast('error', data.error || 'Failed to update status');
+      } else {
+        showToast('success', `${candidate.full_name} moved to ${CANDIDATE_STATUS_MAP[newStatus as CandidateStatus]?.label || newStatus}`);
+        loadStats();
+      }
+    } catch {
+      setBoardCandidates(prev =>
+        prev.map(c => c.id === candidateId ? { ...c, status: prevStatus, status_changed_at: prevChangedAt } : c)
+      );
+      showToast('error', 'Network error');
+    }
+  }, [boardCandidates, showToast, loadStats]);
 
   // Load jobs for filter
   useEffect(() => {
@@ -256,7 +304,18 @@ export default function CandidatesPage() {
                   const info = CANDIDATE_STATUS_MAP[status];
                   const candidates = groupedByStatus[status] || [];
                   return (
-                    <div key={status} className={styles.atsPipelineCol}>
+                    <div
+                      key={status}
+                      className={styles.atsPipelineCol}
+                      onDragOver={(e) => { e.preventDefault(); setDragOverStatus(status); }}
+                      onDragLeave={() => setDragOverStatus(null)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const candidateId = parseInt(e.dataTransfer.getData('text/plain'), 10);
+                        if (candidateId) handleDrop(candidateId, status);
+                      }}
+                      style={dragOverStatus === status ? { outline: '2px dashed #17BED0', outlineOffset: '-2px', borderRadius: '8px' } : undefined}
+                    >
                       <div
                         className={styles.atsPipelineColHeader}
                         style={{ background: info.color }}
@@ -267,14 +326,21 @@ export default function CandidatesPage() {
                       <div className={styles.atsPipelineColBody}>
                         {candidates.length === 0 ? (
                           <p style={{ fontSize: '12px', color: '#9ca3af', textAlign: 'center', padding: '16px 0' }}>
-                            No candidates
+                            {dragOverStatus === status ? 'Drop here' : 'No candidates'}
                           </p>
                         ) : (
                           candidates.map((c) => (
                             <div
                               key={c.id}
                               className={styles.atsCandidateCard}
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.setData('text/plain', String(c.id));
+                                setDraggingId(c.id);
+                              }}
+                              onDragEnd={() => { setDraggingId(null); setDragOverStatus(null); }}
                               onClick={() => router.push(`/admin/candidates/${c.id}`)}
+                              style={draggingId === c.id ? { opacity: 0.5 } : undefined}
                             >
                               <div className={styles.atsCandidateCardName}>{c.full_name}</div>
                               <div className={styles.atsCandidateCardJob}>

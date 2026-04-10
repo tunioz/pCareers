@@ -1,14 +1,9 @@
 import jwt, { type SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
+import { JWT_SECRET, JWT_EXPIRES_IN as JWT_EXP, COOKIE_NAME } from '@/lib/jwt-config';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
-
-if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET && !process.env.NEXT_BUILD_MODE) {
-  console.error('WARNING: JWT_SECRET environment variable is not set in production!');
-}
-const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '7d') as SignOptions['expiresIn'];
-const COOKIE_NAME = 'auth_token';
+const JWT_EXPIRES: SignOptions['expiresIn'] = JWT_EXP as SignOptions['expiresIn'];
 
 // ---------------------------------------------------------------------------
 // Types
@@ -58,7 +53,7 @@ export async function verifyPassword(
  */
 export function signToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
+    expiresIn: JWT_EXPIRES,
   });
 }
 

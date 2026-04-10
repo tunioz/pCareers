@@ -52,6 +52,7 @@ const navItems: NavItem[] = [
   { href: '/admin/candidates', label: 'Candidates', icon: <Users size={20} />, section: 'ATS' },
   { href: '/admin/interview-kits', label: 'Interview Kits', icon: <BookOpen size={20} /> },
   { href: '/admin/analytics', label: 'Analytics', icon: <BarChart3 size={20} /> },
+  { href: '/admin/analytics/dashboard', label: 'KPI Dashboard', icon: <TrendingUp size={20} /> },
   { href: '/admin/analytics/funnel', label: 'Hiring Funnel', icon: <TrendingUp size={20} /> },
   { href: '/admin/email-templates', label: 'Email Templates', icon: <Mail size={20} /> },
   { href: '/admin/tasks', label: 'Tasks', icon: <ClipboardCheck size={20} /> },

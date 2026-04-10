@@ -120,8 +120,63 @@ export default async function JobDetailPage({
   const settings: Record<string, string> = {};
   for (const row of settingsRows) settings[row.key] = row.value;
 
+  // Schema.org JobPosting structured data for job aggregators (Google, Indeed, LinkedIn)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://careers.pcloud.com';
+  const jobPostingSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: job.title,
+    description: job.description || '',
+    datePosted: job.created_at?.slice(0, 10),
+    validThrough: undefined as string | undefined,
+    employmentType: job.employment_type === 'Full-time' ? 'FULL_TIME'
+      : job.employment_type === 'Part-time' ? 'PART_TIME'
+      : job.employment_type === 'Contract' ? 'CONTRACTOR'
+      : job.employment_type === 'Remote' ? 'FULL_TIME'
+      : 'FULL_TIME',
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: 'pCloud',
+      sameAs: 'https://www.pcloud.com',
+      logo: `${siteUrl}/pcloud-logo.png`,
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: job.location || 'Sofia',
+        addressCountry: 'BG',
+      },
+    },
+    ...(job.employment_type === 'Remote' && {
+      jobLocationType: 'TELECOMMUTE',
+    }),
+    ...(job.salary_range && {
+      baseSalary: {
+        '@type': 'MonetaryAmount',
+        currency: 'EUR',
+        value: {
+          '@type': 'QuantitativeValue',
+          value: job.salary_range,
+          unitText: 'YEAR',
+        },
+      },
+    }),
+    industry: 'Cloud Storage & Technology',
+    occupationalCategory: job.department,
+    url: `${siteUrl}/careers/${job.slug}`,
+  };
+
+  // JSON-LD is safe here: jobPostingSchema is built from server-side DB data,
+  // not user input. JSON.stringify escapes any special characters.
+  const jsonLd = JSON.stringify(jobPostingSchema);
+
   return (
     <div style={{ backgroundColor: 'white', minHeight: '100vh' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
+      />
       <RolePreview
         job={job}
         interviewTemplate={template}

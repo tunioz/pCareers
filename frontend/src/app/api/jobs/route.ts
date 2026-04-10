@@ -69,7 +69,7 @@ export async function GET(request: Request) {
       [...queryParams, perPage, offset]
     );
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: jobs,
       meta: {
@@ -79,6 +79,11 @@ export async function GET(request: Request) {
         totalPages,
       },
     });
+    // Cache public job listings for 5 minutes
+    if (!isAdmin) {
+      response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=60');
+    }
+    return response;
   } catch (error) {
     console.error('Get jobs error:', error);
     return NextResponse.json(

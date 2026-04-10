@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "home": "Начало",
+    "blog": "Блог",
+    "careers": "Кариери",
+    "team": "Екип",
+    "about": "За нас",
+    "culture": "Култура",
+    "life": "Живот в pCloud"
+  },
+  "common": {
+    "readMore": "Прочети повече",
+    "viewAll": "Виж всички",
+    "loadMore": "Зареди още",
+    "apply": "Кандидатствай",
+    "applyNow": "Кандидатствай сега",
+    "sendApplication": "Изпрати кандидатура",
+    "sending": "Изпращане...",
+    "seeOpenRoles": "Виж отворени позиции",
+    "joinNow": "Присъедини се",
+    "learnMore": "Научи повече",
+    "share": "Сподели",
+    "saveJob": "Запази позиция",
+    "close": "Затвори",
+    "back": "Назад",
+    "search": "Търсене",
+    "filter": "Филтър",
+    "all": "Всички",
+    "noResults": "Няма резултати",
+    "minRead": "мин четене",
+    "daysAgo": "дни",
+    "postedAgo": "Публикувано преди"
+  },
+  "home": {
+    "heroTitle": "Изграждаме бъдещето на облачното съхранение",
+    "heroSubtitle": "24 милиона души ни се доверяват. Присъедини се към екипа, който прави това възможно.",
+    "impactTitle": "Нашето въздействие",
+    "whoWeAre": "Кои сме ние",
+    "whyPCloud": "Защо pCloud",
+    "openRoles": "Отворени позиции",
+    "engineeringProof": "Инженерна култура",
+    "blogTeaser": "От блога",
+    "talentCommunity": "Общност за таланти"
+  },
+  "careers": {
+    "title": "Отворени позиции",
+    "subtitle": "Намери ролята за теб",
+    "whyJoin": "Защо да се присъединиш към pCloud?",
+    "viewPosition": "Виж позицията",
+    "noOpenPositions": "Няма отворени позиции в момента",
+    "department": "Отдел",
+    "location": "Локация",
+    "type": "Тип",
+    "seniority": "Ниво"
+  },
+  "jobDetail": {
+    "requirements": "Изисквания",
+    "whatWeLookFor": "Какво търсим",
+    "thePCloudBar": "pCloud стандартът",
+    "ourProcess": "Нашият процес",
+    "benefits": "Придобивки",
+    "sharePosition": "Сподели позицията",
+    "aboutRole": "За ролята",
+    "teamInfo": "За екипа"
+  },
+  "blog": {
+    "title": "Блог",
+    "subtitle": "Как изграждаме инфраструктура за милиони потребители",
+    "relatedArticles": "Свързани статии",
+    "categories": "Категории"
+  },
+  "about": {
+    "title": "За нас",
+    "subtitle": "13 години. 24 милиона потребители. Без компромиси.",
+    "mission": "Основана с мисия",
+    "learnOurStory": "Научи нашата история"
+  },
+  "culture": {
+    "title": "Нашата култура",
+    "subtitle": "Изграждай продукти, които имат значение",
+    "values": "Нашите ценности",
+    "principles": "Инженерни принципи",
+    "howWeWork": "Как работим",
+    "growth": "Растеж",
+    "seeOurBenefits": "Виж нашите придобивки"
+  },
+  "life": {
+    "title": "Живот в pCloud",
+    "subtitle": "Повече от работно място",
+    "gallery": "Галерия",
+    "stories": "Истории от екипа",
+    "events": "Събития",
+    "typicalDay": "Типичен ден"
+  },
+  "form": {
+    "fullName": "Пълно име",
+    "email": "Имейл",
+    "cvLink": "Линк към CV (pCloud)",
+    "message": "Съобщение",
+    "messagePlaceholder": "Разкажи ни защо искаш да се присъединиш...",
+    "privacyConsent": "Съгласен/а съм с",
+    "privacyPolicy": "Политиката за поверителност",
+    "applicationSent": "Кандидатурата е изпратена!",
+    "applicationError": "Грешка при изпращане. Опитай отново."
+  },
+  "footer": {
+    "company": "Компания",
+    "careers": "Кариери",
+    "engineering": "Инженерство",
+    "copyright": "Всички права запазени.",
+    "privacy": "Поверителност",
+    "terms": "Условия"
+  },
+  "cookie": {
+    "message": "Този сайт използва бисквитки за подобряване на изживяването.",
+    "accept": "Приемам",
+    "decline": "Отказвам"
+  }
+}

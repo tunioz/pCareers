@@ -114,8 +114,9 @@ export async function POST(request: Request, context: RouteContext) {
 
     const result = execute(
       `INSERT INTO candidate_interview_sessions (
-        candidate_id, kit_id, interviewer_name, stage, scheduled_at, status
-      ) VALUES (?, ?, ?, ?, ?, ?)`,
+        candidate_id, kit_id, interviewer_name, stage, scheduled_at, status,
+        location, meet_link, duration_minutes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         candidateId,
         body.kit_id || null,
@@ -123,6 +124,9 @@ export async function POST(request: Request, context: RouteContext) {
         body.stage,
         body.scheduled_at || null,
         body.status || 'scheduled',
+        body.location || null,
+        body.meet_link || null,
+        body.duration_minutes || null,
       ]
     );
 
@@ -139,6 +143,8 @@ export async function POST(request: Request, context: RouteContext) {
         interviewer: body.interviewer_name,
         stage: body.stage,
         scheduled_at: body.scheduled_at,
+        location: body.location,
+        meet_link: body.meet_link,
       },
       ipAddress: getClientIp(request),
       userAgent: getUserAgent(request),

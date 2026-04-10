@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Mail, Sparkles, Send, Loader2, Edit3, Trash2, CheckCircle, AlertCircle, Plus } from 'lucide-react';
+import { Mail, Sparkles, Send, Loader2, Edit3, Trash2, CheckCircle, AlertCircle, Plus, Calendar, Eye } from 'lucide-react';
 
 interface Props {
   candidateId: number;
@@ -16,6 +16,7 @@ interface EmailRow {
   body: string | null;
   status: string;
   ai_generated: number;
+  session_id: number | null;
   sent_at: string | null;
   sent_by: string | null;
   sent_to_email: string | null;
@@ -59,6 +60,7 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
   const [editBody, setEditBody] = useState('');
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -107,6 +109,7 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
           body: json.data.body,
           status: 'draft',
           ai_generated: 1,
+          session_id: json.data.linked_session_id ?? null,
           sent_at: null,
           sent_by: null,
           sent_to_email: null,
@@ -181,6 +184,7 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
     setEditing(email);
     setEditSubject(email.subject || '');
     setEditBody(email.body || '');
+    setPreviewing(false);
   }
 
   return (
@@ -346,6 +350,14 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
                       <Sparkles size={12} />
                     </span>
                   )}
+                  {e.session_id && (
+                    <span
+                      style={{ color: '#059669', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                      title="Calendar invite (.ics) will be attached on send"
+                    >
+                      <Calendar size={12} />
+                    </span>
+                  )}
                   <span style={{ fontSize: '11px', color: '#6B7280' }}>{typeLabel(e.email_type)}</span>
                   <span style={{ fontSize: '11px', color: '#9CA3AF', marginLeft: 'auto' }}>
                     {new Date(e.created_at).toLocaleString()}
@@ -393,37 +405,58 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
               </button>
             </div>
 
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ fontSize: '11px', color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
-                Subject
-              </label>
-              <input
-                type="text"
-                value={editSubject}
-                onChange={(e) => setEditSubject(e.target.value)}
-                disabled={editing.status === 'sent'}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', fontSize: '14px' }}
-              />
-            </div>
+            {previewing ? (
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Eye size={12} /> HTML Preview
+                </div>
+                <iframe
+                  src={`/api/candidate-emails/${editing.id}/preview`}
+                  title="Email preview"
+                  style={{
+                    width: '100%',
+                    height: '500px',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '8px',
+                    background: '#F3F4F6',
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '11px', color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    value={editSubject}
+                    onChange={(e) => setEditSubject(e.target.value)}
+                    disabled={editing.status === 'sent'}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', fontSize: '14px' }}
+                  />
+                </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ fontSize: '11px', color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
-                Body
-              </label>
-              <textarea
-                value={editBody}
-                onChange={(e) => setEditBody(e.target.value)}
-                disabled={editing.status === 'sent'}
-                rows={18}
-                style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #D1D5DB', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical' }}
-              />
-            </div>
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ fontSize: '11px', color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
+                    Body
+                  </label>
+                  <textarea
+                    value={editBody}
+                    onChange={(e) => setEditBody(e.target.value)}
+                    disabled={editing.status === 'sent'}
+                    rows={18}
+                    style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #D1D5DB', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical' }}
+                  />
+                </div>
 
-            <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '16px', padding: '10px', background: '#F9FAFB', borderRadius: '6px' }}>
-              To: <strong>{candidateName}&apos;s email from candidate record</strong>
-              <br />
-              Tip: Replace placeholders like [SALARY], [START_DATE], [DATE] with actual values before sending.
-            </div>
+                <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '16px', padding: '10px', background: '#F9FAFB', borderRadius: '6px' }}>
+                  To: <strong>{candidateName}&apos;s email from candidate record</strong>
+                  <br />
+                  Tip: Replace placeholders like [SALARY], [START_DATE], [DATE] with actual values before sending.
+                </div>
+              </>
+            )}
 
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'space-between' }}>
               <button
@@ -453,6 +486,26 @@ export function CandidateEmailsPanel({ candidateId, candidateName }: Props) {
                   style={{ padding: '10px 16px', background: 'transparent', border: '1px solid #D1D5DB', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}
                 >
                   Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewing(!previewing)}
+                  style={{
+                    padding: '10px 16px',
+                    background: previewing ? '#17BED0' : 'transparent',
+                    color: previewing ? '#FFFFFF' : '#17BED0',
+                    border: '1px solid #17BED0',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <Eye size={14} />
+                  {previewing ? 'Edit' : 'Preview'}
                 </button>
                 {editing.status !== 'sent' && (
                   <>

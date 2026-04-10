@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
-
-const JWT_SECRET = process.env.JWT_SECRET || (
-  process.env.NODE_ENV === 'production'
-    ? 'MISSING_SECRET'
-    : 'dev-secret-change-in-production'
-);
+import { JWT_SECRET, COOKIE_NAME } from '@/lib/jwt-config';
 
 const secret = new TextEncoder().encode(JWT_SECRET);
 
@@ -63,7 +58,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get('auth_token')?.value;
+  const token = request.cookies.get(COOKIE_NAME)?.value;
 
   // Protect admin pages (except login)
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {

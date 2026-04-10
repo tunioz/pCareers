@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { t } from '@/i18n';
 import styles from './Header.module.scss';
 
 export function Header() {
@@ -31,12 +32,12 @@ export function Header() {
   }, [pathname]);
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Culture', href: '/culture' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Life at pCloud', href: '/life' },
-    { name: 'Blog', href: '/blog' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.about'), href: '/about' },
+    { name: t('nav.culture'), href: '/culture' },
+    { name: t('nav.careers'), href: '/careers' },
+    { name: t('nav.life'), href: '/life' },
+    { name: t('nav.blog'), href: '/blog' },
   ];
 
   return (

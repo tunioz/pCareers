@@ -30,6 +30,12 @@ export function isEmailConfigured(): boolean {
   return Boolean(RESEND_API_KEY);
 }
 
+export interface EmailAttachment {
+  filename: string;
+  content: string; // base64-encoded for binary, UTF-8 text for .ics/.txt
+  contentType?: string;
+}
+
 export interface SendEmailInput {
   to: string;
   subject: string;
@@ -38,6 +44,7 @@ export interface SendEmailInput {
   replyTo?: string;
   cc?: string[];
   bcc?: string[];
+  attachments?: EmailAttachment[];
 }
 
 export interface SendEmailResult {
@@ -66,6 +73,11 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
       replyTo: input.replyTo || EMAIL_REPLY_TO,
       cc: input.cc,
       bcc: input.bcc,
+      attachments: input.attachments?.map((a) => ({
+        filename: a.filename,
+        content: a.content,
+        contentType: a.contentType,
+      })),
     });
 
     if (response.error) {

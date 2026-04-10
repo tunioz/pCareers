@@ -174,7 +174,7 @@ export async function GET(request: Request) {
       max_days: timeToHireDays.length > 0 ? Math.max(...timeToHireDays) : 0,
     };
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         filter: { job_id: jobId ? parseInt(jobId, 10) : null, date_from: dateFrom, date_to: dateTo },
@@ -189,6 +189,9 @@ export async function GET(request: Request) {
         time_to_hire: timeToHire,
       },
     });
+    // Cache analytics for 5 minutes (auth-gated, private cache only)
+    response.headers.set('Cache-Control', 'private, max-age=300');
+    return response;
   } catch (error) {
     console.error('Funnel analytics error:', error);
     return NextResponse.json(

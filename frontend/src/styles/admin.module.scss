@@ -1641,12 +1641,17 @@ $admin-table-row-height: 48px;
   border-radius: $border-radius-sm;
   padding: $spacing-3;
   margin-bottom: $spacing-2;
-  cursor: pointer;
+  cursor: grab;
   transition: box-shadow $transition-fast, border-color $transition-fast;
+  user-select: none;
 
   &:hover {
     box-shadow: $shadow-md;
     border-color: $color-neutral-300;
+  }
+
+  &:active {
+    cursor: grabbing;
   }
 }
 

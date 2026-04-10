@@ -83,7 +83,7 @@ export async function GET(request: Request) {
       tags: tagsByPost.get(post.id) || [],
     }));
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: postsWithTags,
       meta: {
@@ -93,6 +93,11 @@ export async function GET(request: Request) {
         totalPages,
       },
     });
+    // Cache public blog posts for 1 minute
+    if (!isAdmin) {
+      response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=30');
+    }
+    return response;
   } catch (error) {
     console.error('Get posts error:', error);
     return NextResponse.json(
