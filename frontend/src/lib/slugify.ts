@@ -22,15 +22,15 @@ export function createSlug(text: string): string {
  *
  * Example: 'my-post' => 'my-post', 'my-post-2', 'my-post-3', etc.
  */
-export function createUniqueSlug(
+export async function createUniqueSlug(
   text: string,
-  existsCheck: (slug: string) => boolean
-): string {
+  existsCheck: (slug: string) => boolean | Promise<boolean>
+): Promise<string> {
   const baseSlug = createSlug(text);
   let slug = baseSlug;
   let counter = 2;
 
-  while (existsCheck(slug)) {
+  while (await existsCheck(slug)) {
     slug = `${baseSlug}-${counter}`;
     counter++;
   }

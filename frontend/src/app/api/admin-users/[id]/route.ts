@@ -23,7 +23,7 @@ export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params;
   const userId = parseInt(id, 10);
 
-  const row = queryOne<AdminUserRow>(
+  const row = await queryOne<AdminUserRow>(
     `SELECT id, username, full_name, email, photo, role, title, is_active, last_login_at, created_at, updated_at
      FROM admin_users WHERE id = ?`,
     [userId]
@@ -50,7 +50,7 @@ export async function PUT(request: Request, context: RouteContext) {
     const userId = parseInt(id, 10);
     const body = await request.json();
 
-    const existing = queryOne<AdminUserRow>(
+    const existing = await queryOne<AdminUserRow>(
       'SELECT * FROM admin_users WHERE id = ?',
       [userId]
     );
@@ -67,7 +67,7 @@ export async function PUT(request: Request, context: RouteContext) {
       passwordHashUpdate = await hashPassword(body.password);
     }
 
-    execute(
+    await execute(
       `UPDATE admin_users SET
         full_name = COALESCE(?, full_name),
         email = COALESCE(?, email),
@@ -105,7 +105,7 @@ export async function PUT(request: Request, context: RouteContext) {
       userAgent: getUserAgent(request),
     });
 
-    const updated = queryOne<AdminUserRow>(
+    const updated = await queryOne<AdminUserRow>(
       `SELECT id, username, full_name, email, photo, role, title, is_active, last_login_at, created_at, updated_at
        FROM admin_users WHERE id = ?`,
       [userId]
@@ -140,7 +140,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<AdminUserRow>(
+    const existing = await queryOne<AdminUserRow>(
       'SELECT username FROM admin_users WHERE id = ?',
       [userId]
     );
@@ -148,7 +148,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
     }
 
-    execute('DELETE FROM admin_users WHERE id = ?', [userId]);
+    await execute('DELETE FROM admin_users WHERE id = ?', [userId]);
 
     logAudit({
       userId: currentUser.userId,

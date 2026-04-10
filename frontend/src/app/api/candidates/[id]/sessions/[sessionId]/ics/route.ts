@@ -42,7 +42,7 @@ export async function GET(request: Request, context: RouteContext) {
     const candidateId = parseInt(id, 10);
     const sessionIdNum = parseInt(sessionId, 10);
 
-    const session = queryOne<SessionRow>(
+    const session = await queryOne<SessionRow>(
       'SELECT * FROM candidate_interview_sessions WHERE id = ? AND candidate_id = ?',
       [sessionIdNum, candidateId]
     );
@@ -57,7 +57,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT full_name, email FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -66,17 +66,17 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     let jobTitle = 'Interview';
-    const candidateWithJob = queryOne<Candidate>(
+    const candidateWithJob = await queryOne<Candidate>(
       'SELECT job_id FROM candidates WHERE id = ?',
       [candidateId]
     );
     if (candidateWithJob?.job_id) {
-      const job = queryOne<Job>('SELECT title FROM jobs WHERE id = ?', [candidateWithJob.job_id]);
+      const job = await queryOne<Job>('SELECT title FROM jobs WHERE id = ?', [candidateWithJob.job_id]);
       if (job) jobTitle = job.title;
     }
 
     // Get interviewer's email from admin_users
-    const interviewer = queryOne<AdminUserRow>(
+    const interviewer = await queryOne<AdminUserRow>(
       'SELECT username, email, full_name FROM admin_users WHERE username = ?',
       [session.interviewer_name]
     );
@@ -84,7 +84,7 @@ export async function GET(request: Request, context: RouteContext) {
     // Build kit context if present
     let kitInfo = '';
     if (session.kit_id) {
-      const kit = queryOne<{ name: string; description: string | null; duration_minutes: number }>(
+      const kit = await queryOne<{ name: string; description: string | null; duration_minutes: number }>(
         'SELECT name, description, duration_minutes FROM interview_kits WHERE id = ?',
         [session.kit_id]
       );

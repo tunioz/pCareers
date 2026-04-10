@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     // Get job context if candidate has one
     let job: Job | null = null;
     if (candidate.job_id) {
-      job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
+      job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
     }
 
     // Bias protection: intentionally do NOT send candidate name beyond first name

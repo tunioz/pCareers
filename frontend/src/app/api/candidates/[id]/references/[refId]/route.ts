@@ -26,7 +26,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<CandidateReference>(
+    const existing = await queryOne<CandidateReference>(
       'SELECT * FROM candidate_references WHERE id = ? AND candidate_id = ?',
       [referenceId, candidateId]
     );
@@ -60,7 +60,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
       const v = validation.data;
 
-      execute(
+      await execute(
         `UPDATE candidate_references SET
           technical_competence = ?,
           reliability = ?,
@@ -118,13 +118,13 @@ export async function PUT(request: Request, context: RouteContext) {
 
       params.push(referenceId);
 
-      execute(
+      await execute(
         `UPDATE candidate_references SET ${setClauses.join(', ')} WHERE id = ?`,
         params
       );
     }
 
-    const updated = queryOne<CandidateReference>(
+    const updated = await queryOne<CandidateReference>(
       'SELECT * FROM candidate_references WHERE id = ?',
       [referenceId]
     );

@@ -30,7 +30,7 @@ export async function POST(request: Request, context: RouteContext) {
       return NextResponse.json({ success: false, error: 'Invalid candidate ID' }, { status: 400 });
     }
 
-    const candidate = queryOne<{ id: number; cv_path: string | null }>(
+    const candidate = await queryOne<{ id: number; cv_path: string | null }>(
       'SELECT id, cv_path FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -79,7 +79,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       `UPDATE candidates SET cv_path = ?, cv_original_name = ?, updated_at = datetime('now') WHERE id = ?`,
       [uploadResult.publicUrl, file.name, candidateId]
     );

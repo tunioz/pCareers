@@ -6,18 +6,18 @@ import type { ProcessTemplate, ProcessStep } from '@/types';
 
 export async function GET() {
   try {
-    const templates = queryAll<ProcessTemplate>(
+    const templates = await queryAll<ProcessTemplate>(
       'SELECT * FROM process_templates ORDER BY is_default DESC, name ASC'
     );
 
     // Load steps for each template
-    const templatesWithSteps = templates.map((template) => {
-      const steps = queryAll<ProcessStep>(
+    const templatesWithSteps = await Promise.all(templates.map(async (template) => {
+      const steps = await queryAll<ProcessStep>(
         'SELECT * FROM process_steps WHERE template_id = ? ORDER BY step_number ASC',
         [template.id]
       );
       return { ...template, steps };
-    });
+    }));
 
     return NextResponse.json({
       success: true,
@@ -55,10 +55,10 @@ export async function POST(request: Request) {
 
     // If setting as default, unset any existing default
     if (data.is_default) {
-      execute('UPDATE process_templates SET is_default = 0 WHERE is_default = 1');
+      await execute('UPDATE process_templates SET is_default = 0 WHERE is_default = 1');
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO process_templates (name, description, intro_text, is_default, is_published)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newTemplate = queryOne<ProcessTemplate>(
+    const newTemplate = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE id = ?',
       [result.lastInsertRowid]
     );

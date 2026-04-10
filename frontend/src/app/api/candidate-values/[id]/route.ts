@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const value = queryOne<CandidateValue>(
+    const value = await queryOne<CandidateValue>(
       'SELECT * FROM candidate_values WHERE id = ?',
       [valueId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<CandidateValue>(
+    const existing = await queryOne<CandidateValue>(
       'SELECT * FROM candidate_values WHERE id = ?',
       [valueId]
     );
@@ -97,7 +97,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE candidate_values SET
         title = ?, description = ?, image = ?, sort_order = ?, is_published = ?,
         updated_at = datetime('now')
@@ -112,7 +112,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<CandidateValue>(
+    const updated = await queryOne<CandidateValue>(
       'SELECT * FROM candidate_values WHERE id = ?',
       [valueId]
     );
@@ -150,7 +150,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<CandidateValue>(
+    const existing = await queryOne<CandidateValue>(
       'SELECT id FROM candidate_values WHERE id = ?',
       [valueId]
     );
@@ -162,7 +162,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM candidate_values WHERE id = ?', [valueId]);
+    await execute('DELETE FROM candidate_values WHERE id = ?', [valueId]);
 
     return NextResponse.json({
       success: true,

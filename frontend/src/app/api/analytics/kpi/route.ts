@@ -26,35 +26,35 @@ export async function GET(request: Request) {
     const dateFrom = new Date(Date.now() - months * 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
     // ─── 1. Summary cards ───
-    const totalCandidates = queryOne<{ count: number }>(
+    const totalCandidates = (await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM candidates WHERE is_archived = 0 AND created_at >= ?`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
-    const totalHired = queryOne<{ count: number }>(
+    const totalHired = (await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM candidates WHERE status = 'hired' AND is_archived = 0 AND created_at >= ?`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
-    const totalRejected = queryOne<{ count: number }>(
+    const totalRejected = (await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM candidates WHERE status = 'rejected' AND is_archived = 0 AND created_at >= ?`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
-    const openJobs = queryOne<{ count: number }>(
+    const openJobs = (await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM jobs WHERE is_published = 1`
-    )?.count || 0;
+    ))?.count || 0;
 
     // Active pipeline: candidates not in terminal states
-    const activePipeline = queryOne<{ count: number }>(
+    const activePipeline = (await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM candidates
        WHERE is_archived = 0 AND status NOT IN ('hired', 'rejected', 'withdrawn')
        AND created_at >= ?`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
     // ─── 2. Time-to-hire (overall) ───
-    const tthRows = queryAll<{ days: number }>(
+    const tthRows = await queryAll<{ days: number }>(
       `SELECT CAST(julianday(h.created_at) - julianday(c.created_at) AS INTEGER) as days
        FROM candidates c
        JOIN candidate_history h ON h.candidate_id = c.id AND h.to_status = 'hired'
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     };
 
     // ─── 3. Time-to-hire per job ───
-    const tthByJob = queryAll<{ job_id: number; job_title: string; avg_days: number; hired_count: number }>(
+    const tthByJob = await queryAll<{ job_id: number; job_title: string; avg_days: number; hired_count: number }>(
       `SELECT
          j.id as job_id,
          j.title as job_title,
@@ -89,28 +89,28 @@ export async function GET(request: Request) {
     );
 
     // ─── 4. Offer acceptance rate ───
-    const offersExtended = queryOne<{ count: number }>(
+    const offersExtended = (await queryOne<{ count: number }>(
       `SELECT COUNT(DISTINCT candidate_id) as count
        FROM candidate_history
        WHERE to_status = 'offer'
        AND candidate_id IN (SELECT id FROM candidates WHERE created_at >= ?)`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
-    const offersAccepted = queryOne<{ count: number }>(
+    const offersAccepted = (await queryOne<{ count: number }>(
       `SELECT COUNT(DISTINCT candidate_id) as count
        FROM candidate_history
        WHERE from_status = 'offer' AND to_status = 'hired'
        AND candidate_id IN (SELECT id FROM candidates WHERE created_at >= ?)`,
       [dateFrom]
-    )?.count || 0;
+    ))?.count || 0;
 
     const offerAcceptanceRate = offersExtended > 0
       ? Math.round((offersAccepted / offersExtended) * 1000) / 10
       : 0;
 
     // ─── 5. Source breakdown ───
-    const sources = queryAll<{ source: string; total: number; hired: number; in_pipeline: number }>(
+    const sources = (await queryAll<{ source: string; total: number; hired: number; in_pipeline: number }>(
       `SELECT
          COALESCE(source, 'Direct') as source,
          COUNT(*) as total,
@@ -121,7 +121,7 @@ export async function GET(request: Request) {
        GROUP BY COALESCE(source, 'Direct')
        ORDER BY total DESC`,
       [dateFrom]
-    ).map(s => ({
+    )).map(s => ({
       ...s,
       hire_rate: s.total > 0 ? Math.round((s.hired / s.total) * 1000) / 10 : 0,
     }));
@@ -129,7 +129,7 @@ export async function GET(request: Request) {
     // ─── 6. Stage conversion rates (full pipeline) — single queries ───
     const STAGES = ['new', 'screening', 'phone_screen', 'technical', 'team_interview', 'culture_chat', 'offer', 'hired'];
 
-    const kpiStageTotals = queryAll<{ stage: string; count: number }>(
+    const kpiStageTotals = await queryAll<{ stage: string; count: number }>(
       `SELECT stage, COUNT(DISTINCT candidate_id) as count FROM (
         SELECT from_status as stage, candidate_id FROM candidate_history WHERE from_status IS NOT NULL AND candidate_id IN (SELECT id FROM candidates WHERE created_at >= ?)
         UNION ALL
@@ -140,7 +140,7 @@ export async function GET(request: Request) {
     const kpiStageTotalMap: Record<string, number> = {};
     for (const row of kpiStageTotals) kpiStageTotalMap[row.stage] = row.count;
 
-    const kpiTransitions = queryAll<{ from_status: string; to_status: string; count: number }>(
+    const kpiTransitions = await queryAll<{ from_status: string; to_status: string; count: number }>(
       `SELECT from_status, to_status, COUNT(DISTINCT candidate_id) as count
        FROM candidate_history
        WHERE from_status IS NOT NULL AND to_status IS NOT NULL
@@ -167,7 +167,7 @@ export async function GET(request: Request) {
     }
 
     // ─── 7. Monthly trends ───
-    const monthlyTrends = queryAll<{
+    const monthlyTrends = await queryAll<{
       month: string;
       applications: number;
       hired: number;
@@ -186,7 +186,7 @@ export async function GET(request: Request) {
     );
 
     // ─── 8. Pipeline by status ───
-    const pipelineByStatus = queryAll<{ status: string; count: number }>(
+    const pipelineByStatus = await queryAll<{ status: string; count: number }>(
       `SELECT status, COUNT(*) as count
        FROM candidates
        WHERE is_archived = 0 AND created_at >= ?
@@ -202,7 +202,7 @@ export async function GET(request: Request) {
     );
 
     // ─── 9. Avg time per stage ───
-    const stageVelocity = queryAll<{ stage: string; avg_days: number }>(
+    const stageVelocity = (await queryAll<{ stage: string; avg_days: number }>(
       `SELECT
          from_status as stage,
          ROUND(AVG(CAST(julianday(
@@ -214,10 +214,10 @@ export async function GET(request: Request) {
        AND candidate_id IN (SELECT id FROM candidates WHERE created_at >= ?)
        GROUP BY from_status`,
       [dateFrom]
-    ).filter(sv => sv.avg_days != null && sv.avg_days >= 0);
+    )).filter(sv => sv.avg_days != null && sv.avg_days >= 0);
 
     // ─── 10. Top jobs by candidates ───
-    const topJobs = queryAll<{ job_id: number; title: string; candidates: number; hired: number; active: number }>(
+    const topJobs = await queryAll<{ job_id: number; title: string; candidates: number; hired: number; active: number }>(
       `SELECT
          j.id as job_id,
          j.title,

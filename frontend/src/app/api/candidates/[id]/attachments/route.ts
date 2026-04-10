@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -43,7 +43,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const attachments = queryAll<CandidateAttachment>(
+    const attachments = await queryAll<CandidateAttachment>(
       'SELECT * FROM candidate_attachments WHERE candidate_id = ? ORDER BY created_at DESC',
       [candidateId]
     );
@@ -85,7 +85,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -119,7 +119,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_attachments (candidate_id, file_path, file_name, file_type, uploaded_by)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -131,7 +131,7 @@ export async function POST(request: Request, context: RouteContext) {
       ]
     );
 
-    const attachment = queryOne<CandidateAttachment>(
+    const attachment = await queryOne<CandidateAttachment>(
       'SELECT * FROM candidate_attachments WHERE id = ?',
       [result.lastInsertRowid]
     );

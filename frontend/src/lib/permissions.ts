@@ -28,7 +28,7 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
   const jwt = await getAuthUser();
   if (!jwt) return null;
 
-  const row = queryOne<{
+  const row = await queryOne<{
     id: number;
     username: string;
     role: string | null;

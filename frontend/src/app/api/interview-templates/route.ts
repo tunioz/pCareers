@@ -6,18 +6,20 @@ import type { InterviewTemplate, InterviewStage } from '@/types';
 
 export async function GET() {
   try {
-    const templates = queryAll<InterviewTemplate>(
+    const templates = await queryAll<InterviewTemplate>(
       'SELECT * FROM interview_templates ORDER BY is_default DESC, name ASC'
     );
 
     // Load stages for each template
-    const templatesWithStages = templates.map((template) => {
-      const stages = queryAll<InterviewStage>(
-        'SELECT * FROM interview_stages WHERE template_id = ? ORDER BY stage_number ASC',
-        [template.id]
-      );
-      return { ...template, stages };
-    });
+    const templatesWithStages = await Promise.all(
+      templates.map(async (template) => {
+        const stages = await queryAll<InterviewStage>(
+          'SELECT * FROM interview_stages WHERE template_id = ? ORDER BY stage_number ASC',
+          [template.id]
+        );
+        return { ...template, stages };
+      })
+    );
 
     return NextResponse.json({
       success: true,
@@ -55,10 +57,10 @@ export async function POST(request: Request) {
 
     // If setting as default, unset any existing default
     if (data.is_default) {
-      execute('UPDATE interview_templates SET is_default = 0 WHERE is_default = 1');
+      await execute('UPDATE interview_templates SET is_default = 0 WHERE is_default = 1');
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO interview_templates (name, description, overall_timeline, overall_label, feedback_label, subtitle, is_default, is_published)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -73,7 +75,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newTemplate = queryOne<InterviewTemplate>(
+    const newTemplate = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE id = ?',
       [result.lastInsertRowid]
     );

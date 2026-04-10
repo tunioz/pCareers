@@ -12,53 +12,53 @@ export async function seed() {
 
   const passwordHash = await hashPassword('admin123');
 
-  transaction(() => {
+  await transaction(async () => {
     // -----------------------------------------------------------------------
     // Clear existing data (order matters due to foreign keys)
     // -----------------------------------------------------------------------
-    execute('DELETE FROM post_tags');
-    execute('DELETE FROM job_benefits');
-    execute('DELETE FROM custom_scores');
-    execute('DELETE FROM candidate_task_submissions');
-    execute('DELETE FROM candidate_attachments');
-    execute('DELETE FROM candidate_history');
-    execute('DELETE FROM candidate_scores');
-    execute('DELETE FROM candidate_notes');
-    execute('DELETE FROM candidate_references');
-    execute('DELETE FROM candidates');
-    execute('DELETE FROM position_criteria');
-    execute('DELETE FROM technical_tasks');
-    execute('DELETE FROM email_templates');
-    execute('DELETE FROM posts');
-    execute('DELETE FROM tags');
-    execute('DELETE FROM categories');
-    execute('DELETE FROM interview_stages');
-    execute('DELETE FROM process_steps');
-    execute('DELETE FROM jobs');
-    execute('DELETE FROM interview_templates');
-    execute('DELETE FROM process_templates');
-    execute('DELETE FROM candidate_values');
-    execute('DELETE FROM pcloud_bar_criteria');
-    execute('DELETE FROM process_highlights');
-    execute('DELETE FROM default_benefits');
-    execute('DELETE FROM team_members');
-    execute('DELETE FROM company_settings');
-    execute('DELETE FROM products');
-    execute('DELETE FROM tech_stacks');
-    execute('DELETE FROM gallery_photos');
-    execute('DELETE FROM gallery_categories');
-    execute('DELETE FROM team_stories');
-    execute('DELETE FROM legal_pages');
-    execute('DELETE FROM admin_users');
+    await execute('DELETE FROM post_tags');
+    await execute('DELETE FROM job_benefits');
+    await execute('DELETE FROM custom_scores');
+    await execute('DELETE FROM candidate_task_submissions');
+    await execute('DELETE FROM candidate_attachments');
+    await execute('DELETE FROM candidate_history');
+    await execute('DELETE FROM candidate_scores');
+    await execute('DELETE FROM candidate_notes');
+    await execute('DELETE FROM candidate_references');
+    await execute('DELETE FROM candidates');
+    await execute('DELETE FROM position_criteria');
+    await execute('DELETE FROM technical_tasks');
+    await execute('DELETE FROM email_templates');
+    await execute('DELETE FROM posts');
+    await execute('DELETE FROM tags');
+    await execute('DELETE FROM categories');
+    await execute('DELETE FROM interview_stages');
+    await execute('DELETE FROM process_steps');
+    await execute('DELETE FROM jobs');
+    await execute('DELETE FROM interview_templates');
+    await execute('DELETE FROM process_templates');
+    await execute('DELETE FROM candidate_values');
+    await execute('DELETE FROM pcloud_bar_criteria');
+    await execute('DELETE FROM process_highlights');
+    await execute('DELETE FROM default_benefits');
+    await execute('DELETE FROM team_members');
+    await execute('DELETE FROM company_settings');
+    await execute('DELETE FROM products');
+    await execute('DELETE FROM tech_stacks');
+    await execute('DELETE FROM gallery_photos');
+    await execute('DELETE FROM gallery_categories');
+    await execute('DELETE FROM team_stories');
+    await execute('DELETE FROM legal_pages');
+    await execute('DELETE FROM admin_users');
 
-    // Reset autoincrement counters
-    const db = getDb();
-    db.exec("DELETE FROM sqlite_sequence");
+    // Reset autoincrement sequences (PostgreSQL)
+    // Sequences auto-reset when tables are emptied with TRUNCATE,
+    // but since we used DELETE, we skip sequence reset here.
 
     // -----------------------------------------------------------------------
     // Admin user
     // -----------------------------------------------------------------------
-    execute(
+    await execute(
       'INSERT INTO admin_users (username, password_hash) VALUES (?, ?)',
       ['admin', passwordHash]
     );
@@ -79,7 +79,7 @@ export async function seed() {
     ];
 
     for (const p of products) {
-      execute(
+      await execute(
         'INSERT INTO products (name, sort_order) VALUES (?, ?)',
         [p.name, p.sort_order]
       );
@@ -113,7 +113,7 @@ export async function seed() {
     // Deduplicate
     const uniqueTechStacks = [...new Set(techStackNames)];
     for (const name of uniqueTechStacks) {
-      execute('INSERT INTO tech_stacks (name) VALUES (?)', [name]);
+      await execute('INSERT INTO tech_stacks (name) VALUES (?)', [name]);
     }
     console.log(`  Created ${uniqueTechStacks.length} tech stacks`);
 
@@ -130,7 +130,7 @@ export async function seed() {
     ];
 
     for (const cat of categories) {
-      execute(
+      await execute(
         'INSERT INTO categories (name, slug) VALUES (?, ?)',
         [cat.name, cat.slug]
       );
@@ -148,7 +148,7 @@ export async function seed() {
     ];
 
     for (const name of tagNames) {
-      execute('INSERT INTO tags (name) VALUES (?)', [name]);
+      await execute('INSERT INTO tags (name) VALUES (?)', [name]);
     }
     console.log(`  Created ${tagNames.length} tags`);
 
@@ -305,7 +305,7 @@ export async function seed() {
     // Build a tag name-to-id map
     const tagMap: Record<string, number> = {};
     for (const name of tagNames) {
-      const row = queryOne<{ id: number }>('SELECT id FROM tags WHERE name = ?', [name]);
+      const row = await queryOne<{ id: number }>('SELECT id FROM tags WHERE name = ?', [name]);
       if (row) tagMap[name] = row.id;
     }
 
@@ -326,7 +326,7 @@ export async function seed() {
         'How We Run Hackathons': 'https://images.unsplash.com/photo-1638029202288-451a89e0d55f?w=1080&fit=crop',
       };
 
-      const result = execute(
+      const result = await execute(
         `INSERT INTO posts (title, slug, content, excerpt, category, author, author_title, author_image, cover_image, read_time, is_featured, is_published, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -353,7 +353,7 @@ export async function seed() {
       for (const tagName of post.tags) {
         const tagId = tagMap[tagName];
         if (tagId) {
-          execute('INSERT OR IGNORE INTO post_tags (post_id, tag_id) VALUES (?, ?)', [postId, tagId]);
+          await execute('INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?) ON CONFLICT DO NOTHING', [postId, tagId]);
         }
       }
     }
@@ -575,7 +575,7 @@ export async function seed() {
 
     for (const job of jobs) {
       const slug = createSlug(job.title);
-      execute(
+      await execute(
         `INSERT INTO jobs (title, slug, department, product, seniority, location, salary_range, employment_type, description, requirements, nice_to_have, benefits, cover_image, is_new, is_high_priority, is_published, tags, challenges, team_name, team_size, team_lead, team_quote, team_photo, tech_stack, what_youll_learn, interview_template_id, process_template_id)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -674,7 +674,7 @@ export async function seed() {
     ];
 
     for (const member of teamMembers) {
-      execute(
+      await execute(
         `INSERT INTO team_members (name, role, bio, photo, department, sort_order, is_published)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -707,7 +707,7 @@ export async function seed() {
     ];
 
     for (const setting of settings) {
-      execute(
+      await execute(
         `INSERT INTO company_settings (key, value) VALUES (?, ?)
          ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`,
         [setting.key, setting.value]
@@ -718,7 +718,7 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // Interview Template (from pCloud document)
     // -----------------------------------------------------------------------
-    const templateResult = execute(
+    const templateResult = await execute(
       `INSERT INTO interview_templates (name, description, overall_timeline, overall_label, feedback_label, subtitle, is_default, is_published)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -796,7 +796,7 @@ export async function seed() {
     ];
 
     for (const stage of stages) {
-      execute(
+      await execute(
         `INSERT INTO interview_stages (template_id, stage_number, title, duration, description, focus, timeline, icon, is_published)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -815,7 +815,7 @@ export async function seed() {
     console.log(`  Created ${stages.length} interview stages`);
 
     // Update all jobs to reference the default template
-    execute(
+    await execute(
       'UPDATE jobs SET interview_template_id = ?',
       [templateId]
     );
@@ -824,7 +824,7 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // Process Template (Working Process Highlights -- template-based)
     // -----------------------------------------------------------------------
-    const processTemplateResult = execute(
+    const processTemplateResult = await execute(
       `INSERT INTO process_templates (name, description, intro_text, is_default, is_published)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -848,7 +848,7 @@ export async function seed() {
     ];
 
     for (const step of processSteps) {
-      execute(
+      await execute(
         'INSERT INTO process_steps (template_id, step_number, label, detail, is_published) VALUES (?, ?, ?, ?, ?)',
         [processTemplateId, step.step_number, step.label, step.detail, 1]
       );
@@ -856,7 +856,7 @@ export async function seed() {
     console.log(`  Created ${processSteps.length} process steps`);
 
     // Link all jobs to default process template
-    execute(
+    await execute(
       'UPDATE jobs SET process_template_id = ?',
       [processTemplateId]
     );
@@ -894,7 +894,7 @@ export async function seed() {
     ];
 
     for (const cv of candidateValues) {
-      execute(
+      await execute(
         'INSERT INTO candidate_values (title, description, sort_order, is_published) VALUES (?, ?, ?, ?)',
         [cv.title, cv.description, cv.sort_order, 1]
       );
@@ -938,7 +938,7 @@ export async function seed() {
     ];
 
     for (const criterion of pcloudBarCriteria) {
-      execute(
+      await execute(
         'INSERT INTO pcloud_bar_criteria (title, description, sort_order, is_published) VALUES (?, ?, ?, ?)',
         [criterion.title, criterion.description, criterion.sort_order, 1]
       );
@@ -958,7 +958,7 @@ export async function seed() {
     ];
 
     for (const highlight of processHighlights) {
-      execute(
+      await execute(
         'INSERT INTO process_highlights (label, detail, sort_order, is_published) VALUES (?, ?, ?, ?)',
         [highlight.label, highlight.detail, highlight.sort_order, 1]
       );
@@ -978,7 +978,7 @@ export async function seed() {
     ];
 
     for (const benefit of defaultBenefits) {
-      execute(
+      await execute(
         'INSERT INTO default_benefits (title, description, sort_order, is_published) VALUES (?, ?, ?, ?)',
         [benefit.title, benefit.description, benefit.sort_order, 1]
       );
@@ -998,7 +998,7 @@ export async function seed() {
 
     const galleryCategoryMap: Record<string, number> = {};
     for (const cat of galleryCategories) {
-      const catResult = execute(
+      const catResult = await execute(
         'INSERT INTO gallery_categories (name, slug, sort_order) VALUES (?, ?, ?)',
         [cat.name, cat.slug, cat.sort_order]
       );
@@ -1039,7 +1039,7 @@ export async function seed() {
     for (const photo of galleryPhotos) {
       const categoryId = galleryCategoryMap[photo.category];
       if (categoryId) {
-        execute(
+        await execute(
           'INSERT INTO gallery_photos (category_id, image, alt_text, sort_order, is_published) VALUES (?, ?, ?, ?, ?)',
           [categoryId, photo.image, null, photo.sort_order, 1]
         );
@@ -1082,7 +1082,7 @@ export async function seed() {
     ];
 
     for (const story of teamStories) {
-      execute(
+      await execute(
         'INSERT INTO team_stories (name, role, photo, quote, sort_order, is_published) VALUES (?, ?, ?, ?, ?, ?)',
         [story.name, story.role, story.photo, story.quote, story.sort_order, 1]
       );
@@ -1092,15 +1092,15 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // Job Benefits -- link ALL 9 jobs to ALL 6 benefits
     // -----------------------------------------------------------------------
-    const allBenefitRows = queryAll<{ id: number }>('SELECT id FROM default_benefits ORDER BY sort_order ASC');
+    const allBenefitRows = await queryAll<{ id: number }>('SELECT id FROM default_benefits ORDER BY sort_order ASC');
     const allBenefitIds = allBenefitRows.map((r) => r.id);
 
-    const allJobRows = queryAll<{ id: number }>('SELECT id FROM jobs ORDER BY id ASC');
+    const allJobRows = await queryAll<{ id: number }>('SELECT id FROM jobs ORDER BY id ASC');
     let linkedCount = 0;
     for (const jobRow of allJobRows) {
       for (const benefitId of allBenefitIds) {
-        execute(
-          'INSERT OR IGNORE INTO job_benefits (job_id, benefit_id) VALUES (?, ?)',
+        await execute(
+          'INSERT INTO job_benefits (job_id, benefit_id) VALUES (?, ?) ON CONFLICT DO NOTHING',
           [jobRow.id, benefitId]
         );
         linkedCount++;
@@ -1111,7 +1111,7 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // ATS: Sample Candidates
     // -----------------------------------------------------------------------
-    const allJobsForCandidates = queryAll<{ id: number; title: string }>('SELECT id, title FROM jobs ORDER BY id ASC');
+    const allJobsForCandidates = await queryAll<{ id: number; title: string }>('SELECT id, title FROM jobs ORDER BY id ASC');
     const jobIdMap: Record<string, number> = {};
     for (const j of allJobsForCandidates) {
       jobIdMap[j.title] = j.id;
@@ -1252,7 +1252,7 @@ export async function seed() {
     for (const c of sampleCandidates) {
       const candidateJobId = c.job_title ? jobIdMap[c.job_title] || null : null;
 
-      const candidateResult = execute(
+      const candidateResult = await execute(
         `INSERT INTO candidates (
           full_name, email, phone, job_id, cover_message, linkedin_url, github_url,
           portfolio_url, source, referrer_name, referrer_email, referrer_company,
@@ -1287,7 +1287,7 @@ export async function seed() {
       const candId = Number(candidateResult.lastInsertRowid);
 
       // Add initial history entry
-      execute(
+      await execute(
         `INSERT INTO candidate_history (candidate_id, action, to_status, performed_by, notes)
          VALUES (?, ?, ?, ?, ?)`,
         [candId, 'application_submitted', 'new', 'system', 'Seeded candidate']
@@ -1295,7 +1295,7 @@ export async function seed() {
 
       // If status is not 'new', add a status change history entry
       if (c.status !== 'new') {
-        execute(
+        await execute(
           `INSERT INTO candidate_history (candidate_id, action, from_status, to_status, performed_by, notes)
            VALUES (?, ?, ?, ?, ?, ?)`,
           [candId, 'status_changed', 'new', c.status, 'admin', `Moved to ${c.status}`]
@@ -1305,13 +1305,13 @@ export async function seed() {
     console.log(`  Created ${sampleCandidates.length} candidates`);
 
     // Add sample scores for candidates in later pipeline stages
-    const scoredCandidates = queryAll<{ id: number; full_name: string; status: string }>(
+    const scoredCandidates = await queryAll<{ id: number; full_name: string; status: string }>(
       `SELECT id, full_name, status FROM candidates WHERE status IN ('technical', 'team_interview', 'culture_chat', 'offer', 'hired', 'rejected') ORDER BY id ASC`
     );
 
     for (const sc of scoredCandidates) {
       // Add at least one scorecard
-      execute(
+      await execute(
         `INSERT INTO candidate_scores (
           candidate_id, interviewer_name, interview_stage,
           technical_depth, problem_solving, ownership, communication, cultural_add, growth_potential,
@@ -1336,7 +1336,7 @@ export async function seed() {
 
     // Update composite scores for scored candidates
     for (const sc of scoredCandidates) {
-      const scores = queryAll<{ technical_depth: number | null; problem_solving: number | null; ownership: number | null; communication: number | null; cultural_add: number | null; growth_potential: number | null }>(
+      const scores = await queryAll<{ technical_depth: number | null; problem_solving: number | null; ownership: number | null; communication: number | null; cultural_add: number | null; growth_potential: number | null }>(
         'SELECT technical_depth, problem_solving, ownership, communication, cultural_add, growth_potential FROM candidate_scores WHERE candidate_id = ?',
         [sc.id]
       );
@@ -1361,16 +1361,16 @@ export async function seed() {
           }
         }
         const composite = totalWeight > 0 ? Math.round((totalWeighted / totalWeight) * 100) / 100 : null;
-        execute('UPDATE candidates SET composite_score = ? WHERE id = ?', [composite, sc.id]);
+        await execute('UPDATE candidates SET composite_score = ? WHERE id = ?', [composite, sc.id]);
       }
     }
 
     // Add sample notes for a few candidates
-    const candidatesForNotes = queryAll<{ id: number; full_name: string }>(
+    const candidatesForNotes = await queryAll<{ id: number; full_name: string }>(
       'SELECT id, full_name FROM candidates ORDER BY id ASC LIMIT 5'
     );
     for (const cn of candidatesForNotes) {
-      execute(
+      await execute(
         `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
          VALUES (?, ?, ?, ?)`,
         [cn.id, 'admin', `Initial review of ${cn.full_name}'s application. Strong profile, proceeding with screening.`, 'general']
@@ -1427,7 +1427,7 @@ export async function seed() {
     ];
 
     for (const tpl of emailTemplates) {
-      execute(
+      await execute(
         'INSERT INTO email_templates (name, slug, subject, body, template_type, is_active) VALUES (?, ?, ?, ?, ?, ?)',
         [tpl.name, tpl.slug, tpl.subject, tpl.body, tpl.template_type, 1]
       );
@@ -1437,7 +1437,7 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // Technical Tasks (sample task templates)
     // -----------------------------------------------------------------------
-    const firstJobId = queryOne<{ id: number }>('SELECT id FROM jobs ORDER BY id ASC LIMIT 1');
+    const firstJobId = await queryOne<{ id: number }>('SELECT id FROM jobs ORDER BY id ASC LIMIT 1');
     const technicalTasks = [
       {
         job_id: firstJobId?.id || null,
@@ -1456,7 +1456,7 @@ export async function seed() {
     ];
 
     for (const task of technicalTasks) {
-      execute(
+      await execute(
         'INSERT INTO technical_tasks (job_id, title, description, instructions, deadline_days, is_active) VALUES (?, ?, ?, ?, ?, ?)',
         [task.job_id, task.title, task.description, task.instructions, task.deadline_days, 1]
       );
@@ -1466,7 +1466,7 @@ export async function seed() {
     // -----------------------------------------------------------------------
     // Position-Specific Scoring Criteria (Feature 2)
     // -----------------------------------------------------------------------
-    const allJobsForCriteria = queryAll<{ id: number; title: string }>('SELECT id, title FROM jobs ORDER BY id ASC LIMIT 3');
+    const allJobsForCriteria = await queryAll<{ id: number; title: string }>('SELECT id, title FROM jobs ORDER BY id ASC LIMIT 3');
 
     if (allJobsForCriteria.length >= 1) {
       // C Library Developer criteria
@@ -1478,7 +1478,7 @@ export async function seed() {
         { name: 'Debugging Skills', description: 'gdb, lldb, AddressSanitizer, core dump analysis', weight: 15, sort_order: 3 },
       ];
       for (const c of cCriteria) {
-        execute(
+        await execute(
           'INSERT INTO position_criteria (job_id, name, description, weight, sort_order) VALUES (?, ?, ?, ?, ?)',
           [cJob.id, c.name, c.description, c.weight, c.sort_order]
         );
@@ -1495,7 +1495,7 @@ export async function seed() {
         { name: 'Installer Knowledge', description: 'WiX Toolset, upgrade handling', weight: 15, sort_order: 2 },
       ];
       for (const c of winCriteria) {
-        execute(
+        await execute(
           'INSERT INTO position_criteria (job_id, name, description, weight, sort_order) VALUES (?, ?, ?, ?, ?)',
           [winJob.id, c.name, c.description, c.weight, c.sort_order]
         );
@@ -1512,7 +1512,7 @@ export async function seed() {
         { name: 'FUSE/Filesystem Knowledge', description: 'macFUSE, virtual filesystem experience', weight: 15, sort_order: 2 },
       ];
       for (const c of macCriteria) {
-        execute(
+        await execute(
           'INSERT INTO position_criteria (job_id, name, description, weight, sort_order) VALUES (?, ?, ?, ?, ?)',
           [macJob.id, c.name, c.description, c.weight, c.sort_order]
         );
@@ -1800,7 +1800,7 @@ export async function seed() {
     ];
 
     for (const page of legalPages) {
-      execute(
+      await execute(
         `INSERT INTO legal_pages (slug, title, content, last_updated) VALUES (?, ?, ?, datetime('now'))`,
         [page.slug, page.title, page.content]
       );

@@ -32,7 +32,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -44,7 +44,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const references = queryAll<CandidateReference>(
+    const references = await queryAll<CandidateReference>(
       'SELECT * FROM candidate_references WHERE candidate_id = ? ORDER BY requested_at DESC',
       [candidateId]
     );
@@ -85,7 +85,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -111,7 +111,7 @@ export async function POST(request: Request, context: RouteContext) {
 
     const token = crypto.randomUUID();
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_references (
         candidate_id, referee_name, referee_email, referee_relationship, referee_company, token, status
       ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -126,7 +126,7 @@ export async function POST(request: Request, context: RouteContext) {
       ]
     );
 
-    const reference = queryOne<CandidateReference>(
+    const reference = await queryOne<CandidateReference>(
       'SELECT * FROM candidate_references WHERE id = ?',
       [result.lastInsertRowid]
     );

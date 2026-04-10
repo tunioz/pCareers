@@ -19,13 +19,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const days = Math.min(parseInt(searchParams.get('days') || '30', 10), 365);
 
-    const byDay = getSpendByDay(days);
-    const bySkill = getSpendBySkill(days);
-    const todayTotal = getTotalSpendToday();
+    const byDay = await getSpendByDay(days);
+    const bySkill = await getSpendBySkill(days);
+    const todayTotal = await getTotalSpendToday();
 
-    const totalCost = byDay.reduce((sum, row) => sum + row.total_cost, 0);
-    const totalCalls = byDay.reduce((sum, row) => sum + row.total_calls, 0);
-    const totalTokens = byDay.reduce((sum, row) => sum + row.total_tokens, 0);
+    const totalCost = byDay.reduce((sum: number, row: { total_cost: number }) => sum + row.total_cost, 0);
+    const totalCalls = byDay.reduce((sum: number, row: { total_calls: number }) => sum + row.total_calls, 0);
+    const totalTokens = byDay.reduce((sum: number, row: { total_tokens: number }) => sum + row.total_tokens, 0);
 
     return NextResponse.json({
       success: true,

@@ -48,7 +48,7 @@ export async function GET(request: Request, context: RouteContext) {
     const { id } = await context.params;
     const emailId = parseInt(id, 10);
 
-    const email = queryOne<EmailRow>(
+    const email = await queryOne<EmailRow>(
       'SELECT id, candidate_id, email_type, subject, body, session_id FROM candidate_emails WHERE id = ?',
       [emailId]
     );
@@ -56,7 +56,7 @@ export async function GET(request: Request, context: RouteContext) {
       return NextResponse.json({ success: false, error: 'Email not found' }, { status: 404 });
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id, full_name, job_id FROM candidates WHERE id = ?',
       [email.candidate_id]
     );
@@ -72,13 +72,13 @@ export async function GET(request: Request, context: RouteContext) {
     } | undefined;
 
     if (email.session_id) {
-      const session = queryOne<SessionRow>(
+      const session = await queryOne<SessionRow>(
         'SELECT id, stage, scheduled_at, location, meet_link, duration_minutes, interviewer_name FROM candidate_interview_sessions WHERE id = ?',
         [email.session_id]
       );
 
       if (session?.scheduled_at) {
-        const interviewer = queryOne<InterviewerRow>(
+        const interviewer = await queryOne<InterviewerRow>(
           'SELECT username, full_name FROM admin_users WHERE username = ?',
           [session.interviewer_name]
         );

@@ -42,12 +42,12 @@ export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params;
   const kitId = parseInt(id, 10);
 
-  const kit = queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
+  const kit = await queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
   if (!kit) {
     return NextResponse.json({ success: false, error: 'Kit not found' }, { status: 404 });
   }
 
-  const questions = queryAll<InterviewKitQuestion>(
+  const questions = await queryAll<InterviewKitQuestion>(
     'SELECT * FROM interview_kit_questions WHERE kit_id = ? ORDER BY sort_order',
     [kitId]
   );
@@ -65,8 +65,8 @@ export async function PUT(request: Request, context: RouteContext) {
   const kitId = parseInt(id, 10);
   const body = await request.json();
 
-  transaction(() => {
-    execute(
+  await transaction(async () => {
+    await execute(
       `UPDATE interview_kits SET
         name = COALESCE(?, name),
         description = COALESCE(?, description),
@@ -93,10 +93,11 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Replace questions if provided
     if (Array.isArray(body.questions)) {
-      execute('DELETE FROM interview_kit_questions WHERE kit_id = ?', [kitId]);
-      body.questions.forEach((q: Record<string, unknown>, i: number) => {
-        if (!q || !q.question) return;
-        execute(
+      await execute('DELETE FROM interview_kit_questions WHERE kit_id = ?', [kitId]);
+      for (let i = 0; i < body.questions.length; i++) {
+        const q = body.questions[i] as Record<string, unknown>;
+        if (!q || !q.question) continue;
+        await execute(
           `INSERT INTO interview_kit_questions (
             kit_id, sort_order, question, category, expected_signal, follow_up, dimension, difficulty
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -111,12 +112,12 @@ export async function PUT(request: Request, context: RouteContext) {
             (q.difficulty as string) || 'medium',
           ]
         );
-      });
+      }
     }
   });
 
-  const kit = queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
-  const questions = queryAll<InterviewKitQuestion>(
+  const kit = await queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
+  const questions = await queryAll<InterviewKitQuestion>(
     'SELECT * FROM interview_kit_questions WHERE kit_id = ? ORDER BY sort_order',
     [kitId]
   );
@@ -133,7 +134,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const { id } = await context.params;
   const kitId = parseInt(id, 10);
 
-  execute('DELETE FROM interview_kits WHERE id = ?', [kitId]);
+  await execute('DELETE FROM interview_kits WHERE id = ?', [kitId]);
 
   return NextResponse.json({ success: true });
 }

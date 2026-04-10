@@ -5,7 +5,7 @@ import type { TagWithCount, Tag } from '@/types';
 
 export async function GET() {
   try {
-    const tags = queryAll<TagWithCount>(
+    const tags = await queryAll<TagWithCount>(
       `SELECT t.*, IFNULL(pt_count.cnt, 0) as post_count
        FROM tags t
        LEFT JOIN (
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     // Check for duplicate
-    const existing = queryOne<Tag>('SELECT id FROM tags WHERE name = ?', [name]);
+    const existing = await queryOne<Tag>('SELECT id FROM tags WHERE name = ?', [name]);
     if (existing) {
       return NextResponse.json(
         { success: false, error: 'Tag already exists' },
@@ -58,9 +58,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute('INSERT INTO tags (name) VALUES (?)', [name]);
+    const result = await execute('INSERT INTO tags (name) VALUES (?)', [name]);
 
-    const newTag = queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [result.lastInsertRowid]);
+    const newTag = await queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [result.lastInsertRowid]);
 
     return NextResponse.json(
       { success: true, data: newTag },

@@ -33,7 +33,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = queryOne<Post>('SELECT * FROM posts WHERE slug = ? AND is_published = 1', [slug]);
+  const post = await queryOne<Post>('SELECT * FROM posts WHERE slug = ? AND is_published = 1', [slug]);
   if (!post) return { title: 'Not Found' };
   return {
     title: post.title,
@@ -49,14 +49,14 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
 
-  const post = queryOne<Post>('SELECT * FROM posts WHERE slug = ? AND is_published = 1', [slug]);
+  const post = await queryOne<Post>('SELECT * FROM posts WHERE slug = ? AND is_published = 1', [slug]);
   if (!post) notFound();
 
   const title = post.title;
   const content = post.content;
   const excerpt = post.excerpt || '';
 
-  const relatedPosts = queryAll<Post>(
+  const relatedPosts = await queryAll<Post>(
     'SELECT * FROM posts WHERE is_published = 1 AND category = ? AND slug != ? ORDER BY created_at DESC LIMIT 3',
     [post.category, post.slug]
   );

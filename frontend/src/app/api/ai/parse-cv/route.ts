@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     const parsed = result.data;
 
     // 3. Upsert parsed fields on candidate
-    execute(
+    await execute(
       `UPDATE candidates SET
         parsed_skills = ?,
         parsed_experience = ?,

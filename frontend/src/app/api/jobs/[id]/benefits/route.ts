@@ -23,7 +23,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const benefits = queryAll<DefaultBenefit>(
+    const benefits = await queryAll<DefaultBenefit>(
       `SELECT db.* FROM default_benefits db
        JOIN job_benefits jb ON jb.benefit_id = db.id
        WHERE jb.job_id = ? AND db.is_published = 1
@@ -91,19 +91,19 @@ export async function PUT(request: Request, context: RouteContext) {
     }
 
     // Use a transaction: delete all existing, then insert new ones
-    transaction(() => {
-      execute('DELETE FROM job_benefits WHERE job_id = ?', [jobId]);
+    await transaction(async () => {
+      await execute('DELETE FROM job_benefits WHERE job_id = ?', [jobId]);
 
       for (const benefitId of benefitIds as number[]) {
-        execute(
-          'INSERT OR IGNORE INTO job_benefits (job_id, benefit_id) VALUES (?, ?)',
+        await execute(
+          'INSERT INTO job_benefits (job_id, benefit_id) VALUES (?, ?) ON CONFLICT DO NOTHING',
           [jobId, benefitId]
         );
       }
     });
 
     // Return the updated list
-    const benefits = queryAll<DefaultBenefit>(
+    const benefits = await queryAll<DefaultBenefit>(
       `SELECT db.* FROM default_benefits db
        JOIN job_benefits jb ON jb.benefit_id = db.id
        WHERE jb.job_id = ? AND db.is_published = 1

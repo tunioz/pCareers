@@ -32,7 +32,7 @@ export async function GET(_request: Request, context: RouteContext) {
   const { id } = await context.params;
   const emailId = parseInt(id, 10);
 
-  const email = queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
+  const email = await queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
   if (!email) {
     return NextResponse.json({ success: false, error: 'Email not found' }, { status: 404 });
   }
@@ -51,7 +51,7 @@ export async function PUT(request: Request, context: RouteContext) {
     const emailId = parseInt(id, 10);
     const body = await request.json();
 
-    const existing = queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
+    const existing = await queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
     if (!existing) {
       return NextResponse.json({ success: false, error: 'Email not found' }, { status: 404 });
     }
@@ -62,7 +62,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       `UPDATE candidate_emails SET
         subject = COALESCE(?, subject),
         body = COALESCE(?, body),
@@ -83,7 +83,7 @@ export async function PUT(request: Request, context: RouteContext) {
       userAgent: getUserAgent(request),
     });
 
-    const updated = queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
+    const updated = await queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
     return NextResponse.json({ success: true, data: updated });
   } catch (err) {
     return NextResponse.json(
@@ -104,9 +104,9 @@ export async function DELETE(request: Request, context: RouteContext) {
 
   const { id } = await context.params;
   const emailId = parseInt(id, 10);
-  const existing = queryOne<EmailRow>('SELECT candidate_id FROM candidate_emails WHERE id = ?', [emailId]);
+  const existing = await queryOne<EmailRow>('SELECT candidate_id FROM candidate_emails WHERE id = ?', [emailId]);
 
-  execute('DELETE FROM candidate_emails WHERE id = ?', [emailId]);
+  await execute('DELETE FROM candidate_emails WHERE id = ?', [emailId]);
 
   logAudit({
     userId: user.userId,

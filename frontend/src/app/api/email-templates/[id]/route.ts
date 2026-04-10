@@ -30,7 +30,7 @@ export async function GET(_request: Request, context: RouteContext) {
       );
     }
 
-    const template = queryOne<EmailTemplate>(
+    const template = await queryOne<EmailTemplate>(
       'SELECT * FROM email_templates WHERE id = ?',
       [templateId]
     );
@@ -75,7 +75,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<EmailTemplate>(
+    const existing = await queryOne<EmailTemplate>(
       'SELECT * FROM email_templates WHERE id = ?',
       [templateId]
     );
@@ -106,12 +106,12 @@ export async function PUT(request: Request, context: RouteContext) {
     updates.push("updated_at = datetime('now')");
     values.push(templateId);
 
-    execute(
+    await execute(
       `UPDATE email_templates SET ${updates.join(', ')} WHERE id = ?`,
       values
     );
 
-    const updated = queryOne<EmailTemplate>(
+    const updated = await queryOne<EmailTemplate>(
       'SELECT * FROM email_templates WHERE id = ?',
       [templateId]
     );
@@ -149,7 +149,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
       );
     }
 
-    const result = execute('DELETE FROM email_templates WHERE id = ?', [templateId]);
+    const result = await execute('DELETE FROM email_templates WHERE id = ?', [templateId]);
 
     if (result.changes === 0) {
       return NextResponse.json(

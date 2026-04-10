@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const criterion = queryOne<PCloudBarCriterion>(
+    const criterion = await queryOne<PCloudBarCriterion>(
       'SELECT * FROM pcloud_bar_criteria WHERE id = ?',
       [criterionId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<PCloudBarCriterion>(
+    const existing = await queryOne<PCloudBarCriterion>(
       'SELECT * FROM pcloud_bar_criteria WHERE id = ?',
       [criterionId]
     );
@@ -96,7 +96,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE pcloud_bar_criteria SET
         title = ?, description = ?, sort_order = ?, is_published = ?,
         updated_at = datetime('now')
@@ -110,7 +110,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<PCloudBarCriterion>(
+    const updated = await queryOne<PCloudBarCriterion>(
       'SELECT * FROM pcloud_bar_criteria WHERE id = ?',
       [criterionId]
     );
@@ -148,7 +148,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<PCloudBarCriterion>(
+    const existing = await queryOne<PCloudBarCriterion>(
       'SELECT id FROM pcloud_bar_criteria WHERE id = ?',
       [criterionId]
     );
@@ -160,7 +160,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM pcloud_bar_criteria WHERE id = ?', [criterionId]);
+    await execute('DELETE FROM pcloud_bar_criteria WHERE id = ?', [criterionId]);
 
     return NextResponse.json({
       success: true,

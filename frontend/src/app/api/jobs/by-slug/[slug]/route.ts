@@ -11,7 +11,7 @@ export async function GET(request: Request, context: RouteContext) {
   try {
     const { slug } = await context.params;
 
-    const job = queryOne<Job>('SELECT * FROM jobs WHERE slug = ?', [slug]);
+    const job = await queryOne<Job>('SELECT * FROM jobs WHERE slug = ?', [slug]);
 
     if (!job) {
       return NextResponse.json(

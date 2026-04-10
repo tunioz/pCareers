@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const steps = queryAll<ProcessStep>(
+    const steps = await queryAll<ProcessStep>(
       'SELECT * FROM process_steps WHERE template_id = ? ORDER BY step_number ASC',
       [tId]
     );
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     const data = validation.data!;
 
     // Verify template exists
-    const template = queryOne('SELECT id FROM process_templates WHERE id = ?', [data.template_id]);
+    const template = await queryOne('SELECT id FROM process_templates WHERE id = ?', [data.template_id]);
     if (!template) {
       return NextResponse.json(
         { success: false, error: 'Process template not found' },
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO process_steps (template_id, step_number, label, detail, is_published)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newStep = queryOne<ProcessStep>(
+    const newStep = await queryOne<ProcessStep>(
       'SELECT * FROM process_steps WHERE id = ?',
       [result.lastInsertRowid]
     );

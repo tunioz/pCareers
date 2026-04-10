@@ -57,7 +57,7 @@ export async function GET(request: Request) {
     }
     const whereSql = where.length > 0 ? `WHERE ${where.join(' AND ')}` : '';
 
-    const kits = queryAll<InterviewKit>(
+    const kits = await queryAll<InterviewKit>(
       `SELECT * FROM interview_kits ${whereSql} ORDER BY created_at DESC`,
       params
     );
@@ -96,8 +96,8 @@ export async function POST(request: Request) {
 
     let kitId: number | bigint = 0;
 
-    transaction(() => {
-      const kitResult = execute(
+    await transaction(async () => {
+      const kitResult = await execute(
         `INSERT INTO interview_kits (
           name, description, role_type, stage, duration_minutes,
           focus_dimensions, instructions, is_published, ai_generated
@@ -116,9 +116,10 @@ export async function POST(request: Request) {
       );
       kitId = kitResult.lastInsertRowid;
 
-      questions.forEach((q: Record<string, unknown>, i: number) => {
-        if (!q || !q.question) return;
-        execute(
+      for (let i = 0; i < questions.length; i++) {
+        const q = questions[i] as Record<string, unknown>;
+        if (!q || !q.question) continue;
+        await execute(
           `INSERT INTO interview_kit_questions (
             kit_id, sort_order, question, category, expected_signal, follow_up, dimension, difficulty
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -133,11 +134,11 @@ export async function POST(request: Request) {
             (q.difficulty as string) || 'medium',
           ]
         );
-      });
+      }
     });
 
-    const kit = queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
-    const qs = queryAll<InterviewKitQuestion>(
+    const kit = await queryOne<InterviewKit>('SELECT * FROM interview_kits WHERE id = ?', [kitId]);
+    const qs = await queryAll<InterviewKitQuestion>(
       'SELECT * FROM interview_kit_questions WHERE kit_id = ? ORDER BY sort_order',
       [kitId]
     );

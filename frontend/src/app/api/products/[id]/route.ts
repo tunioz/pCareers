@@ -27,7 +27,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
+    const existing = await queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Product not found' },
@@ -47,7 +47,7 @@ export async function PUT(request: Request, context: RouteContext) {
     }
 
     // Check for duplicate name (excluding this product)
-    const duplicate = queryOne<Product>(
+    const duplicate = await queryOne<Product>(
       'SELECT id FROM products WHERE name = ? AND id != ?',
       [name, productId]
     );
@@ -58,12 +58,12 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       'UPDATE products SET name = ?, sort_order = ? WHERE id = ?',
       [name, sort_order, productId]
     );
 
-    const updated = queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
+    const updated = await queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
 
     return NextResponse.json({
       success: true,
@@ -98,7 +98,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
+    const existing = await queryOne<Product>('SELECT * FROM products WHERE id = ?', [productId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Product not found' },
@@ -107,7 +107,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // Check if any jobs use this product
-    const jobCount = queryOne<{ cnt: number }>(
+    const jobCount = await queryOne<{ cnt: number }>(
       'SELECT COUNT(*) as cnt FROM jobs WHERE product = ?',
       [existing.name]
     );
@@ -118,7 +118,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM products WHERE id = ?', [productId]);
+    await execute('DELETE FROM products WHERE id = ?', [productId]);
 
     return NextResponse.json({
       success: true,

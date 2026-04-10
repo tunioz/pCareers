@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     // We approximate the funnel by counting candidates whose status REACHED
     // or passed each stage. Rejected candidates still count toward the stage
     // they reached.
-    const stageCounts = queryAll<{ status: string; count: number }>(
+    const stageCounts = await queryAll<{ status: string; count: number }>(
       `SELECT status, COUNT(*) as count
        FROM candidates
        WHERE ${whereSql}
@@ -57,7 +57,7 @@ export async function GET(request: Request) {
     );
 
     // Derive reached-stage counts by looking at candidate_history
-    const historyCounts = queryAll<{ to_status: string; count: number }>(
+    const historyCounts = await queryAll<{ to_status: string; count: number }>(
       `SELECT to_status, COUNT(DISTINCT candidate_id) as count
        FROM candidate_history
        WHERE candidate_id IN (
@@ -90,7 +90,7 @@ export async function GET(request: Request) {
     }
 
     // The "new" stage equals total applications minus those that skipped directly
-    const totalRow = queryOne<{ total: number }>(
+    const totalRow = await queryOne<{ total: number }>(
       `SELECT COUNT(*) as total FROM candidates WHERE ${whereSql}`,
       params
     );
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
     }
 
     // ─── Source quality ───
-    const sourceStats = queryAll<{
+    const sourceStats = await queryAll<{
       source: string;
       applications: number;
       hired: number;
@@ -139,7 +139,7 @@ export async function GET(request: Request) {
     }));
 
     // ─── Rejection reasons ───
-    const rejectionReasons = queryAll<{ rejection_reason: string; count: number }>(
+    const rejectionReasons = await queryAll<{ rejection_reason: string; count: number }>(
       `SELECT
          COALESCE(rejection_reason, 'Not specified') as rejection_reason,
          COUNT(*) as count
@@ -151,7 +151,7 @@ export async function GET(request: Request) {
     );
 
     // ─── Time to hire (for hired candidates) ───
-    const timeToHireRows = queryAll<{ days: number }>(
+    const timeToHireRows = await queryAll<{ days: number }>(
       `SELECT
          CAST(julianday(status_changed_at) - julianday(created_at) AS INTEGER) as days
        FROM candidates

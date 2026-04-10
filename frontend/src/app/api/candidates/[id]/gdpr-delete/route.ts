@@ -51,7 +51,7 @@ export async function POST(request: Request, context: RouteContext) {
     const { id } = await context.params;
     const candidateId = parseInt(id, 10);
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id, full_name, email, cv_path FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -64,26 +64,26 @@ export async function POST(request: Request, context: RouteContext) {
     if (candidate.cv_path) filesToDelete.push(candidate.cv_path);
 
     // Get attachment file paths
-    const attachmentRows = queryAll<{ file_path: string }>(
+    const attachmentRows = await queryAll<{ file_path: string }>(
       'SELECT file_path FROM candidate_attachments WHERE candidate_id = ?',
       [candidateId]
     );
     attachmentRows.forEach((a) => a.file_path && filesToDelete.push(a.file_path));
 
-    const taskRows = queryAll<{ file_path: string | null }>(
+    const taskRows = await queryAll<{ file_path: string | null }>(
       'SELECT file_path FROM candidate_task_submissions WHERE candidate_id = ?',
       [candidateId]
     );
     taskRows.forEach((t) => t.file_path && filesToDelete.push(t.file_path));
 
     // Delete everything in a transaction
-    transaction(() => {
+    await transaction(async () => {
       // These CASCADE automatically: notes, scorecards, references, history,
       // attachments, sessions, analyses, emails, task_submissions
-      execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
+      await execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
 
       // Also wipe ai_audit_log entries for this candidate
-      execute('DELETE FROM ai_audit_log WHERE candidate_id = ?', [candidateId]);
+      await execute('DELETE FROM ai_audit_log WHERE candidate_id = ?', [candidateId]);
     });
 
     // Delete files from disk (after DB commit)

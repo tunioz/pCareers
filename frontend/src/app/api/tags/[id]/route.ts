@@ -27,7 +27,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [tagId]);
+    const existing = await queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [tagId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Tag not found' },
@@ -46,7 +46,7 @@ export async function PUT(request: Request, context: RouteContext) {
     }
 
     // Check for duplicate name (excluding this tag)
-    const duplicate = queryOne<Tag>(
+    const duplicate = await queryOne<Tag>(
       'SELECT id FROM tags WHERE name = ? AND id != ?',
       [name, tagId]
     );
@@ -57,9 +57,9 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute('UPDATE tags SET name = ? WHERE id = ?', [name, tagId]);
+    await execute('UPDATE tags SET name = ? WHERE id = ?', [name, tagId]);
 
-    const updated = queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [tagId]);
+    const updated = await queryOne<Tag>('SELECT * FROM tags WHERE id = ?', [tagId]);
 
     return NextResponse.json({
       success: true,
@@ -94,7 +94,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Tag>('SELECT id FROM tags WHERE id = ?', [tagId]);
+    const existing = await queryOne<Tag>('SELECT id FROM tags WHERE id = ?', [tagId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Tag not found' },
@@ -103,7 +103,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // CASCADE will delete post_tags entries automatically
-    execute('DELETE FROM tags WHERE id = ?', [tagId]);
+    await execute('DELETE FROM tags WHERE id = ?', [tagId]);
 
     return NextResponse.json({
       success: true,

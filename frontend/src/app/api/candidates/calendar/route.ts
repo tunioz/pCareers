@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     const interviewStatuses = ['phone_screen', 'technical', 'team_interview', 'culture_chat'];
     const placeholders = interviewStatuses.map(() => '?').join(',');
 
-    const candidates = queryAll<{
+    const candidates = await queryAll<{
       id: number;
       full_name: string;
       status: string;
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
     );
 
     // Task deadlines in this month
-    const tasks = queryAll<{
+    const tasks = await queryAll<{
       id: number;
       candidate_id: number;
       candidate_name: string;

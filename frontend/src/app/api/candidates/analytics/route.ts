@@ -16,7 +16,7 @@ export async function GET() {
     }
 
     // Pipeline counts: candidates per status
-    const pipeline_counts = queryAll<{ status: string; count: number }>(
+    const pipeline_counts = await queryAll<{ status: string; count: number }>(
       `SELECT status, COUNT(*) as count FROM candidates WHERE is_archived = 0 GROUP BY status ORDER BY
         CASE status
           WHEN 'new' THEN 1
@@ -34,7 +34,7 @@ export async function GET() {
     );
 
     // Source effectiveness: source -> total -> hired -> conversion rate
-    const source_stats = queryAll<{ source: string; total: number; hired: number; conversion_rate: number }>(
+    const source_stats = await queryAll<{ source: string; total: number; hired: number; conversion_rate: number }>(
       `SELECT
         source,
         COUNT(*) as total,
@@ -47,7 +47,7 @@ export async function GET() {
     );
 
     // Average time-to-hire (days from application to hired)
-    const timeToHireRow = queryOne<{ avg_days: number }>(
+    const timeToHireRow = await queryOne<{ avg_days: number }>(
       `SELECT AVG(
         CAST((julianday(h.created_at) - julianday(c.created_at)) AS REAL)
       ) as avg_days
@@ -58,7 +58,7 @@ export async function GET() {
     const avg_time_to_hire = timeToHireRow?.avg_days ? Math.round(timeToHireRow.avg_days * 10) / 10 : 0;
 
     // Average time-to-first-action (days from new to screening)
-    const timeToFirstRow = queryOne<{ avg_days: number }>(
+    const timeToFirstRow = await queryOne<{ avg_days: number }>(
       `SELECT AVG(
         CAST((julianday(h.created_at) - julianday(c.created_at)) AS REAL)
       ) as avg_days
@@ -72,7 +72,7 @@ export async function GET() {
     const PIPELINE_ORDER = ['new', 'screening', 'phone_screen', 'technical', 'team_interview', 'culture_chat', 'offer', 'hired'];
 
     // Count how many candidates touched each stage (appeared as from_status or to_status)
-    const stageTotals = queryAll<{ stage: string; count: number }>(
+    const stageTotals = await queryAll<{ stage: string; count: number }>(
       `SELECT stage, COUNT(*) as count FROM (
         SELECT from_status as stage FROM candidate_history WHERE from_status IS NOT NULL
         UNION ALL
@@ -83,7 +83,7 @@ export async function GET() {
     for (const row of stageTotals) stageTotalMap[row.stage] = row.count;
 
     // Count transitions between consecutive stages
-    const transitions = queryAll<{ from_status: string; to_status: string; count: number }>(
+    const transitions = await queryAll<{ from_status: string; to_status: string; count: number }>(
       `SELECT from_status, to_status, COUNT(*) as count
        FROM candidate_history
        WHERE from_status IS NOT NULL AND to_status IS NOT NULL
@@ -107,7 +107,7 @@ export async function GET() {
     }
 
     // Monthly applications (last 6 months)
-    const monthly_applications = queryAll<{ month: string; count: number }>(
+    const monthly_applications = await queryAll<{ month: string; count: number }>(
       `SELECT
         strftime('%Y-%m', created_at) as month,
         COUNT(*) as count
@@ -118,7 +118,7 @@ export async function GET() {
     );
 
     // Average scores across all candidates
-    const scoreRow = queryOne<{
+    const scoreRow = await queryOne<{
       avg_td: number; avg_ps: number; avg_ow: number;
       avg_co: number; avg_ca: number; avg_gp: number;
     }>(

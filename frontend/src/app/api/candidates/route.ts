@@ -63,7 +63,7 @@ export async function GET(request: Request) {
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-    const countResult = queryOne<{ total: number }>(
+    const countResult = await queryOne<{ total: number }>(
       `SELECT COUNT(*) as total FROM candidates c ${whereSQL}`,
       queryParams
     );
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
     const totalPages = Math.ceil(total / perPage);
     const offset = (page - 1) * perPage;
 
-    const candidates = queryAll<CandidateWithJob>(
+    const candidates = await queryAll<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
@@ -167,8 +167,8 @@ export async function POST(request: Request) {
 
     let candidateId: number | bigint;
 
-    transaction(() => {
-      const result = execute(
+    await transaction(async () => {
+      const result = await execute(
         `INSERT INTO candidates (
           full_name, email, phone, job_id, cover_message, cv_path, cv_original_name,
           linkedin_url, github_url, portfolio_url, website_url,
@@ -205,20 +205,20 @@ export async function POST(request: Request) {
       candidateId = result.lastInsertRowid;
 
       // Create initial history entry
-      execute(
+      await execute(
         `INSERT INTO candidate_history (candidate_id, action, to_status, performed_by, notes)
          VALUES (?, ?, ?, ?, ?)`,
         [candidateId, 'application_submitted', 'new', 'system', 'Candidate submitted application']
       );
 
       // Returning candidate detection: check for existing candidates with same email or phone
-      const existingByEmail = queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
+      const existingByEmail = await queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
         `SELECT id, full_name, created_at, status FROM candidates WHERE email = ? AND id != ? ORDER BY created_at DESC`,
         [v.email, candidateId]
       );
 
       const existingByPhone = v.phone
-        ? queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
+        ? await queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
             `SELECT id, full_name, created_at, status FROM candidates WHERE phone = ? AND phone IS NOT NULL AND id != ? ORDER BY created_at DESC`,
             [v.phone, candidateId]
           )
@@ -233,7 +233,7 @@ export async function POST(request: Request) {
 
       if (previousIds.size > 0) {
         const firstPreviousId = allPrevious[0].id;
-        execute(
+        await execute(
           `UPDATE candidates SET is_returning = 1, previous_candidate_id = ? WHERE id = ?`,
           [firstPreviousId, candidateId]
         );
@@ -242,7 +242,7 @@ export async function POST(request: Request) {
         const previousApplications = allPrevious
           .map(p => `ID #${p.id} (${p.status}, ${p.created_at})`)
           .join('; ');
-        execute(
+        await execute(
           `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
            VALUES (?, ?, ?, ?)`,
           [
@@ -267,20 +267,20 @@ export async function POST(request: Request) {
             const rejectedDateStr = rejectedDate.toISOString().substring(0, 10);
 
             // Look up the previous job title
-            const prevCandidate = queryOne<{ job_id: number | null }>(
+            const prevCandidate = await queryOne<{ job_id: number | null }>(
               'SELECT job_id FROM candidates WHERE id = ?',
               [lastRejection.id]
             );
             let prevJobTitle = 'Unknown Position';
             if (prevCandidate?.job_id) {
-              const prevJob = queryOne<{ title: string }>(
+              const prevJob = await queryOne<{ title: string }>(
                 'SELECT title FROM jobs WHERE id = ?',
                 [prevCandidate.job_id]
               );
               if (prevJob) prevJobTitle = prevJob.title;
             }
 
-            execute(
+            await execute(
               `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
                VALUES (?, ?, ?, ?)`,
               [
@@ -295,7 +295,7 @@ export async function POST(request: Request) {
       }
     });
 
-    const candidate = queryOne<CandidateWithJob>(
+    const candidate = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id

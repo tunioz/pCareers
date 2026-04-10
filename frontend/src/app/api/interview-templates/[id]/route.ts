@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const template = queryOne<InterviewTemplate>(
+    const template = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE id = ?',
       [templateId]
     );
@@ -32,7 +32,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const stages = queryAll<InterviewStage>(
+    const stages = await queryAll<InterviewStage>(
       'SELECT * FROM interview_stages WHERE template_id = ? ORDER BY stage_number ASC',
       [templateId]
     );
@@ -70,7 +70,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<InterviewTemplate>(
+    const existing = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE id = ?',
       [templateId]
     );
@@ -107,10 +107,10 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // If setting as default, unset any existing default
     if (data.is_default && !existing.is_default) {
-      execute('UPDATE interview_templates SET is_default = 0 WHERE is_default = 1');
+      await execute('UPDATE interview_templates SET is_default = 0 WHERE is_default = 1');
     }
 
-    execute(
+    await execute(
       `UPDATE interview_templates SET
         name = ?, description = ?, overall_timeline = ?, overall_label = ?,
         feedback_label = ?, subtitle = ?, is_default = ?, is_published = ?,
@@ -129,12 +129,12 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<InterviewTemplate>(
+    const updated = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE id = ?',
       [templateId]
     );
 
-    const stages = queryAll<InterviewStage>(
+    const stages = await queryAll<InterviewStage>(
       'SELECT * FROM interview_stages WHERE template_id = ? ORDER BY stage_number ASC',
       [templateId]
     );
@@ -172,7 +172,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<InterviewTemplate>(
+    const existing = await queryOne<InterviewTemplate>(
       'SELECT id FROM interview_templates WHERE id = ?',
       [templateId]
     );
@@ -185,13 +185,13 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // Nullify references from jobs before deleting
-    execute(
+    await execute(
       'UPDATE jobs SET interview_template_id = NULL WHERE interview_template_id = ?',
       [templateId]
     );
 
     // CASCADE will delete associated stages
-    execute('DELETE FROM interview_templates WHERE id = ?', [templateId]);
+    await execute('DELETE FROM interview_templates WHERE id = ?', [templateId]);
 
     return NextResponse.json({
       success: true,

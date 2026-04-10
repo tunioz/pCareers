@@ -12,11 +12,11 @@ export async function GET() {
     let members: TeamMember[];
 
     if (isAdmin) {
-      members = queryAll<TeamMember>(
+      members = await queryAll<TeamMember>(
         'SELECT * FROM team_members ORDER BY sort_order ASC, id ASC'
       );
     } else {
-      members = queryAll<TeamMember>(
+      members = await queryAll<TeamMember>(
         'SELECT * FROM team_members WHERE is_published = 1 ORDER BY sort_order ASC, id ASC'
       );
     }
@@ -59,13 +59,13 @@ export async function POST(request: Request) {
     // Auto-assign sort_order if not provided (append to end)
     let sortOrder = data.sort_order ?? 0;
     if (!body.sort_order && body.sort_order !== 0) {
-      const maxOrder = queryOne<{ max_order: number | null }>(
+      const maxOrder = await queryOne<{ max_order: number | null }>(
         'SELECT MAX(sort_order) as max_order FROM team_members'
       );
       sortOrder = (maxOrder?.max_order ?? -1) + 1;
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO team_members (name, role, bio, photo, department, sort_order, is_published)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newMember = queryOne<TeamMember>(
+    const newMember = await queryOne<TeamMember>(
       'SELECT * FROM team_members WHERE id = ?',
       [result.lastInsertRowid]
     );

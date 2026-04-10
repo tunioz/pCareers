@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const { username, password } = validation.data!;
 
-    const user = queryOne<AdminUser>(
+    const user = await queryOne<AdminUser>(
       'SELECT * FROM admin_users WHERE username = ?',
       [username]
     );
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     await setAuthCookie(token);
 
     // Update last_login_at
-    execute(
+    await execute(
       "UPDATE admin_users SET last_login_at = datetime('now') WHERE id = ?",
       [user.id]
     );

@@ -40,7 +40,7 @@ export async function GET(_request: Request, context: RouteContext) {
     const candidateId = parseInt(id, 10);
 
     // Find sessions where current user is the interviewer
-    const ownSessions = queryAll<SessionRow>(
+    const ownSessions = await queryAll<SessionRow>(
       `SELECT * FROM candidate_interview_sessions
        WHERE candidate_id = ? AND (interviewer_name = ? OR score_id IS NULL)
        ORDER BY created_at DESC`,
@@ -48,7 +48,7 @@ export async function GET(_request: Request, context: RouteContext) {
     );
 
     // Find if current user has submitted a scorecard for this candidate
-    const ownSubmitted = queryOne<{ count: number }>(
+    const ownSubmitted = await queryOne<{ count: number }>(
       `SELECT COUNT(*) as count FROM candidate_scores
        WHERE candidate_id = ? AND interviewer_name = ?`,
       [candidateId, user.username]
@@ -56,7 +56,7 @@ export async function GET(_request: Request, context: RouteContext) {
     const currentUserHasSubmitted = (ownSubmitted?.count || 0) > 0;
 
     // All sessions with isolation applied
-    const allSessions = queryAll<SessionRow>(
+    const allSessions = await queryAll<SessionRow>(
       `SELECT * FROM candidate_interview_sessions
        WHERE candidate_id = ?
        ORDER BY scheduled_at DESC, created_at DESC`,
@@ -112,7 +112,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_interview_sessions (
         candidate_id, kit_id, interviewer_name, stage, scheduled_at, status,
         location, meet_link, duration_minutes
@@ -150,7 +150,7 @@ export async function POST(request: Request, context: RouteContext) {
       userAgent: getUserAgent(request),
     });
 
-    const session = queryOne<SessionRow>(
+    const session = await queryOne<SessionRow>(
       'SELECT * FROM candidate_interview_sessions WHERE id = ?',
       [newId]
     );

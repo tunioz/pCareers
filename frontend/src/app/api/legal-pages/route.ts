@@ -7,7 +7,7 @@ import type { LegalPage } from '@/types';
 
 export async function GET() {
   try {
-    const pages = queryAll<LegalPage>(
+    const pages = await queryAll<LegalPage>(
       'SELECT * FROM legal_pages ORDER BY title ASC'
     );
 
@@ -38,8 +38,8 @@ export async function POST(request: Request) {
 
     // Auto-generate slug from title if not provided
     if (!body.slug && body.title) {
-      body.slug = createUniqueSlug(body.title, (slug) => {
-        return !!queryOne('SELECT 1 FROM legal_pages WHERE slug = ?', [slug]);
+      body.slug = await createUniqueSlug(body.title, async (slug) => {
+        return !!await queryOne('SELECT 1 FROM legal_pages WHERE slug = ?', [slug]);
       });
     }
 
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const data = validation.data!;
 
     // Check for duplicate slug
-    const existing = queryOne<LegalPage>(
+    const existing = await queryOne<LegalPage>(
       'SELECT id FROM legal_pages WHERE slug = ?',
       [data.slug]
     );
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO legal_pages (slug, title, content, last_updated, is_published)
        VALUES (?, ?, ?, IFNULL(?, datetime('now')), ?)`,
       [
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newPage = queryOne<LegalPage>(
+    const newPage = await queryOne<LegalPage>(
       'SELECT * FROM legal_pages WHERE id = ?',
       [result.lastInsertRowid]
     );

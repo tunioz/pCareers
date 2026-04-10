@@ -21,7 +21,7 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Invalid candidate ID' }, { status: 400 });
     }
 
-    const candidate = queryOne<{
+    const candidate = await queryOne<{
       parsed_skills: string | null;
       parsed_experience: string | null;
       parsed_education: string | null;
@@ -84,7 +84,7 @@ export async function PUT(
       return NextResponse.json({ success: false, error: 'Invalid candidate ID' }, { status: 400 });
     }
 
-    const existing = queryOne<{ id: number }>('SELECT id FROM candidates WHERE id = ?', [candidateId]);
+    const existing = await queryOne<{ id: number }>('SELECT id FROM candidates WHERE id = ?', [candidateId]);
     if (!existing) {
       return NextResponse.json({ success: false, error: 'Candidate not found' }, { status: 404 });
     }
@@ -118,7 +118,7 @@ export async function PUT(
     fields.push("updated_at = datetime('now')");
     values.push(candidateId);
 
-    execute(
+    await execute(
       `UPDATE candidates SET ${fields.join(', ')} WHERE id = ?`,
       values
     );

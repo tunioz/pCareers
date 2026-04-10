@@ -46,7 +46,7 @@ export async function GET(request: Request, context: RouteContext) {
     const { id } = await context.params;
     const candidateId = parseInt(id, 10);
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -54,49 +54,49 @@ export async function GET(request: Request, context: RouteContext) {
       return NextResponse.json({ success: false, error: 'Candidate not found' }, { status: 404 });
     }
 
-    const notes = queryAll(
+    const notes = await queryAll(
       'SELECT * FROM candidate_notes WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const scores = queryAll(
+    const scores = await queryAll(
       'SELECT * FROM candidate_scores WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const references = queryAll(
+    const references = await queryAll(
       'SELECT * FROM candidate_references WHERE candidate_id = ? ORDER BY requested_at',
       [candidateId]
     );
-    const history = queryAll(
+    const history = await queryAll(
       'SELECT * FROM candidate_history WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const attachments = queryAll(
+    const attachments = await queryAll(
       'SELECT * FROM candidate_attachments WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const sessions = queryAll(
+    const sessions = await queryAll(
       'SELECT * FROM candidate_interview_sessions WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const analyses = queryAll(
+    const analyses = await queryAll(
       'SELECT * FROM candidate_analysis WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const emails = queryAll(
+    const emails = await queryAll(
       'SELECT * FROM candidate_emails WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const taskSubmissions = queryAll(
+    const taskSubmissions = await queryAll(
       'SELECT * FROM candidate_task_submissions WHERE candidate_id = ? ORDER BY created_at',
       [candidateId]
     );
-    const auditLogEntries = queryAll(
+    const auditLogEntries = await queryAll(
       `SELECT * FROM audit_log
        WHERE entity_type = 'candidate' AND entity_id = ?
        ORDER BY created_at`,
       [candidateId]
     );
-    const aiAuditEntries = queryAll(
+    const aiAuditEntries = await queryAll(
       `SELECT id, skill, user_username, model, tokens_in, tokens_out, cost_usd,
               success, created_at
        FROM ai_audit_log

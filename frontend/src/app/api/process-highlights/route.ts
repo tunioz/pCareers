@@ -11,11 +11,11 @@ export async function GET() {
 
     let highlights: ProcessHighlight[];
     if (isAdmin) {
-      highlights = queryAll<ProcessHighlight>(
+      highlights = await queryAll<ProcessHighlight>(
         'SELECT * FROM process_highlights ORDER BY sort_order ASC'
       );
     } else {
-      highlights = queryAll<ProcessHighlight>(
+      highlights = await queryAll<ProcessHighlight>(
         'SELECT * FROM process_highlights WHERE is_published = 1 ORDER BY sort_order ASC'
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     const data = validation.data!;
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO process_highlights (label, detail, sort_order, is_published) VALUES (?, ?, ?, ?)',
       [
         data.label,
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newHighlight = queryOne<ProcessHighlight>(
+    const newHighlight = await queryOne<ProcessHighlight>(
       'SELECT * FROM process_highlights WHERE id = ?',
       [result.lastInsertRowid]
     );

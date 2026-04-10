@@ -12,11 +12,11 @@ export async function GET() {
     let stories: TeamStory[];
 
     if (isAdmin) {
-      stories = queryAll<TeamStory>(
+      stories = await queryAll<TeamStory>(
         'SELECT * FROM team_stories ORDER BY sort_order ASC, id ASC'
       );
     } else {
-      stories = queryAll<TeamStory>(
+      stories = await queryAll<TeamStory>(
         'SELECT * FROM team_stories WHERE is_published = 1 ORDER BY sort_order ASC, id ASC'
       );
     }
@@ -59,13 +59,13 @@ export async function POST(request: Request) {
     // Auto-assign sort_order if not provided
     let sortOrder = data.sort_order ?? 0;
     if (!body.sort_order && body.sort_order !== 0) {
-      const maxOrder = queryOne<{ max_order: number | null }>(
+      const maxOrder = await queryOne<{ max_order: number | null }>(
         'SELECT MAX(sort_order) as max_order FROM team_stories'
       );
       sortOrder = (maxOrder?.max_order ?? -1) + 1;
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO team_stories (name, role, photo, quote, sort_order, is_published)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newStory = queryOne<TeamStory>(
+    const newStory = await queryOne<TeamStory>(
       'SELECT * FROM team_stories WHERE id = ?',
       [result.lastInsertRowid]
     );

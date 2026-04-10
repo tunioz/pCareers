@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
     sql += ' ORDER BY p.sort_order ASC, p.id ASC';
 
-    const photos = queryAll<GalleryPhotoWithCategory>(sql, params);
+    const photos = await queryAll<GalleryPhotoWithCategory>(sql, params);
 
     return NextResponse.json({
       success: true,
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     const data = validation.data!;
 
     // Verify category exists
-    const category = queryOne<{ id: number }>(
+    const category = await queryOne<{ id: number }>(
       'SELECT id FROM gallery_categories WHERE id = ?',
       [data.category_id]
     );
@@ -90,14 +90,14 @@ export async function POST(request: Request) {
     // Auto-assign sort_order if not provided
     let sortOrder = data.sort_order ?? 0;
     if (!body.sort_order && body.sort_order !== 0) {
-      const maxOrder = queryOne<{ max_order: number | null }>(
+      const maxOrder = await queryOne<{ max_order: number | null }>(
         'SELECT MAX(sort_order) as max_order FROM gallery_photos WHERE category_id = ?',
         [data.category_id]
       );
       sortOrder = (maxOrder?.max_order ?? -1) + 1;
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO gallery_photos (category_id, image, alt_text, sort_order, is_published)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newPhoto = queryOne<GalleryPhotoWithCategory>(
+    const newPhoto = await queryOne<GalleryPhotoWithCategory>(
       `SELECT p.*, c.name as category_name, c.slug as category_slug
        FROM gallery_photos p
        JOIN gallery_categories c ON p.category_id = c.id

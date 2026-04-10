@@ -23,7 +23,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     const user = await getAuthUser();
-    const post = queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
+    const post = await queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
 
     if (!post) {
       return NextResponse.json(
@@ -40,7 +40,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const tags = queryAll<Tag>(
+    const tags = await queryAll<Tag>(
       'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
       [postId]
     );
@@ -81,7 +81,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
+    const existing = await queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
@@ -93,8 +93,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Re-generate slug if title changed and slug not explicitly set
     if (body.title && body.title !== existing.title && !body.slug) {
-      body.slug = createUniqueSlug(body.title, (slug) => {
-        const found = queryOne<Post>('SELECT id FROM posts WHERE slug = ? AND id != ?', [slug, postId]);
+      body.slug = await createUniqueSlug(body.title, async (slug) => {
+        const found = await queryOne<Post>('SELECT id FROM posts WHERE slug = ? AND id != ?', [slug, postId]);
         return !!found;
       });
     }
@@ -126,8 +126,8 @@ export async function PUT(request: Request, context: RouteContext) {
     const data = validation.data!;
     const tagIds: number[] | undefined = Array.isArray(body.tagIds) ? body.tagIds : undefined;
 
-    transaction(() => {
-      execute(
+    await transaction(async () => {
+      await execute(
         `UPDATE posts SET
           title = ?, slug = ?, content = ?,
           excerpt = ?, category = ?, author = ?,
@@ -153,23 +153,23 @@ export async function PUT(request: Request, context: RouteContext) {
 
       // Update post_tags if provided
       if (tagIds !== undefined) {
-        execute('DELETE FROM post_tags WHERE post_id = ?', [postId]);
+        await execute('DELETE FROM post_tags WHERE post_id = ?', [postId]);
         for (const tagId of tagIds) {
-          execute(
-            'INSERT OR IGNORE INTO post_tags (post_id, tag_id) VALUES (?, ?)',
+          await execute(
+            'INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?) ON CONFLICT DO NOTHING',
             [postId, tagId]
           );
         }
       }
     });
 
-    const updated = queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
-    const tags = queryAll<Tag>(
+    const updated = await queryOne<Post>('SELECT * FROM posts WHERE id = ?', [postId]);
+    const tags = await queryAll<Tag>(
       'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
       [postId]
     );
 
-    logAudit({
+    await logAudit({
       userId: user.userId,
       userUsername: user.username,
       action: 'update',
@@ -216,7 +216,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Post>('SELECT id, title, slug FROM posts WHERE id = ?', [postId]);
+    const existing = await queryOne<Post>('SELECT id, title, slug FROM posts WHERE id = ?', [postId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
@@ -225,9 +225,9 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // CASCADE will delete post_tags automatically
-    execute('DELETE FROM posts WHERE id = ?', [postId]);
+    await execute('DELETE FROM posts WHERE id = ?', [postId]);
 
-    logAudit({
+    await logAudit({
       userId: user.userId,
       userUsername: user.username,
       action: 'delete',

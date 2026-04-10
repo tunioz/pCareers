@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
+    const job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
     if (!job) {
       return NextResponse.json(
         { success: false, error: 'Job not found' },
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
     // If save flag, persist to DB
     let savedKitId: number | bigint | null = null;
     if (save) {
-      transaction(() => {
-        const kitResult = execute(
+      await transaction(async () => {
+        const kitResult = await execute(
           `INSERT INTO interview_kits (
             name, description, role_type, stage, duration_minutes,
             focus_dimensions, instructions, is_published, ai_generated
@@ -94,8 +94,9 @@ export async function POST(request: Request) {
         );
         savedKitId = kitResult.lastInsertRowid;
 
-        generated.questions.forEach((q, i) => {
-          execute(
+        for (let i = 0; i < generated.questions.length; i++) {
+          const q = generated.questions[i];
+          await execute(
             `INSERT INTO interview_kit_questions (
               kit_id, sort_order, question, category, expected_signal, follow_up, dimension, difficulty
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
               q.difficulty || 'medium',
             ]
           );
-        });
+        }
       });
     }
 

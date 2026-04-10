@@ -33,7 +33,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<CandidateWithJob>(
+    const candidate = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
@@ -55,13 +55,13 @@ export async function GET(request: Request, context: RouteContext) {
     ) as unknown as CandidateWithJob;
 
     // Get recent notes count
-    const notesCount = queryOne<{ count: number }>(
+    const notesCount = await queryOne<{ count: number }>(
       'SELECT COUNT(*) as count FROM candidate_notes WHERE candidate_id = ?',
       [candidateId]
     );
 
     // Get scores count
-    const scoresCount = queryOne<{ count: number }>(
+    const scoresCount = await queryOne<{ count: number }>(
       'SELECT COUNT(*) as count FROM candidate_scores WHERE candidate_id = ?',
       [candidateId]
     );
@@ -110,7 +110,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Candidate>(
+    const existing = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -155,12 +155,12 @@ export async function PUT(request: Request, context: RouteContext) {
     setClauses.push("updated_at = datetime('now')");
     params.push(candidateId);
 
-    execute(
+    await execute(
       `UPDATE candidates SET ${setClauses.join(', ')} WHERE id = ?`,
       params
     );
 
-    const updated = queryOne<CandidateWithJob>(
+    const updated = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
@@ -221,7 +221,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Candidate>(
+    const existing = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -234,13 +234,13 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // Fetch identifying info before deleting for audit trail
-    const fullRecord = queryOne<Candidate>(
+    const fullRecord = await queryOne<Candidate>(
       'SELECT full_name, email, status, job_id FROM candidates WHERE id = ?',
       [candidateId]
     );
 
     // CASCADE will delete notes, scores, references, history, attachments
-    execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
+    await execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
 
     logAudit({
       userId: user.userId,

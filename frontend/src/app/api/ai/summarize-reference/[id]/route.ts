@@ -54,7 +54,7 @@ export async function POST(_request: Request, context: RouteContext) {
       );
     }
 
-    const reference = queryOne<ReferenceRow>(
+    const reference = await queryOne<ReferenceRow>(
       'SELECT * FROM candidate_references WHERE id = ?',
       [referenceId]
     );
@@ -91,7 +91,7 @@ export async function POST(_request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [reference.candidate_id]
     );
@@ -104,7 +104,7 @@ export async function POST(_request: Request, context: RouteContext) {
 
     let job: Job | null = null;
     if (candidate.job_id) {
-      job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
+      job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
     }
 
     const firstName = candidate.full_name.split(' ')[0];

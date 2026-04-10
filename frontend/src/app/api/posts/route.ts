@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     // Count total
-    const countResult = queryOne<{ total: number }>(
+    const countResult = await queryOne<{ total: number }>(
       `SELECT COUNT(*) as total FROM posts p ${whereSQL}`,
       queryParams
     );
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
     const offset = (page - 1) * perPage;
 
     // Fetch posts
-    const posts = queryAll<Post>(
+    const posts = await queryAll<Post>(
       `SELECT p.* FROM posts p ${whereSQL} ORDER BY p.created_at DESC LIMIT ? OFFSET ?`,
       [...queryParams, perPage, offset]
     );
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     let tagsByPost = new Map<number, string[]>();
     if (postIds.length > 0) {
       const placeholders = postIds.map(() => '?').join(',');
-      const allTags = queryAll<{ post_id: number; name: string }>(
+      const allTags = await queryAll<{ post_id: number; name: string }>(
         `SELECT pt.post_id, t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id IN (${placeholders})`,
         postIds
       );
@@ -121,8 +121,8 @@ export async function POST(request: Request) {
 
     // Auto-generate slug from title if not provided
     if (!body.slug && body.title) {
-      body.slug = createUniqueSlug(body.title, (slug) => {
-        return !!queryOne('SELECT 1 FROM posts WHERE slug = ?', [slug]);
+      body.slug = await createUniqueSlug(body.title, async (slug) => {
+        return !!await queryOne('SELECT 1 FROM posts WHERE slug = ?', [slug]);
       });
     }
 
@@ -139,8 +139,8 @@ export async function POST(request: Request) {
     // Extract tag IDs if provided
     const tagIds: number[] = Array.isArray(body.tagIds) ? body.tagIds : [];
 
-    const result = transaction(() => {
-      const insertResult = execute(
+    const result = await transaction(async () => {
+      const insertResult = await execute(
         `INSERT INTO posts (title, slug, content, excerpt, category, author, author_title, author_image, cover_image, read_time, is_featured, is_published)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -163,8 +163,8 @@ export async function POST(request: Request) {
 
       // Insert post_tags
       for (const tagId of tagIds) {
-        execute(
-          'INSERT OR IGNORE INTO post_tags (post_id, tag_id) VALUES (?, ?)',
+        await execute(
+          'INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?) ON CONFLICT DO NOTHING',
           [postId, tagId]
         );
       }
@@ -172,13 +172,13 @@ export async function POST(request: Request) {
       return postId;
     });
 
-    const newPost = queryOne<Post>('SELECT * FROM posts WHERE id = ?', [result]);
-    const tags = queryAll<Tag>(
+    const newPost = await queryOne<Post>('SELECT * FROM posts WHERE id = ?', [result]);
+    const tags = await queryAll<Tag>(
       'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
       [result]
     );
 
-    logAudit({
+    await logAudit({
       userId: user.userId,
       userUsername: user.username,
       action: 'create',

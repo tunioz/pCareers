@@ -5,7 +5,7 @@ import type { Product } from '@/types';
 
 export async function GET() {
   try {
-    const products = queryAll<Product>(
+    const products = await queryAll<Product>(
       'SELECT * FROM products ORDER BY sort_order ASC, name ASC'
     );
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     }
 
     // Check for duplicate
-    const existing = queryOne<Product>('SELECT id FROM products WHERE name = ?', [name]);
+    const existing = await queryOne<Product>('SELECT id FROM products WHERE name = ?', [name]);
     if (existing) {
       return NextResponse.json(
         { success: false, error: 'Product already exists' },
@@ -52,12 +52,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO products (name, sort_order) VALUES (?, ?)',
       [name, sort_order]
     );
 
-    const newProduct = queryOne<Product>('SELECT * FROM products WHERE id = ?', [result.lastInsertRowid]);
+    const newProduct = await queryOne<Product>('SELECT * FROM products WHERE id = ?', [result.lastInsertRowid]);
 
     return NextResponse.json(
       { success: true, data: newProduct },

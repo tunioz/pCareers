@@ -13,12 +13,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const posts = queryAll<Post>(
+export default async function BlogPage() {
+  const posts = await queryAll<Post>(
     'SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC'
   );
 
-  const jobs = queryAll<Job>(
+  const jobs = await queryAll<Job>(
     'SELECT * FROM jobs WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3'
   );
 

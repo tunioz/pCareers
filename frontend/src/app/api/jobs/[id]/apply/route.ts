@@ -35,7 +35,7 @@ export async function POST(request: Request, context: RouteContext) {
     }
 
     // Verify job exists and is published
-    const job = queryOne<Job>('SELECT id, is_published FROM jobs WHERE id = ?', [jobId]);
+    const job = await queryOne<Job>('SELECT id, is_published FROM jobs WHERE id = ?', [jobId]);
     if (!job || !job.is_published) {
       return NextResponse.json(
         { success: false, error: 'Job not found' },
@@ -102,8 +102,8 @@ export async function POST(request: Request, context: RouteContext) {
 
     let candidateId: number | bigint;
 
-    transaction(() => {
-      const result = execute(
+    await transaction(async () => {
+      const result = await execute(
         `INSERT INTO candidates (
           full_name, email, phone, job_id, cover_message, cv_path, cv_original_name,
           linkedin_url, github_url, portfolio_url, website_url,
@@ -140,20 +140,20 @@ export async function POST(request: Request, context: RouteContext) {
       candidateId = result.lastInsertRowid;
 
       // Create initial history entry
-      execute(
+      await execute(
         `INSERT INTO candidate_history (candidate_id, action, to_status, performed_by, notes)
          VALUES (?, ?, ?, ?, ?)`,
         [candidateId, 'application_submitted', 'new', 'system', 'Candidate applied via job listing']
       );
 
       // Returning candidate detection
-      const existingByEmail = queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
+      const existingByEmail = await queryAll<{ id: number; full_name: string; created_at: string; status: string }>(
         `SELECT id, full_name, created_at, status FROM candidates WHERE email = ? AND id != ? ORDER BY created_at DESC`,
         [email!.trim().toLowerCase(), candidateId]
       );
 
       if (existingByEmail.length > 0) {
-        execute(
+        await execute(
           `UPDATE candidates SET is_returning = 1, previous_candidate_id = ? WHERE id = ?`,
           [existingByEmail[0].id, candidateId]
         );
@@ -161,7 +161,7 @@ export async function POST(request: Request, context: RouteContext) {
         const previousApplications = existingByEmail
           .map(p => `ID #${p.id} (${p.status}, ${p.created_at})`)
           .join('; ');
-        execute(
+        await execute(
           `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
            VALUES (?, ?, ?, ?)`,
           [
@@ -174,7 +174,7 @@ export async function POST(request: Request, context: RouteContext) {
       }
     });
 
-    const candidate = queryOne<CandidateWithJob>(
+    const candidate = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id

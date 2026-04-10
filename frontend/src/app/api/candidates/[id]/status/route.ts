@@ -33,7 +33,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Candidate>(
+    const existing = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -72,7 +72,7 @@ export async function PUT(request: Request, context: RouteContext) {
       }
     }
 
-    transaction(() => {
+    await transaction(async () => {
       // Update candidate status
       const updateFields: string[] = [
         'status = ?',
@@ -101,13 +101,13 @@ export async function PUT(request: Request, context: RouteContext) {
 
       updateParams.push(candidateId);
 
-      execute(
+      await execute(
         `UPDATE candidates SET ${updateFields.join(', ')} WHERE id = ?`,
         updateParams
       );
 
       // Create history log entry
-      execute(
+      await execute(
         `INSERT INTO candidate_history (candidate_id, action, from_status, to_status, performed_by, notes)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
@@ -121,7 +121,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     });
 
-    const updated = queryOne<CandidateWithJob>(
+    const updated = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id

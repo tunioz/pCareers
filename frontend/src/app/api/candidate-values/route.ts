@@ -11,11 +11,11 @@ export async function GET() {
 
     let values: CandidateValue[];
     if (isAdmin) {
-      values = queryAll<CandidateValue>(
+      values = await queryAll<CandidateValue>(
         'SELECT * FROM candidate_values ORDER BY sort_order ASC'
       );
     } else {
-      values = queryAll<CandidateValue>(
+      values = await queryAll<CandidateValue>(
         'SELECT * FROM candidate_values WHERE is_published = 1 ORDER BY sort_order ASC'
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     const data = validation.data!;
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO candidate_values (title, description, image, sort_order, is_published) VALUES (?, ?, ?, ?, ?)',
       [
         data.title,
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newValue = queryOne<CandidateValue>(
+    const newValue = await queryOne<CandidateValue>(
       'SELECT * FROM candidate_values WHERE id = ?',
       [result.lastInsertRowid]
     );

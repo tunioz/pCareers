@@ -23,7 +23,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     const user = await getAuthUser();
-    const job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
+    const job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
 
     if (!job) {
       return NextResponse.json(
@@ -72,7 +72,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
+    const existing = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Job not found' },
@@ -84,8 +84,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Re-generate slug if title changed and slug not explicitly set
     if (body.title && body.title !== existing.title && !body.slug) {
-      body.slug = createUniqueSlug(body.title, (slug) => {
-        return !!queryOne<Job>('SELECT id FROM jobs WHERE slug = ? AND id != ?', [slug, jobId]);
+      body.slug = await createUniqueSlug(body.title, async (slug) => {
+        return !!(await queryOne<Job>('SELECT id FROM jobs WHERE slug = ? AND id != ?', [slug, jobId]));
       });
     }
 
@@ -129,7 +129,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE jobs SET
         title = ?, slug = ?, department = ?, product = ?,
         seniority = ?, location = ?, salary_range = ?, employment_type = ?,
@@ -174,7 +174,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
+    const updated = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [jobId]);
 
     logAudit({
       userId: user.userId,
@@ -220,7 +220,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Job>('SELECT id, title, slug FROM jobs WHERE id = ?', [jobId]);
+    const existing = await queryOne<Job>('SELECT id, title, slug FROM jobs WHERE id = ?', [jobId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Job not found' },
@@ -228,7 +228,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM jobs WHERE id = ?', [jobId]);
+    await execute('DELETE FROM jobs WHERE id = ?', [jobId]);
 
     logAudit({
       userId: user.userId,

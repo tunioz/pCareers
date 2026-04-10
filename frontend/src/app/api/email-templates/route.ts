@@ -17,7 +17,7 @@ export async function GET() {
       );
     }
 
-    const templates = queryAll<EmailTemplate>(
+    const templates = await queryAll<EmailTemplate>(
       'SELECT * FROM email_templates ORDER BY template_type ASC, name ASC'
     );
 
@@ -56,16 +56,17 @@ export async function POST(request: Request) {
 
     const v = validation.data;
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO email_templates (name, slug, subject, body, template_type, is_active)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [v.name, v.slug, v.subject, v.body, v.template_type, v.is_active ?? 1]
     );
 
-    const template = queryAll<EmailTemplate>(
+    const templates = await queryAll<EmailTemplate>(
       'SELECT * FROM email_templates WHERE id = ?',
       [result.lastInsertRowid]
-    )[0];
+    );
+    const template = templates[0];
 
     return NextResponse.json(
       { success: true, data: template },

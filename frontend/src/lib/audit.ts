@@ -51,9 +51,9 @@ export interface AuditLogEntry {
   userAgent?: string | null;
 }
 
-export function logAudit(entry: AuditLogEntry): void {
+export async function logAudit(entry: AuditLogEntry): Promise<void> {
   try {
-    execute(
+    await execute(
       `INSERT INTO audit_log (
         user_id, user_username, user_role, action,
         entity_type, entity_id, details, ip_address, user_agent
@@ -101,7 +101,7 @@ export interface AuditLogFilters {
   dateTo?: string;
 }
 
-export function getAuditLog(filters: AuditLogFilters = {}): AuditLogRow[] {
+export async function getAuditLog(filters: AuditLogFilters = {}): Promise<AuditLogRow[]> {
   const where: string[] = [];
   const params: unknown[] = [];
 
@@ -134,13 +134,13 @@ export function getAuditLog(filters: AuditLogFilters = {}): AuditLogRow[] {
   const limit = filters.limit ?? 100;
   const offset = filters.offset ?? 0;
 
-  return queryAll<AuditLogRow>(
+  return await queryAll<AuditLogRow>(
     `SELECT * FROM audit_log ${whereSql} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
     [...params, limit, offset]
   );
 }
 
-export function countAuditLog(filters: AuditLogFilters = {}): number {
+export async function countAuditLog(filters: AuditLogFilters = {}): Promise<number> {
   const where: string[] = [];
   const params: unknown[] = [];
 
@@ -163,7 +163,7 @@ export function countAuditLog(filters: AuditLogFilters = {}): number {
 
   const whereSql = where.length > 0 ? `WHERE ${where.join(' AND ')}` : '';
 
-  const row = queryOne<{ total: number }>(
+  const row = await queryOne<{ total: number }>(
     `SELECT COUNT(*) as total FROM audit_log ${whereSql}`,
     params
   );

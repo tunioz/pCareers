@@ -30,7 +30,7 @@ export async function GET(_request: Request, context: RouteContext) {
       );
     }
 
-    const task = queryOne<TechnicalTask>(
+    const task = await queryOne<TechnicalTask>(
       `SELECT t.*, j.title as job_title
        FROM technical_tasks t
        LEFT JOIN jobs j ON t.job_id = j.id
@@ -78,7 +78,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TechnicalTask>(
+    const existing = await queryOne<TechnicalTask>(
       'SELECT * FROM technical_tasks WHERE id = ?',
       [taskId]
     );
@@ -110,12 +110,12 @@ export async function PUT(request: Request, context: RouteContext) {
 
     values.push(taskId);
 
-    execute(
+    await execute(
       `UPDATE technical_tasks SET ${updates.join(', ')} WHERE id = ?`,
       values
     );
 
-    const updated = queryOne<TechnicalTask>(
+    const updated = await queryOne<TechnicalTask>(
       'SELECT * FROM technical_tasks WHERE id = ?',
       [taskId]
     );
@@ -153,7 +153,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
       );
     }
 
-    const result = execute('DELETE FROM technical_tasks WHERE id = ?', [taskId]);
+    const result = await execute('DELETE FROM technical_tasks WHERE id = ?', [taskId]);
 
     if (result.changes === 0) {
       return NextResponse.json(

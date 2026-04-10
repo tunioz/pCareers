@@ -33,7 +33,7 @@ export async function POST(request: Request, context: RouteContext) {
     const sessionIdNum = parseInt(sessionId, 10);
     const body = await request.json();
 
-    const session = queryOne<{
+    const session = await queryOne<{
       id: number;
       candidate_id: number;
       interviewer_name: string;
@@ -67,8 +67,8 @@ export async function POST(request: Request, context: RouteContext) {
 
     let scoreId: number | bigint = 0;
 
-    transaction(() => {
-      const scoreResult = execute(
+    await transaction(async () => {
+      const scoreResult = await execute(
         `INSERT INTO candidate_scores (
           candidate_id, session_id, interviewer_user_id, interviewer_name, interview_stage,
           technical_depth, problem_solving, ownership, communication, cultural_add, growth_potential,
@@ -104,7 +104,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
       scoreId = scoreResult.lastInsertRowid;
 
-      execute(
+      await execute(
         `UPDATE candidate_interview_sessions SET
           status = 'completed',
           completed_at = datetime('now'),

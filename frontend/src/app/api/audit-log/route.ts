@@ -31,8 +31,8 @@ export async function GET(request: Request) {
       offset: (page - 1) * perPage,
     };
 
-    const rows = getAuditLog(filters);
-    const total = countAuditLog(filters);
+    const rows = await getAuditLog(filters);
+    const total = await countAuditLog(filters);
 
     return NextResponse.json({
       success: true,

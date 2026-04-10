@@ -89,20 +89,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const candidate = queryOne<Candidate>('SELECT * FROM candidates WHERE id = ?', [candidateId]);
+    const candidate = await queryOne<Candidate>('SELECT * FROM candidates WHERE id = ?', [candidateId]);
     if (!candidate) {
       return NextResponse.json({ success: false, error: 'Candidate not found' }, { status: 404 });
     }
 
     let job: Job | null = null;
     if (candidate.job_id) {
-      job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
+      job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
     }
 
     // Build highlights from existing data if none provided
     let autoHighlights: string[] = [];
     if (highlights.length === 0) {
-      const scores = queryAll<{ key_quotes: string | null; general_notes: string | null }>(
+      const scores = await queryAll<{ key_quotes: string | null; general_notes: string | null }>(
         'SELECT key_quotes, general_notes FROM candidate_scores WHERE candidate_id = ? LIMIT 3',
         [candidateId]
       );
@@ -120,13 +120,13 @@ export async function POST(request: Request) {
       let session: SessionRow | null = null;
 
       if (sessionId) {
-        session = queryOne<SessionRow>(
+        session = await queryOne<SessionRow>(
           'SELECT id, stage, scheduled_at, location, meet_link, duration_minutes, interviewer_name, kit_id FROM candidate_interview_sessions WHERE id = ? AND candidate_id = ?',
           [sessionId, candidateId]
         ) || null;
       } else {
         // Auto-pick latest scheduled session for this candidate
-        session = queryOne<SessionRow>(
+        session = await queryOne<SessionRow>(
           `SELECT id, stage, scheduled_at, location, meet_link, duration_minutes, interviewer_name, kit_id
            FROM candidate_interview_sessions
            WHERE candidate_id = ? AND status = 'scheduled'
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
             })
           : 'TBD';
 
-        const interviewer = queryOne<InterviewerRow>(
+        const interviewer = await queryOne<InterviewerRow>(
           'SELECT username, full_name, email FROM admin_users WHERE username = ?',
           [session.interviewer_name]
         );
@@ -201,7 +201,7 @@ export async function POST(request: Request) {
     }
 
     // Save draft to candidate_emails
-    const insertResult = execute(
+    const insertResult = await execute(
       `INSERT INTO candidate_emails (
         candidate_id, email_type, subject, body, status, ai_generated,
         ai_prompt_context, session_id, created_by

@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<CandidateWithJob>(
+    const candidate = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
@@ -82,7 +82,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Candidate>(
+    const existing = await queryOne<Candidate>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -103,12 +103,12 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       "UPDATE candidates SET status = ?, previous_status = ?, status_changed_at = datetime('now'), updated_at = datetime('now') WHERE id = ?",
       [body.status, existing.status, candidateId]
     );
 
-    const updated = queryOne<CandidateWithJob>(
+    const updated = await queryOne<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
@@ -152,7 +152,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Candidate>(
+    const existing = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -164,7 +164,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
+    await execute('DELETE FROM candidates WHERE id = ?', [candidateId]);
 
     return NextResponse.json({
       success: true,

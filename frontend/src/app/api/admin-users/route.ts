@@ -36,7 +36,7 @@ export async function GET() {
   }
 
   try {
-    const users = queryAll<AdminUserRow>(
+    const users = await queryAll<AdminUserRow>(
       `SELECT id, username, full_name, email, photo, role, title, is_active, last_login_at, created_at, updated_at
        FROM admin_users ORDER BY created_at DESC`
     );
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     const role = VALID_ROLES.includes(body.role) ? body.role : 'admin';
 
     // Check username unique
-    const existing = queryOne<{ id: number }>(
+    const existing = await queryOne<{ id: number }>(
       'SELECT id FROM admin_users WHERE username = ?',
       [body.username]
     );
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
 
     const hash = await hashPassword(body.password);
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO admin_users (
         username, password_hash, full_name, email, photo, role, title, is_active
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
       userAgent: getUserAgent(request),
     });
 
-    const created = queryOne<AdminUserRow>(
+    const created = await queryOne<AdminUserRow>(
       `SELECT id, username, full_name, email, photo, role, title, is_active, last_login_at, created_at, updated_at
        FROM admin_users WHERE id = ?`,
       [newId]

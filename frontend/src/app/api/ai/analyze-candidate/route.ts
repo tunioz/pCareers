@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const candidate = queryOne<Candidate & { linkedin_profile_text?: string | null }>(
+    const candidate = await queryOne<Candidate & { linkedin_profile_text?: string | null }>(
       'SELECT * FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -54,11 +54,11 @@ export async function POST(request: Request) {
 
     let job: Job | null = null;
     if (candidate.job_id) {
-      job = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
+      job = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [candidate.job_id]) || null;
     }
 
     // Gather all data sources
-    const adminNotes = queryAll<{
+    const adminNotes = await queryAll<{
       author: string;
       content: string;
       note_type: string;
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       [candidateId]
     );
 
-    const scorecards = queryAll<AnalyzeInputs['scorecards'][number]>(
+    const scorecards = await queryAll<AnalyzeInputs['scorecards'][number]>(
       `SELECT interviewer_name, interview_stage as stage,
               technical_depth, problem_solving, ownership, communication, cultural_add, growth_potential,
               recommendation, general_notes, raw_notes, key_quotes, red_flags
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       [candidateId]
     );
 
-    const references = queryAll<AnalyzeInputs['references'][number]>(
+    const references = await queryAll<AnalyzeInputs['references'][number]>(
       `SELECT referee_name, referee_relationship,
               technical_competence, reliability, communication, teamwork, initiative,
               strengths, improvements, would_rehire, additional_comments
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     const onlineProfiles = fetchedProfiles.filter(p => p.text);
 
     // Task submissions
-    const taskSubmissions = queryAll<{ task_title: string; notes: string | null; score: number | null; reviewer_notes: string | null; status: string }>(
+    const taskSubmissions = await queryAll<{ task_title: string; notes: string | null; score: number | null; reviewer_notes: string | null; status: string }>(
       `SELECT t.title as task_title, s.notes, s.score, s.reviewer_notes, s.status
        FROM candidate_task_submissions s
        JOIN technical_tasks t ON t.id = s.task_id
@@ -176,7 +176,7 @@ export async function POST(request: Request) {
     const analysis = result.data;
 
     // Cache in candidate_analysis
-    const savedRow = execute(
+    const savedRow = await execute(
       `INSERT INTO candidate_analysis (
         candidate_id, generated_by, overall_summary, strengths, concerns,
         red_flags, recommendation, confidence, sources_analyzed, model, cost_usd
@@ -260,7 +260,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const latest = queryOne<{
+  const latest = await queryOne<{
     id: number;
     candidate_id: number;
     generated_by: string;

@@ -33,7 +33,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     // Verify candidate exists
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -45,7 +45,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const notes = queryAll<CandidateNote>(
+    const notes = await queryAll<CandidateNote>(
       'SELECT * FROM candidate_notes WHERE candidate_id = ? ORDER BY created_at DESC',
       [candidateId]
     );
@@ -87,7 +87,7 @@ export async function POST(request: Request, context: RouteContext) {
     }
 
     // Verify candidate exists
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -111,13 +111,13 @@ export async function POST(request: Request, context: RouteContext) {
 
     const v = validation.data;
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_notes (candidate_id, author, content, note_type)
        VALUES (?, ?, ?, ?)`,
       [candidateId, user.username, v.content, v.note_type || 'general']
     );
 
-    const note = queryOne<CandidateNote>(
+    const note = await queryOne<CandidateNote>(
       'SELECT * FROM candidate_notes WHERE id = ?',
       [result.lastInsertRowid]
     );

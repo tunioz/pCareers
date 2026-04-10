@@ -11,7 +11,7 @@ export async function GET(request: Request, context: RouteContext) {
   try {
     const { slug } = await context.params;
 
-    const post = queryOne<Post>('SELECT * FROM posts WHERE slug = ?', [slug]);
+    const post = await queryOne<Post>('SELECT * FROM posts WHERE slug = ?', [slug]);
 
     if (!post) {
       return NextResponse.json(
@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
       }
     }
 
-    const tags = queryAll<Tag>(
+    const tags = await queryAll<Tag>(
       'SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?',
       [post.id]
     );

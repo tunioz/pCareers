@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-    const countResult = queryOne<{ total: number }>(
+    const countResult = await queryOne<{ total: number }>(
       `SELECT COUNT(*) as total FROM candidates c ${whereSQL}`,
       queryParams
     );
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
     const totalPages = Math.ceil(total / perPage);
     const offset = (page - 1) * perPage;
 
-    const candidates = queryAll<CandidateWithJob>(
+    const candidates = await queryAll<CandidateWithJob>(
       `SELECT c.*, j.title as job_title, j.slug as job_slug, j.department as job_department
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id

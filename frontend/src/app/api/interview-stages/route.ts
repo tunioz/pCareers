@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const stages = queryAll<InterviewStage>(
+    const stages = await queryAll<InterviewStage>(
       'SELECT * FROM interview_stages WHERE template_id = ? ORDER BY stage_number ASC',
       [tId]
     );
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     const data = validation.data!;
 
     // Verify template exists
-    const template = queryOne('SELECT id FROM interview_templates WHERE id = ?', [data.template_id]);
+    const template = await queryOne('SELECT id FROM interview_templates WHERE id = ?', [data.template_id]);
     if (!template) {
       return NextResponse.json(
         { success: false, error: 'Interview template not found' },
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO interview_stages (template_id, stage_number, title, duration, description, focus, timeline, icon, is_published)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newStage = queryOne<InterviewStage>(
+    const newStage = await queryOne<InterviewStage>(
       'SELECT * FROM interview_stages WHERE id = ?',
       [result.lastInsertRowid]
     );

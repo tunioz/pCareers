@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const task = queryOne<TechnicalTaskRow>(
+    const task = await queryOne<TechnicalTaskRow>(
       'SELECT id, title, description, role_type FROM technical_tasks WHERE id = ?',
       [taskId]
     );
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     let submission: TaskSubmissionRow | null = null;
     if (submissionId) {
       submission =
-        queryOne<TaskSubmissionRow>(
+        await queryOne<TaskSubmissionRow>(
           'SELECT id, candidate_id, task_id, notes, file_path, status FROM candidate_task_submissions WHERE id = ?',
           [submissionId]
         ) || null;

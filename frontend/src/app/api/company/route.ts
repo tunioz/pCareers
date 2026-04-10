@@ -12,7 +12,7 @@ const PUBLIC_SETTINGS_KEYS = new Set([
 
 export async function GET(request: Request) {
   try {
-    const settings = queryAll<CompanySetting>(
+    const settings = await queryAll<CompanySetting>(
       'SELECT * FROM company_settings ORDER BY key ASC'
     );
 
@@ -61,11 +61,11 @@ export async function PUT(request: Request) {
 
     const settings = body.settings as Record<string, string>;
 
-    transaction(() => {
+    await transaction(async () => {
       for (const [key, value] of Object.entries(settings)) {
         if (typeof key !== 'string' || typeof value !== 'string') continue;
 
-        execute(
+        await execute(
           `INSERT INTO company_settings (key, value, updated_at)
            VALUES (?, ?, datetime('now'))
            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')`,
@@ -75,7 +75,7 @@ export async function PUT(request: Request) {
     });
 
     // Return updated settings
-    const updatedSettings = queryAll<CompanySetting>(
+    const updatedSettings = await queryAll<CompanySetting>(
       'SELECT * FROM company_settings ORDER BY key ASC'
     );
     const settingsMap: Record<string, string> = {};

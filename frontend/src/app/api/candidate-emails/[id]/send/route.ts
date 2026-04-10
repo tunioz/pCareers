@@ -70,7 +70,7 @@ export async function POST(request: Request, context: RouteContext) {
     const { id } = await context.params;
     const emailId = parseInt(id, 10);
 
-    const email = queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
+    const email = await queryOne<EmailRow>('SELECT * FROM candidate_emails WHERE id = ?', [emailId]);
     if (!email) {
       return NextResponse.json({ success: false, error: 'Email not found' }, { status: 404 });
     }
@@ -107,7 +107,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id, full_name, email, job_id FROM candidates WHERE id = ?',
       [email.candidate_id]
     );
@@ -143,7 +143,7 @@ export async function POST(request: Request, context: RouteContext) {
     } | undefined;
 
     if (email.session_id) {
-      const session = queryOne<SessionRow>(
+      const session = await queryOne<SessionRow>(
         'SELECT * FROM candidate_interview_sessions WHERE id = ? AND candidate_id = ?',
         [email.session_id, email.candidate_id]
       );
@@ -151,11 +151,11 @@ export async function POST(request: Request, context: RouteContext) {
       if (session && session.scheduled_at) {
         let jobTitle = 'Interview';
         if (candidate.job_id) {
-          const job = queryOne<Job>('SELECT title FROM jobs WHERE id = ?', [candidate.job_id]);
+          const job = await queryOne<Job>('SELECT title FROM jobs WHERE id = ?', [candidate.job_id]);
           if (job) jobTitle = job.title;
         }
 
-        const interviewer = queryOne<InterviewerRow>(
+        const interviewer = await queryOne<InterviewerRow>(
           'SELECT username, email, full_name FROM admin_users WHERE username = ?',
           [session.interviewer_name]
         );
@@ -234,7 +234,7 @@ export async function POST(request: Request, context: RouteContext) {
     });
 
     if (!deliveryResult.ok) {
-      execute(
+      await execute(
         `UPDATE candidate_emails SET status = 'failed', updated_at = datetime('now') WHERE id = ?`,
         [emailId]
       );
@@ -263,7 +263,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       `UPDATE candidate_emails SET
         status = 'sent',
         sent_at = datetime('now'),

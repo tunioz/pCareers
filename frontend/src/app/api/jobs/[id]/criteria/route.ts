@@ -17,7 +17,7 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Invalid job ID' }, { status: 400 });
     }
 
-    const criteria = queryAll<PositionCriterion>(
+    const criteria = await queryAll<PositionCriterion>(
       'SELECT * FROM position_criteria WHERE job_id = ? ORDER BY sort_order ASC, id ASC',
       [jobId]
     );
@@ -48,7 +48,7 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Invalid job ID' }, { status: 400 });
     }
 
-    const job = queryOne<{ id: number }>('SELECT id FROM jobs WHERE id = ?', [jobId]);
+    const job = await queryOne<{ id: number }>('SELECT id FROM jobs WHERE id = ?', [jobId]);
     if (!job) {
       return NextResponse.json({ success: false, error: 'Job not found' }, { status: 404 });
     }
@@ -60,7 +60,7 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Criterion name is required' }, { status: 400 });
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO position_criteria (job_id, name, description, weight, sort_order)
        VALUES (?, ?, ?, ?, ?)`,
       [
@@ -72,7 +72,7 @@ export async function POST(
       ]
     );
 
-    const created = queryOne<PositionCriterion>(
+    const created = await queryOne<PositionCriterion>(
       'SELECT * FROM position_criteria WHERE id = ?',
       [result.lastInsertRowid]
     );

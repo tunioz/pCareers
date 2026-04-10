@@ -23,9 +23,9 @@ export interface AiCallLog {
   outputPreview: string | null;
 }
 
-export function logAiCall(entry: AiCallLog): void {
+export async function logAiCall(entry: AiCallLog): Promise<void> {
   try {
-    execute(
+    await execute(
       `INSERT INTO ai_audit_log (
         skill, user_username, candidate_id, model,
         tokens_in, tokens_out, cost_usd, duration_ms,
@@ -59,8 +59,8 @@ export interface AiSpendByDay {
   total_tokens: number;
 }
 
-export function getSpendByDay(days: number = 30): AiSpendByDay[] {
-  return queryAll<AiSpendByDay>(
+export async function getSpendByDay(days: number = 30): Promise<AiSpendByDay[]> {
+  return await queryAll<AiSpendByDay>(
     `SELECT
        date(created_at) as date,
        SUM(cost_usd) as total_cost,
@@ -82,8 +82,8 @@ export interface AiSpendBySkill {
   success_rate: number;
 }
 
-export function getSpendBySkill(days: number = 30): AiSpendBySkill[] {
-  return queryAll<AiSpendBySkill>(
+export async function getSpendBySkill(days: number = 30): Promise<AiSpendBySkill[]> {
+  return await queryAll<AiSpendBySkill>(
     `SELECT
        skill,
        SUM(cost_usd) as total_cost,
@@ -98,8 +98,8 @@ export function getSpendBySkill(days: number = 30): AiSpendBySkill[] {
   );
 }
 
-export function getTotalSpendToday(): number {
-  const row = queryOne<{ total: number }>(
+export async function getTotalSpendToday(): Promise<number> {
+  const row = await queryOne<{ total: number }>(
     `SELECT COALESCE(SUM(cost_usd), 0) as total FROM ai_audit_log
      WHERE date(created_at) = date('now')`
   );

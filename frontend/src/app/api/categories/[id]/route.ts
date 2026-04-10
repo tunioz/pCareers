@@ -29,7 +29,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
+    const existing = await queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Category not found' },
@@ -41,8 +41,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Re-generate slug if name changed and slug not explicitly set
     if (body.name && body.name !== existing.name && !body.slug) {
-      body.slug = createUniqueSlug(body.name, (slug) => {
-        return !!queryOne<Category>('SELECT id FROM categories WHERE slug = ? AND id != ?', [slug, categoryId]);
+      body.slug = await createUniqueSlug(body.name, async (slug) => {
+        return !!(await queryOne<Category>('SELECT id FROM categories WHERE slug = ? AND id != ?', [slug, categoryId]));
       });
     }
 
@@ -62,7 +62,7 @@ export async function PUT(request: Request, context: RouteContext) {
     const data = validation.data!;
 
     // Check slug uniqueness (excluding current category)
-    const slugConflict = queryOne<Category>(
+    const slugConflict = await queryOne<Category>(
       'SELECT id FROM categories WHERE slug = ? AND id != ?',
       [data.slug, categoryId]
     );
@@ -75,16 +75,16 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // If slug changed, update posts that reference the old slug
     const oldSlug = existing.slug;
-    execute(
+    await execute(
       'UPDATE categories SET name = ?, slug = ? WHERE id = ?',
       [data.name, data.slug, categoryId]
     );
 
     if (oldSlug !== data.slug) {
-      execute('UPDATE posts SET category = ? WHERE category = ?', [data.slug, oldSlug]);
+      await execute('UPDATE posts SET category = ? WHERE category = ?', [data.slug, oldSlug]);
     }
 
-    const updated = queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
+    const updated = await queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
 
     return NextResponse.json({
       success: true,
@@ -119,7 +119,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
+    const existing = await queryOne<Category>('SELECT * FROM categories WHERE id = ?', [categoryId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Category not found' },
@@ -128,7 +128,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // Check if category is in use
-    const postCount = queryOne<{ cnt: number }>(
+    const postCount = await queryOne<{ cnt: number }>(
       'SELECT COUNT(*) as cnt FROM posts WHERE category = ?',
       [existing.slug]
     );
@@ -140,7 +140,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM categories WHERE id = ?', [categoryId]);
+    await execute('DELETE FROM categories WHERE id = ?', [categoryId]);
 
     return NextResponse.json({
       success: true,

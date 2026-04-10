@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const story = queryOne<TeamStory>(
+    const story = await queryOne<TeamStory>(
       'SELECT * FROM team_stories WHERE id = ?',
       [storyId]
     );
@@ -73,7 +73,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TeamStory>(
+    const existing = await queryOne<TeamStory>(
       'SELECT * FROM team_stories WHERE id = ?',
       [storyId]
     );
@@ -106,7 +106,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE team_stories SET
         name = ?, role = ?, photo = ?, quote = ?,
         sort_order = ?, is_published = ?, updated_at = datetime('now')
@@ -122,7 +122,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<TeamStory>(
+    const updated = await queryOne<TeamStory>(
       'SELECT * FROM team_stories WHERE id = ?',
       [storyId]
     );
@@ -160,7 +160,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<{ id: number }>(
+    const existing = await queryOne<{ id: number }>(
       'SELECT id FROM team_stories WHERE id = ?',
       [storyId]
     );
@@ -172,7 +172,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM team_stories WHERE id = ?', [storyId]);
+    await execute('DELETE FROM team_stories WHERE id = ?', [storyId]);
 
     return NextResponse.json({
       success: true,

@@ -11,11 +11,11 @@ export async function GET() {
 
     let criteria: PCloudBarCriterion[];
     if (isAdmin) {
-      criteria = queryAll<PCloudBarCriterion>(
+      criteria = await queryAll<PCloudBarCriterion>(
         'SELECT * FROM pcloud_bar_criteria ORDER BY sort_order ASC'
       );
     } else {
-      criteria = queryAll<PCloudBarCriterion>(
+      criteria = await queryAll<PCloudBarCriterion>(
         'SELECT * FROM pcloud_bar_criteria WHERE is_published = 1 ORDER BY sort_order ASC'
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     const data = validation.data!;
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO pcloud_bar_criteria (title, description, sort_order, is_published) VALUES (?, ?, ?, ?)',
       [
         data.title,
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newCriterion = queryOne<PCloudBarCriterion>(
+    const newCriterion = await queryOne<PCloudBarCriterion>(
       'SELECT * FROM pcloud_bar_criteria WHERE id = ?',
       [result.lastInsertRowid]
     );

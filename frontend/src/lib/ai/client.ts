@@ -103,8 +103,8 @@ function recordFailure() {
 
 import { queryOne } from '@/lib/db';
 
-function getTodaySpendForUser(username: string): number {
-  const row = queryOne<{ total: number }>(
+async function getTodaySpendForUser(username: string): Promise<number> {
+  const row = await queryOne<{ total: number }>(
     `SELECT COALESCE(SUM(cost_usd), 0) as total FROM ai_audit_log
      WHERE user_username = ? AND date(created_at) = date('now')`,
     [username]
@@ -174,7 +174,7 @@ export async function callAi(options: AiCallOptions): Promise<AiCallResult<strin
   }
 
   // Guard: daily budget
-  const todaySpend = getTodaySpendForUser(userUsername);
+  const todaySpend = await getTodaySpendForUser(userUsername);
   if (todaySpend >= DAILY_BUDGET_USD) {
     return {
       ok: false,
@@ -218,7 +218,7 @@ export async function callAi(options: AiCallOptions): Promise<AiCallResult<strin
       promptPreview: userPrompt.slice(0, 500),
       outputPreview: textContent.slice(0, 500),
     };
-    logAiCall(logEntry);
+    await logAiCall(logEntry);
 
     return {
       ok: true,
@@ -233,7 +233,7 @@ export async function callAi(options: AiCallOptions): Promise<AiCallResult<strin
     const message = err instanceof Error ? err.message : 'Unknown AI error';
     const durationMs = Date.now() - startTime;
 
-    logAiCall({
+    await logAiCall({
       skill,
       userUsername,
       candidateId,

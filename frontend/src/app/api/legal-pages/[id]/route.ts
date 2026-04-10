@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const page = queryOne<LegalPage>(
+    const page = await queryOne<LegalPage>(
       'SELECT * FROM legal_pages WHERE id = ?',
       [pageId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<LegalPage>(
+    const existing = await queryOne<LegalPage>(
       'SELECT * FROM legal_pages WHERE id = ?',
       [pageId]
     );
@@ -99,7 +99,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Check for duplicate slug (excluding current page)
     if (data.slug !== existing.slug) {
-      const duplicate = queryOne<LegalPage>(
+      const duplicate = await queryOne<LegalPage>(
         'SELECT id FROM legal_pages WHERE slug = ? AND id != ?',
         [data.slug, pageId]
       );
@@ -111,7 +111,7 @@ export async function PUT(request: Request, context: RouteContext) {
       }
     }
 
-    execute(
+    await execute(
       `UPDATE legal_pages SET
         title = ?, slug = ?, content = ?,
         last_updated = IFNULL(?, datetime('now')),
@@ -128,7 +128,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<LegalPage>(
+    const updated = await queryOne<LegalPage>(
       'SELECT * FROM legal_pages WHERE id = ?',
       [pageId]
     );
@@ -166,7 +166,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<LegalPage>(
+    const existing = await queryOne<LegalPage>(
       'SELECT * FROM legal_pages WHERE id = ?',
       [pageId]
     );
@@ -186,7 +186,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM legal_pages WHERE id = ?', [pageId]);
+    await execute('DELETE FROM legal_pages WHERE id = ?', [pageId]);
 
     return NextResponse.json({
       success: true,

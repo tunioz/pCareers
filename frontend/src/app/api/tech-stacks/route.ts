@@ -5,7 +5,7 @@ import type { TechStack } from '@/types';
 
 export async function GET() {
   try {
-    const techStacks = queryAll<TechStack>(
+    const techStacks = await queryAll<TechStack>(
       'SELECT * FROM tech_stacks ORDER BY name ASC'
     );
 
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     // Check for duplicate
-    const existing = queryOne<TechStack>('SELECT id FROM tech_stacks WHERE name = ?', [name]);
+    const existing = await queryOne<TechStack>('SELECT id FROM tech_stacks WHERE name = ?', [name]);
     if (existing) {
       return NextResponse.json(
         { success: false, error: 'Tech stack already exists' },
@@ -51,9 +51,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute('INSERT INTO tech_stacks (name) VALUES (?)', [name]);
+    const result = await execute('INSERT INTO tech_stacks (name) VALUES (?)', [name]);
 
-    const newTechStack = queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [result.lastInsertRowid]);
+    const newTechStack = await queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [result.lastInsertRowid]);
 
     return NextResponse.json(
       { success: true, data: newTechStack },

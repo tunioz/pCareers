@@ -40,7 +40,7 @@ export async function GET(request: Request) {
   }
 
   const candidateId = parseInt(candidateIdParam, 10);
-  const rows = queryAll<CandidateEmailRow>(
+  const rows = await queryAll<CandidateEmailRow>(
     `SELECT * FROM candidate_emails WHERE candidate_id = ? ORDER BY created_at DESC`,
     [candidateId]
   );
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_emails (
         candidate_id, email_type, subject, body, status, ai_generated, created_by
       ) VALUES (?, ?, ?, ?, 'draft', 0, ?)`,
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       userAgent: getUserAgent(request),
     });
 
-    const created = queryOne<CandidateEmailRow>(
+    const created = await queryOne<CandidateEmailRow>(
       'SELECT * FROM candidate_emails WHERE id = ?',
       [result.lastInsertRowid]
     );

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     'Explore open roles at pCloud. Build products used by 24 million people.',
 };
 
-export default function CareersPage() {
-  const jobs = queryAll<Job>(
+export default async function CareersPage() {
+  const jobs = await queryAll<Job>(
     'SELECT * FROM jobs WHERE is_published = 1 ORDER BY created_at DESC',
   );
 

@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const template = queryOne<ProcessTemplate>(
+    const template = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE id = ?',
       [templateId]
     );
@@ -32,7 +32,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const steps = queryAll<ProcessStep>(
+    const steps = await queryAll<ProcessStep>(
       'SELECT * FROM process_steps WHERE template_id = ? ORDER BY step_number ASC',
       [templateId]
     );
@@ -70,7 +70,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessTemplate>(
+    const existing = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE id = ?',
       [templateId]
     );
@@ -104,10 +104,10 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // If setting as default, unset any existing default
     if (data.is_default && !existing.is_default) {
-      execute('UPDATE process_templates SET is_default = 0 WHERE is_default = 1');
+      await execute('UPDATE process_templates SET is_default = 0 WHERE is_default = 1');
     }
 
-    execute(
+    await execute(
       `UPDATE process_templates SET
         name = ?, description = ?, intro_text = ?,
         is_default = ?, is_published = ?,
@@ -123,12 +123,12 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<ProcessTemplate>(
+    const updated = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE id = ?',
       [templateId]
     );
 
-    const steps = queryAll<ProcessStep>(
+    const steps = await queryAll<ProcessStep>(
       'SELECT * FROM process_steps WHERE template_id = ? ORDER BY step_number ASC',
       [templateId]
     );
@@ -166,7 +166,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessTemplate>(
+    const existing = await queryOne<ProcessTemplate>(
       'SELECT id FROM process_templates WHERE id = ?',
       [templateId]
     );
@@ -179,13 +179,13 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // Nullify references from jobs before deleting
-    execute(
+    await execute(
       'UPDATE jobs SET process_template_id = NULL WHERE process_template_id = ?',
       [templateId]
     );
 
     // CASCADE will delete associated steps
-    execute('DELETE FROM process_templates WHERE id = ?', [templateId]);
+    await execute('DELETE FROM process_templates WHERE id = ?', [templateId]);
 
     return NextResponse.json({
       success: true,

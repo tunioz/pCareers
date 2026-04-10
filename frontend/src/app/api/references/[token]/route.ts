@@ -21,7 +21,7 @@ export async function GET(_request: Request, context: RouteContext) {
       );
     }
 
-    const reference = queryOne<CandidateReference>(
+    const reference = await queryOne<CandidateReference>(
       "SELECT * FROM candidate_references WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now'))",
       [token]
     );
@@ -41,7 +41,7 @@ export async function GET(_request: Request, context: RouteContext) {
     }
 
     // Get candidate info (only first name for privacy)
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT full_name, job_id FROM candidates WHERE id = ?',
       [reference.candidate_id]
     );
@@ -52,7 +52,7 @@ export async function GET(_request: Request, context: RouteContext) {
     if (candidate) {
       candidateFirstName = candidate.full_name.split(' ')[0];
       if (candidate.job_id) {
-        const job = queryOne<{ title: string }>(
+        const job = await queryOne<{ title: string }>(
           'SELECT title FROM jobs WHERE id = ?',
           [candidate.job_id]
         );
@@ -95,7 +95,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const reference = queryOne<CandidateReference>(
+    const reference = await queryOne<CandidateReference>(
       "SELECT * FROM candidate_references WHERE token = ? AND (expires_at IS NULL OR expires_at > datetime('now'))",
       [token]
     );
@@ -126,7 +126,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const v = validation.data;
 
-    execute(
+    await execute(
       `UPDATE candidate_references SET
         referee_relationship = ?,
         duration_worked = ?,
@@ -159,7 +159,7 @@ export async function PUT(request: Request, context: RouteContext) {
     );
 
     // Add history entry
-    execute(
+    await execute(
       `INSERT INTO candidate_history (candidate_id, action, performed_by, notes)
        VALUES (?, ?, ?, ?)`,
       [

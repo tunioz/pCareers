@@ -13,14 +13,14 @@ interface RouteContext {
  * Weighted average: Technical 25%, Problem Solving 20%, Ownership 20%,
  * Communication 15%, Cultural Add 10%, Growth Potential 10%
  */
-function recalculateCompositeScore(candidateId: number): void {
-  const scores = queryAll<CandidateScore>(
+async function recalculateCompositeScore(candidateId: number): Promise<void> {
+  const scores = await queryAll<CandidateScore>(
     'SELECT * FROM candidate_scores WHERE candidate_id = ?',
     [candidateId]
   );
 
   if (scores.length === 0) {
-    execute('UPDATE candidates SET composite_score = NULL WHERE id = ?', [candidateId]);
+    await execute('UPDATE candidates SET composite_score = NULL WHERE id = ?', [candidateId]);
     return;
   }
 
@@ -48,7 +48,7 @@ function recalculateCompositeScore(candidateId: number): void {
 
   const composite = totalWeight > 0 ? Math.round((totalWeightedScore / totalWeight) * 100) / 100 : null;
 
-  execute(
+  await execute(
     "UPDATE candidates SET composite_score = ?, updated_at = datetime('now') WHERE id = ?",
     [composite, candidateId]
   );
@@ -77,7 +77,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id, composite_score FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -89,7 +89,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const scores = queryAll<CandidateScore>(
+    const scores = await queryAll<CandidateScore>(
       'SELECT * FROM candidate_scores WHERE candidate_id = ? ORDER BY created_at DESC',
       [candidateId]
     );
@@ -133,7 +133,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -157,7 +157,7 @@ export async function POST(request: Request, context: RouteContext) {
 
     const v = validation.data;
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO candidate_scores (
         candidate_id, interviewer_name, interview_stage,
         technical_depth, problem_solving, ownership, communication, cultural_add, growth_potential,
@@ -189,15 +189,15 @@ export async function POST(request: Request, context: RouteContext) {
     );
 
     // Recalculate composite score
-    recalculateCompositeScore(candidateId);
+    await recalculateCompositeScore(candidateId);
 
-    const score = queryOne<CandidateScore>(
+    const score = await queryOne<CandidateScore>(
       'SELECT * FROM candidate_scores WHERE id = ?',
       [result.lastInsertRowid]
     );
 
     // Get updated composite
-    const updated = queryOne<{ composite_score: number | null }>(
+    const updated = await queryOne<{ composite_score: number | null }>(
       'SELECT composite_score FROM candidates WHERE id = ?',
       [candidateId]
     );

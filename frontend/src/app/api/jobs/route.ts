@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-    const countResult = queryOne<{ total: number }>(
+    const countResult = await queryOne<{ total: number }>(
       `SELECT COUNT(*) as total FROM jobs ${whereSQL}`,
       queryParams
     );
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
     const totalPages = Math.ceil(total / perPage);
     const offset = (page - 1) * perPage;
 
-    const jobs = queryAll<Job>(
+    const jobs = await queryAll<Job>(
       `SELECT * FROM jobs ${whereSQL} ORDER BY is_high_priority DESC, is_new DESC, created_at DESC LIMIT ? OFFSET ?`,
       [...queryParams, perPage, offset]
     );
@@ -107,8 +107,8 @@ export async function POST(request: Request) {
 
     // Auto-generate slug from title if not provided
     if (!body.slug && body.title) {
-      body.slug = createUniqueSlug(body.title, (slug) => {
-        return !!queryOne('SELECT 1 FROM jobs WHERE slug = ?', [slug]);
+      body.slug = await createUniqueSlug(body.title, async (slug) => {
+        return !!(await queryOne('SELECT 1 FROM jobs WHERE slug = ?', [slug]));
       });
     }
 
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
 
     const data = validation.data!;
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO jobs (title, slug, department, product, seniority, location, salary_range, employment_type, description, requirements, nice_to_have, benefits, cover_image, is_new, is_high_priority, is_published, tags, challenges, team_name, team_size, team_lead, team_quote, team_photo, tech_stack, what_youll_learn, interview_template_id, process_template_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -156,7 +156,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newJob = queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [result.lastInsertRowid]);
+    const newJob = await queryOne<Job>('SELECT * FROM jobs WHERE id = ?', [result.lastInsertRowid]);
 
     logAudit({
       userId: user.userId,

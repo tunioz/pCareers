@@ -21,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const job = queryOne<Job>('SELECT * FROM jobs WHERE slug = ? AND is_published = 1', [slug]);
+  const job = await queryOne<Job>('SELECT * FROM jobs WHERE slug = ? AND is_published = 1', [slug]);
   if (!job) return { title: 'Not Found' };
 
   return {
@@ -46,7 +46,7 @@ export default async function JobDetailPage({
 }) {
   const { slug } = await params;
 
-  const job = queryOne<Job>('SELECT * FROM jobs WHERE slug = ? AND is_published = 1', [slug]);
+  const job = await queryOne<Job>('SELECT * FROM jobs WHERE slug = ? AND is_published = 1', [slug]);
   if (!job) notFound();
 
   // Get interview template (job's template or default)
@@ -54,28 +54,28 @@ export default async function JobDetailPage({
   let stages: InterviewStage[] = [];
 
   if (job.interview_template_id) {
-    template = queryOne<InterviewTemplate>(
+    template = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE id = ? AND is_published = 1',
       [job.interview_template_id]
     ) ?? null;
   }
   if (!template) {
-    template = queryOne<InterviewTemplate>(
+    template = await queryOne<InterviewTemplate>(
       'SELECT * FROM interview_templates WHERE is_default = 1 AND is_published = 1'
     ) ?? null;
   }
   if (template) {
-    stages = queryAll<InterviewStage>(
+    stages = await queryAll<InterviewStage>(
       'SELECT * FROM interview_stages WHERE template_id = ? AND is_published = 1 ORDER BY stage_number ASC',
       [template.id]
     );
   }
 
   // Get shared hiring content
-  const candidateValues = queryAll<CandidateValue>(
+  const candidateValues = await queryAll<CandidateValue>(
     'SELECT * FROM candidate_values WHERE is_published = 1 ORDER BY sort_order ASC'
   );
-  const pcloudBarCriteria = queryAll<PCloudBarCriterion>(
+  const pcloudBarCriteria = await queryAll<PCloudBarCriterion>(
     'SELECT * FROM pcloud_bar_criteria WHERE is_published = 1 ORDER BY sort_order ASC'
   );
   // Get process template (job's template or default)
@@ -83,29 +83,29 @@ export default async function JobDetailPage({
   let processSteps: ProcessStep[] = [];
 
   if (job.process_template_id) {
-    processTemplate = queryOne<ProcessTemplate>(
+    processTemplate = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE id = ? AND is_published = 1',
       [job.process_template_id]
     ) ?? null;
   }
   if (!processTemplate) {
-    processTemplate = queryOne<ProcessTemplate>(
+    processTemplate = await queryOne<ProcessTemplate>(
       'SELECT * FROM process_templates WHERE is_default = 1 AND is_published = 1'
     ) ?? null;
   }
   if (processTemplate) {
-    processSteps = queryAll<ProcessStep>(
+    processSteps = await queryAll<ProcessStep>(
       'SELECT * FROM process_steps WHERE template_id = ? AND is_published = 1 ORDER BY step_number ASC',
       [processTemplate.id]
     );
   }
 
-  const defaultBenefits = queryAll<DefaultBenefit>(
+  const defaultBenefits = await queryAll<DefaultBenefit>(
     'SELECT * FROM default_benefits WHERE is_published = 1 ORDER BY sort_order ASC'
   );
 
   // Get job-specific benefits via junction table
-  const jobBenefits = queryAll<DefaultBenefit>(
+  const jobBenefits = await queryAll<DefaultBenefit>(
     `SELECT db.* FROM default_benefits db
      JOIN job_benefits jb ON jb.benefit_id = db.id
      WHERE jb.job_id = ? AND db.is_published = 1
@@ -114,7 +114,7 @@ export default async function JobDetailPage({
   );
 
   // Get relevant settings
-  const settingsRows = queryAll<{ key: string; value: string }>(
+  const settingsRows = await queryAll<{ key: string; value: string }>(
     "SELECT key, value FROM company_settings WHERE key IN ('pcloud_bar_subtitle', 'benefits_intro_text', 'process_intro_text')"
   );
   const settings: Record<string, string> = {};

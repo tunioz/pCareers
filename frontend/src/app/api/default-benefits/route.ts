@@ -11,11 +11,11 @@ export async function GET() {
 
     let benefits: DefaultBenefit[];
     if (isAdmin) {
-      benefits = queryAll<DefaultBenefit>(
+      benefits = await queryAll<DefaultBenefit>(
         'SELECT * FROM default_benefits ORDER BY sort_order ASC'
       );
     } else {
-      benefits = queryAll<DefaultBenefit>(
+      benefits = await queryAll<DefaultBenefit>(
         'SELECT * FROM default_benefits WHERE is_published = 1 ORDER BY sort_order ASC'
       );
     }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     const data = validation.data!;
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO default_benefits (title, description, sort_order, is_published) VALUES (?, ?, ?, ?)',
       [
         data.title,
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       ]
     );
 
-    const newBenefit = queryOne<DefaultBenefit>(
+    const newBenefit = await queryOne<DefaultBenefit>(
       'SELECT * FROM default_benefits WHERE id = ?',
       [result.lastInsertRowid]
     );

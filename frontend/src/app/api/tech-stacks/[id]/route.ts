@@ -27,7 +27,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [techId]);
+    const existing = await queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [techId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Tech stack not found' },
@@ -46,7 +46,7 @@ export async function PUT(request: Request, context: RouteContext) {
     }
 
     // Check for duplicate name (excluding this tech stack)
-    const duplicate = queryOne<TechStack>(
+    const duplicate = await queryOne<TechStack>(
       'SELECT id FROM tech_stacks WHERE name = ? AND id != ?',
       [name, techId]
     );
@@ -57,9 +57,9 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute('UPDATE tech_stacks SET name = ? WHERE id = ?', [name, techId]);
+    await execute('UPDATE tech_stacks SET name = ? WHERE id = ?', [name, techId]);
 
-    const updated = queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [techId]);
+    const updated = await queryOne<TechStack>('SELECT * FROM tech_stacks WHERE id = ?', [techId]);
 
     return NextResponse.json({
       success: true,
@@ -94,7 +94,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TechStack>('SELECT id FROM tech_stacks WHERE id = ?', [techId]);
+    const existing = await queryOne<TechStack>('SELECT id FROM tech_stacks WHERE id = ?', [techId]);
     if (!existing) {
       return NextResponse.json(
         { success: false, error: 'Tech stack not found' },
@@ -102,7 +102,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM tech_stacks WHERE id = ?', [techId]);
+    await execute('DELETE FROM tech_stacks WHERE id = ?', [techId]);
 
     return NextResponse.json({
       success: true,

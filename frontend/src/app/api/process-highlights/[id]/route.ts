@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const highlight = queryOne<ProcessHighlight>(
+    const highlight = await queryOne<ProcessHighlight>(
       'SELECT * FROM process_highlights WHERE id = ?',
       [highlightId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessHighlight>(
+    const existing = await queryOne<ProcessHighlight>(
       'SELECT * FROM process_highlights WHERE id = ?',
       [highlightId]
     );
@@ -96,7 +96,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE process_highlights SET
         label = ?, detail = ?, sort_order = ?, is_published = ?,
         updated_at = datetime('now')
@@ -110,7 +110,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<ProcessHighlight>(
+    const updated = await queryOne<ProcessHighlight>(
       'SELECT * FROM process_highlights WHERE id = ?',
       [highlightId]
     );
@@ -148,7 +148,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessHighlight>(
+    const existing = await queryOne<ProcessHighlight>(
       'SELECT id FROM process_highlights WHERE id = ?',
       [highlightId]
     );
@@ -160,7 +160,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM process_highlights WHERE id = ?', [highlightId]);
+    await execute('DELETE FROM process_highlights WHERE id = ?', [highlightId]);
 
     return NextResponse.json({
       success: true,

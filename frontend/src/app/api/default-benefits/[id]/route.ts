@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const benefit = queryOne<DefaultBenefit>(
+    const benefit = await queryOne<DefaultBenefit>(
       'SELECT * FROM default_benefits WHERE id = ?',
       [benefitId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<DefaultBenefit>(
+    const existing = await queryOne<DefaultBenefit>(
       'SELECT * FROM default_benefits WHERE id = ?',
       [benefitId]
     );
@@ -96,7 +96,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE default_benefits SET
         title = ?, description = ?, sort_order = ?, is_published = ?,
         updated_at = datetime('now')
@@ -110,7 +110,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<DefaultBenefit>(
+    const updated = await queryOne<DefaultBenefit>(
       'SELECT * FROM default_benefits WHERE id = ?',
       [benefitId]
     );
@@ -148,7 +148,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<DefaultBenefit>(
+    const existing = await queryOne<DefaultBenefit>(
       'SELECT id FROM default_benefits WHERE id = ?',
       [benefitId]
     );
@@ -160,7 +160,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM default_benefits WHERE id = ?', [benefitId]);
+    await execute('DELETE FROM default_benefits WHERE id = ?', [benefitId]);
 
     return NextResponse.json({
       success: true,

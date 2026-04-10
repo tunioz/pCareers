@@ -13,7 +13,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const page = queryOne<LegalPage>(
+  const page = await queryOne<LegalPage>(
     'SELECT * FROM legal_pages WHERE slug = ? AND is_published = 1',
     [slug]
   );
@@ -33,7 +33,7 @@ export default async function LegalPageRoute({
 }) {
   const { slug } = await params;
 
-  const page = queryOne<LegalPage>(
+  const page = await queryOne<LegalPage>(
     'SELECT * FROM legal_pages WHERE slug = ? AND is_published = 1',
     [slug]
   );

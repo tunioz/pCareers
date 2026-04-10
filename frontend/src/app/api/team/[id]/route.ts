@@ -21,7 +21,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     const user = await getAuthUser();
-    const member = queryOne<TeamMember>(
+    const member = await queryOne<TeamMember>(
       'SELECT * FROM team_members WHERE id = ?',
       [memberId]
     );
@@ -73,7 +73,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TeamMember>(
+    const existing = await queryOne<TeamMember>(
       'SELECT * FROM team_members WHERE id = ?',
       [memberId]
     );
@@ -107,7 +107,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE team_members SET
         name = ?, role = ?, bio = ?,
         photo = ?, department = ?, sort_order = ?, is_published = ?
@@ -124,7 +124,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<TeamMember>(
+    const updated = await queryOne<TeamMember>(
       'SELECT * FROM team_members WHERE id = ?',
       [memberId]
     );
@@ -162,7 +162,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<TeamMember>(
+    const existing = await queryOne<TeamMember>(
       'SELECT id FROM team_members WHERE id = ?',
       [memberId]
     );
@@ -174,7 +174,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM team_members WHERE id = ?', [memberId]);
+    await execute('DELETE FROM team_members WHERE id = ?', [memberId]);
 
     return NextResponse.json({
       success: true,

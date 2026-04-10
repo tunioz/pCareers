@@ -17,7 +17,7 @@ export async function GET() {
       );
     }
 
-    const tasks = queryAll<TechnicalTaskWithJob>(
+    const tasks = await queryAll<TechnicalTaskWithJob>(
       `SELECT t.*, j.title as job_title
        FROM technical_tasks t
        LEFT JOIN jobs j ON t.job_id = j.id
@@ -59,19 +59,19 @@ export async function POST(request: Request) {
 
     const v = validation.data;
 
-    const result = execute(
+    const result = await execute(
       `INSERT INTO technical_tasks (job_id, title, description, instructions, deadline_days, is_active)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [v.job_id || null, v.title, v.description, v.instructions, v.deadline_days ?? 7, v.is_active ?? 1]
     );
 
-    const task = queryAll<TechnicalTaskWithJob>(
+    const task = (await queryAll<TechnicalTaskWithJob>(
       `SELECT t.*, j.title as job_title
        FROM technical_tasks t
        LEFT JOIN jobs j ON t.job_id = j.id
        WHERE t.id = ?`,
       [result.lastInsertRowid]
-    )[0];
+    ))[0];
 
     return NextResponse.json(
       { success: true, data: task },

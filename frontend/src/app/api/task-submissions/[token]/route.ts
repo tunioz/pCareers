@@ -22,7 +22,7 @@ export async function GET(_request: Request, context: RouteContext) {
       );
     }
 
-    const submission = queryOne<CandidateTaskSubmission & { task_title: string; task_description: string; task_instructions: string }>(
+    const submission = await queryOne<CandidateTaskSubmission & { task_title: string; task_description: string; task_instructions: string }>(
       `SELECT s.*, t.title as task_title, t.description as task_description, t.instructions as task_instructions
        FROM candidate_task_submissions s
        JOIN technical_tasks t ON s.task_id = t.id
@@ -85,7 +85,7 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const submission = queryOne<CandidateTaskSubmission>(
+    const submission = await queryOne<CandidateTaskSubmission>(
       'SELECT * FROM candidate_task_submissions WHERE submission_token = ?',
       [token]
     );
@@ -169,7 +169,7 @@ export async function POST(request: Request, context: RouteContext) {
       filePath = `/uploads/tasks/${year}/${month}/${uniqueName}`;
     }
 
-    execute(
+    await execute(
       `UPDATE candidate_task_submissions SET
         file_path = ?,
         notes = ?,
@@ -180,7 +180,7 @@ export async function POST(request: Request, context: RouteContext) {
     );
 
     // Add history entry
-    execute(
+    await execute(
       `INSERT INTO candidate_history (candidate_id, action, performed_by, notes)
        VALUES (?, ?, ?, ?)`,
       [submission.candidate_id, 'task_submitted', 'candidate', 'Technical task solution submitted']

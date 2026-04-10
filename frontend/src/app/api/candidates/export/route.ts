@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-    const candidates = queryAll<{
+    const candidates = await queryAll<{
       full_name: string;
       email: string;
       job_title: string | null;

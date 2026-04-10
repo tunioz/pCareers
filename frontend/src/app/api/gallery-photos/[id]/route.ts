@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const photo = queryOne<GalleryPhotoWithCategory>(
+    const photo = await queryOne<GalleryPhotoWithCategory>(
       `SELECT p.*, c.name as category_name, c.slug as category_slug
        FROM gallery_photos p
        JOIN gallery_categories c ON p.category_id = c.id
@@ -76,7 +76,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<GalleryPhoto>(
+    const existing = await queryOne<GalleryPhoto>(
       'SELECT * FROM gallery_photos WHERE id = ?',
       [photoId]
     );
@@ -110,7 +110,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     // Verify category exists if changed
     if (data.category_id !== existing.category_id) {
-      const category = queryOne<{ id: number }>(
+      const category = await queryOne<{ id: number }>(
         'SELECT id FROM gallery_categories WHERE id = ?',
         [data.category_id]
       );
@@ -122,7 +122,7 @@ export async function PUT(request: Request, context: RouteContext) {
       }
     }
 
-    execute(
+    await execute(
       `UPDATE gallery_photos SET
         category_id = ?, image = ?, alt_text = ?, sort_order = ?, is_published = ?
        WHERE id = ?`,
@@ -136,7 +136,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<GalleryPhotoWithCategory>(
+    const updated = await queryOne<GalleryPhotoWithCategory>(
       `SELECT p.*, c.name as category_name, c.slug as category_slug
        FROM gallery_photos p
        JOIN gallery_categories c ON p.category_id = c.id
@@ -177,7 +177,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<{ id: number }>(
+    const existing = await queryOne<{ id: number }>(
       'SELECT id FROM gallery_photos WHERE id = ?',
       [photoId]
     );
@@ -189,7 +189,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM gallery_photos WHERE id = ?', [photoId]);
+    await execute('DELETE FROM gallery_photos WHERE id = ?', [photoId]);
 
     return NextResponse.json({
       success: true,

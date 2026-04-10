@@ -7,7 +7,7 @@ import type { CategoryWithCount, Category } from '@/types';
 
 export async function GET() {
   try {
-    const categories = queryAll<CategoryWithCount>(
+    const categories = await queryAll<CategoryWithCount>(
       `SELECT c.*, IFNULL(pc.cnt, 0) as post_count
        FROM categories c
        LEFT JOIN (
@@ -46,8 +46,8 @@ export async function POST(request: Request) {
 
     // Auto-generate slug from name if not provided
     if (!body.slug && body.name) {
-      body.slug = createUniqueSlug(body.name, (slug) => {
-        return !!queryOne('SELECT 1 FROM categories WHERE slug = ?', [slug]);
+      body.slug = await createUniqueSlug(body.name, async (slug) => {
+        return !!(await queryOne('SELECT 1 FROM categories WHERE slug = ?', [slug]));
       });
     }
 
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     const data = validation.data!;
 
     // Check for duplicate slug
-    const existingSlug = queryOne<Category>('SELECT id FROM categories WHERE slug = ?', [data.slug]);
+    const existingSlug = await queryOne<Category>('SELECT id FROM categories WHERE slug = ?', [data.slug]);
     if (existingSlug) {
       return NextResponse.json(
         { success: false, error: 'A category with this slug already exists' },
@@ -70,12 +70,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = execute(
+    const result = await execute(
       'INSERT INTO categories (name, slug) VALUES (?, ?)',
       [data.name, data.slug]
     );
 
-    const newCategory = queryOne<Category>(
+    const newCategory = await queryOne<Category>(
       'SELECT * FROM categories WHERE id = ?',
       [result.lastInsertRowid]
     );

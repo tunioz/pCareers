@@ -22,12 +22,12 @@ export const metadata: Metadata = {
     'Build secure cloud storage used by 24 million people. See open engineering roles at pCloud.',
 };
 
-export default function HomePage() {
-  const posts = queryAll<Post>(
+export default async function HomePage() {
+  const posts = await queryAll<Post>(
     'SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3'
   );
 
-  const jobs = queryAll<Job>(
+  const jobs = await queryAll<Job>(
     'SELECT * FROM jobs WHERE is_published = 1 ORDER BY created_at DESC'
   );
 

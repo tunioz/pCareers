@@ -13,12 +13,12 @@ export const metadata: Metadata = {
   description: 'See what life at pCloud really looks like. Meet our team, explore our culture, and discover what makes pCloud a great place to work.',
 };
 
-export default function LifePage() {
-  const categories = queryAll<GalleryCategory>(
+export default async function LifePage() {
+  const categories = await queryAll<GalleryCategory>(
     'SELECT * FROM gallery_categories ORDER BY sort_order ASC'
   );
 
-  const photos = queryAll<GalleryPhotoWithCategory>(
+  const photos = await queryAll<GalleryPhotoWithCategory>(
     `SELECT p.*, c.name as category_name, c.slug as category_slug
      FROM gallery_photos p
      JOIN gallery_categories c ON p.category_id = c.id
@@ -26,7 +26,7 @@ export default function LifePage() {
      ORDER BY p.sort_order ASC`
   );
 
-  const stories = queryAll<TeamStory>(
+  const stories = await queryAll<TeamStory>(
     'SELECT * FROM team_stories WHERE is_published = 1 ORDER BY sort_order ASC'
   );
 

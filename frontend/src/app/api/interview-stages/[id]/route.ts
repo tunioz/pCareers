@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const stage = queryOne<InterviewStage>(
+    const stage = await queryOne<InterviewStage>(
       'SELECT * FROM interview_stages WHERE id = ?',
       [stageId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<InterviewStage>(
+    const existing = await queryOne<InterviewStage>(
       'SELECT * FROM interview_stages WHERE id = ?',
       [stageId]
     );
@@ -101,7 +101,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE interview_stages SET
         template_id = ?, stage_number = ?, title = ?, duration = ?,
         description = ?, focus = ?, timeline = ?, icon = ?, is_published = ?,
@@ -121,7 +121,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<InterviewStage>(
+    const updated = await queryOne<InterviewStage>(
       'SELECT * FROM interview_stages WHERE id = ?',
       [stageId]
     );
@@ -159,7 +159,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<InterviewStage>(
+    const existing = await queryOne<InterviewStage>(
       'SELECT id FROM interview_stages WHERE id = ?',
       [stageId]
     );
@@ -171,7 +171,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM interview_stages WHERE id = ?', [stageId]);
+    await execute('DELETE FROM interview_stages WHERE id = ?', [stageId]);
 
     return NextResponse.json({
       success: true,

@@ -20,7 +20,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const step = queryOne<ProcessStep>(
+    const step = await queryOne<ProcessStep>(
       'SELECT * FROM process_steps WHERE id = ?',
       [stepId]
     );
@@ -65,7 +65,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessStep>(
+    const existing = await queryOne<ProcessStep>(
       'SELECT * FROM process_steps WHERE id = ?',
       [stepId]
     );
@@ -97,7 +97,7 @@ export async function PUT(request: Request, context: RouteContext) {
 
     const data = validation.data!;
 
-    execute(
+    await execute(
       `UPDATE process_steps SET
         template_id = ?, step_number = ?, label = ?, detail = ?, is_published = ?,
         updated_at = datetime('now')
@@ -112,7 +112,7 @@ export async function PUT(request: Request, context: RouteContext) {
       ]
     );
 
-    const updated = queryOne<ProcessStep>(
+    const updated = await queryOne<ProcessStep>(
       'SELECT * FROM process_steps WHERE id = ?',
       [stepId]
     );
@@ -150,7 +150,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<ProcessStep>(
+    const existing = await queryOne<ProcessStep>(
       'SELECT id FROM process_steps WHERE id = ?',
       [stepId]
     );
@@ -162,7 +162,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    execute('DELETE FROM process_steps WHERE id = ?', [stepId]);
+    await execute('DELETE FROM process_steps WHERE id = ?', [stepId]);
 
     return NextResponse.json({
       success: true,

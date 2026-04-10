@@ -24,7 +24,7 @@ export async function PUT(
       return NextResponse.json({ success: false, error: 'Invalid IDs' }, { status: 400 });
     }
 
-    const existing = queryOne<PositionCriterion>(
+    const existing = await queryOne<PositionCriterion>(
       'SELECT * FROM position_criteria WHERE id = ? AND job_id = ?',
       [critId, jobId]
     );
@@ -61,9 +61,9 @@ export async function PUT(
     }
 
     values.push(critId);
-    execute(`UPDATE position_criteria SET ${fields.join(', ')} WHERE id = ?`, values);
+    await execute(`UPDATE position_criteria SET ${fields.join(', ')} WHERE id = ?`, values);
 
-    const updated = queryOne<PositionCriterion>(
+    const updated = await queryOne<PositionCriterion>(
       'SELECT * FROM position_criteria WHERE id = ?',
       [critId]
     );
@@ -96,7 +96,7 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: 'Invalid IDs' }, { status: 400 });
     }
 
-    const existing = queryOne<{ id: number }>(
+    const existing = await queryOne<{ id: number }>(
       'SELECT id FROM position_criteria WHERE id = ? AND job_id = ?',
       [critId, jobId]
     );
@@ -104,7 +104,7 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: 'Criterion not found' }, { status: 404 });
     }
 
-    execute('DELETE FROM position_criteria WHERE id = ?', [critId]);
+    await execute('DELETE FROM position_criteria WHERE id = ?', [critId]);
 
     return NextResponse.json({ success: true, data: { deleted: critId } });
   } catch (error) {

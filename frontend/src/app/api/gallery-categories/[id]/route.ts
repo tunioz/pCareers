@@ -29,7 +29,7 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<GalleryCategory>(
+    const existing = await queryOne<GalleryCategory>(
       'SELECT * FROM gallery_categories WHERE id = ?',
       [categoryId]
     );
@@ -60,7 +60,7 @@ export async function PUT(request: Request, context: RouteContext) {
     const data = validation.data!;
 
     // Check for duplicate slug (excluding current)
-    const duplicateSlug = queryOne<{ id: number }>(
+    const duplicateSlug = await queryOne<{ id: number }>(
       'SELECT id FROM gallery_categories WHERE slug = ? AND id != ?',
       [data.slug, categoryId]
     );
@@ -71,12 +71,12 @@ export async function PUT(request: Request, context: RouteContext) {
       );
     }
 
-    execute(
+    await execute(
       'UPDATE gallery_categories SET name = ?, slug = ?, sort_order = ? WHERE id = ?',
       [data.name, data.slug, data.sort_order ?? 0, categoryId]
     );
 
-    const updated = queryOne(
+    const updated = await queryOne(
       'SELECT * FROM gallery_categories WHERE id = ?',
       [categoryId]
     );
@@ -114,7 +114,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const existing = queryOne<{ id: number }>(
+    const existing = await queryOne<{ id: number }>(
       'SELECT id FROM gallery_categories WHERE id = ?',
       [categoryId]
     );
@@ -127,7 +127,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     }
 
     // CASCADE will delete associated photos
-    execute('DELETE FROM gallery_categories WHERE id = ?', [categoryId]);
+    await execute('DELETE FROM gallery_categories WHERE id = ?', [categoryId]);
 
     return NextResponse.json({
       success: true,
