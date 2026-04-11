@@ -43,26 +43,39 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  // Main
   { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} />, section: 'Main' },
-  { href: '/admin/posts', label: 'Posts', icon: <FileText size={20} />, section: 'Content' },
-  { href: '/admin/categories', label: 'Categories', icon: <FolderOpen size={20} /> },
-  { href: '/admin/tags', label: 'Tags', icon: <Tag size={20} /> },
-  { href: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={20} />, section: 'Careers' },
-  { href: '/admin/products', label: 'Products', icon: <Package size={20} /> },
+
+  // ATS
   { href: '/admin/candidates', label: 'Candidates', icon: <Users size={20} />, section: 'ATS' },
   { href: '/admin/interview-kits', label: 'Interview Kits', icon: <BookOpen size={20} /> },
-  { href: '/admin/analytics', label: 'Analytics', icon: <BarChart3 size={20} /> },
-  { href: '/admin/analytics/dashboard', label: 'KPI Dashboard', icon: <TrendingUp size={20} /> },
-  { href: '/admin/analytics/funnel', label: 'Hiring Funnel', icon: <TrendingUp size={20} /> },
-  { href: '/admin/email-templates', label: 'Email Templates', icon: <Mail size={20} /> },
   { href: '/admin/tasks', label: 'Tasks', icon: <ClipboardCheck size={20} /> },
   { href: '/admin/calendar', label: 'Calendar', icon: <CalendarDays size={20} /> },
   { href: '/admin/talent-pool', label: 'Talent Pool', icon: <UserPlus size={20} /> },
+  { href: '/admin/email-templates', label: 'Email Templates', icon: <Mail size={20} /> },
+  { href: '/admin/analytics', label: 'Analytics', icon: <BarChart3 size={20} /> },
+  { href: '/admin/analytics/dashboard', label: 'KPI Dashboard', icon: <TrendingUp size={20} /> },
+  { href: '/admin/analytics/funnel', label: 'Hiring Funnel', icon: <TrendingUp size={20} /> },
+
+  // Careers
+  { href: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={20} />, section: 'Careers' },
+  { href: '/admin/products', label: 'Products', icon: <Package size={20} /> },
   { href: '/admin/hiring-content', label: 'Hiring Content', icon: <ClipboardList size={20} /> },
+
+  // Content
+  { href: '/admin/posts', label: 'Posts', icon: <FileText size={20} />, section: 'Content' },
+  { href: '/admin/categories', label: 'Categories', icon: <FolderOpen size={20} /> },
+  { href: '/admin/tags', label: 'Tags', icon: <Tag size={20} /> },
+
+  // Pages
   { href: '/admin/life-content', label: 'Life Content', icon: <Camera size={20} />, section: 'Pages' },
+  { href: '/admin/legal', label: 'Legal Pages', icon: <Scale size={20} /> },
+
+  // Other
   { href: '/admin/team', label: 'Team', icon: <UserCircle size={20} />, section: 'Other' },
   { href: '/admin/tech-stacks', label: 'Tech Stacks', icon: <Cpu size={20} /> },
-  { href: '/admin/legal', label: 'Legal Pages', icon: <Scale size={20} /> },
+
+  // System
   { href: '/admin/users', label: 'Admin Users', icon: <Shield size={20} />, section: 'System' },
   { href: '/admin/audit-log', label: 'Audit Log', icon: <Activity size={20} /> },
   { href: '/admin/settings', label: 'Settings', icon: <Settings size={20} /> },
