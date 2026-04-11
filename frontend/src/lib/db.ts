@@ -1,4 +1,5 @@
-import { Pool, types } from 'pg';
+import { Pool, PoolClient, types } from 'pg';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import path from 'node:path';
 import fs from 'node:fs';
 
@@ -7,6 +8,10 @@ import fs from 'node:fs';
 types.setTypeParser(1114, (val: string) => val); // TIMESTAMP WITHOUT TZ
 types.setTypeParser(1184, (val: string) => val); // TIMESTAMP WITH TZ
 types.setTypeParser(1082, (val: string) => val); // DATE
+// COUNT(*) returns BIGINT (int8 / OID 20). node-pg returns it as a string to
+// avoid JS precision loss past 2^53, but SQLite returned numbers and call sites
+// do arithmetic on counts (sum += row.count). Parse to Number for parity.
+types.setTypeParser(20, (val: string) => Number(val));
 
 /**
  * PostgreSQL database layer for pCloud Employee Branding.
@@ -60,6 +65,75 @@ function getPool(): Pool {
 function convertPlaceholders(sql: string): string {
   let idx = 0;
   return sql.replace(/\?/g, () => `$${++idx}`);
+}
+
+/**
+ * Find "FUNC(...)" calls with balanced parens and rewrite them.
+ * `funcName` must be an exact identifier. `rewrite` is called with the argument
+ * string (content between the outermost parens) and returns the replacement
+ * for the entire "FUNC(...)" expression.
+ */
+function rewriteBalancedCall(
+  sql: string,
+  funcName: string,
+  rewrite: (args: string) => string,
+): string {
+  const re = new RegExp(`\\b${funcName}\\s*\\(`, 'gi');
+  let out = '';
+  let lastEnd = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(sql)) !== null) {
+    const openIdx = m.index + m[0].length - 1;
+    let depth = 1;
+    let j = openIdx + 1;
+    let inSingle = false;
+    let inDouble = false;
+    while (j < sql.length && depth > 0) {
+      const ch = sql[j];
+      if (!inDouble && ch === "'" && sql[j - 1] !== '\\') inSingle = !inSingle;
+      else if (!inSingle && ch === '"' && sql[j - 1] !== '\\') inDouble = !inDouble;
+      else if (!inSingle && !inDouble) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+      }
+      if (depth === 0) break;
+      j++;
+    }
+    if (depth !== 0) break;
+    const inner = sql.slice(openIdx + 1, j);
+    out += sql.slice(lastEnd, m.index) + rewrite(inner);
+    lastEnd = j + 1;
+    re.lastIndex = lastEnd;
+  }
+  out += sql.slice(lastEnd);
+  return out;
+}
+
+/**
+ * Split an arg list on top-level commas (ignoring commas inside nested parens
+ * and string literals).
+ */
+function splitTopLevelArgs(args: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  let inSingle = false;
+  let inDouble = false;
+  for (let i = 0; i < args.length; i++) {
+    const ch = args[i];
+    if (!inDouble && ch === "'" && args[i - 1] !== '\\') inSingle = !inSingle;
+    else if (!inSingle && ch === '"' && args[i - 1] !== '\\') inDouble = !inDouble;
+    else if (!inSingle && !inDouble) {
+      if (ch === '(') depth++;
+      else if (ch === ')') depth--;
+      else if (ch === ',' && depth === 0) {
+        parts.push(args.slice(start, i));
+        start = i + 1;
+      }
+    }
+  }
+  parts.push(args.slice(start));
+  return parts.map((p) => p.trim());
 }
 
 /**
@@ -117,18 +191,25 @@ function convertSql(sql: string): string {
   // TEXT type for dates → TIMESTAMP WITH TIME ZONE where used as datetime
   // (Keep TEXT for now to minimize breakage, PG handles text dates fine)
 
-  // ROUND(expr, N) — PG needs numeric, not double precision
-  // ROUND(double, int) doesn't exist in PG, cast to numeric first
-  converted = converted.replace(
-    /ROUND\(([^,)]+),\s*(\d+)\)/gi,
-    'ROUND(($1)::numeric, $2)'
-  );
+  // IFNULL(x, y) → COALESCE(x, y) — PG has no IFNULL
+  converted = converted.replace(/\bIFNULL\s*\(/gi, 'COALESCE(');
 
-  // CAST(x AS REAL) → (x)::double precision
-  converted = converted.replace(
-    /CAST\(([^)]+)\s+AS\s+REAL\)/gi,
-    '($1)::double precision'
-  );
+  // CAST(x AS REAL) → (x)::double precision — balanced-paren aware, runs before ROUND
+  converted = rewriteBalancedCall(converted, 'CAST', (inner) => {
+    const m = inner.match(/^(.*)\s+AS\s+REAL\s*$/is);
+    if (!m) return `CAST(${inner})`;
+    return `(${m[1]})::double precision`;
+  });
+
+  // ROUND(expr, N) — PG only has ROUND(numeric, int); cast first arg to numeric.
+  // Balanced-paren aware so nested function calls don't break matching.
+  converted = rewriteBalancedCall(converted, 'ROUND', (inner) => {
+    const parts = splitTopLevelArgs(inner);
+    if (parts.length === 2 && /^-?\d+$/.test(parts[1])) {
+      return `ROUND((${parts[0]})::numeric, ${parts[1]})`;
+    }
+    return `ROUND(${inner})`;
+  });
 
   // INSERT OR IGNORE → INSERT ... ON CONFLICT DO NOTHING
   converted = converted.replace(/INSERT\s+OR\s+IGNORE/gi, 'INSERT');
@@ -148,15 +229,25 @@ export interface RunResult {
   lastInsertRowid: number | bigint;
 }
 
+// Per-transaction connection storage. When transaction() is active, queries
+// within its callback pick up this client so they run inside the BEGIN/COMMIT
+// boundary instead of on arbitrary pool connections.
+const txStorage = new AsyncLocalStorage<PoolClient>();
+
+type Queryable = Pick<PoolClient, 'query'>;
+function getExecutor(): Queryable {
+  return txStorage.getStore() ?? getPool();
+}
+
 /**
  * Execute a SELECT query and return all rows.
  */
 export async function queryAll<T>(sql: string, params: unknown[] = []): Promise<T[]> {
   if (isBuildMode) return [];
   await ensureSchema();
-  const p = getPool();
+  const q = getExecutor();
   try {
-    const result = await p.query(convertSql(sql), params);
+    const result = await q.query(convertSql(sql), params);
     return result.rows as T[];
   } catch (err) {
     console.error('[db] queryAll error:', (err as Error).message, '\nSQL:', sql.slice(0, 200));
@@ -170,12 +261,12 @@ export async function queryAll<T>(sql: string, params: unknown[] = []): Promise<
 export async function queryOne<T>(sql: string, params: unknown[] = []): Promise<T | undefined> {
   if (isBuildMode) return undefined;
   await ensureSchema();
-  const p = getPool();
+  const q = getExecutor();
   const converted = convertSql(sql);
   // Add LIMIT 1 if not already present and it's a SELECT
   const limited = /LIMIT\s+\d/i.test(converted) ? converted : converted.replace(/(;?\s*)$/, ' LIMIT 1$1');
   try {
-    const result = await p.query(limited, params);
+    const result = await q.query(limited, params);
     return result.rows[0] as T | undefined;
   } catch (err) {
     console.error('[db] queryOne error:', (err as Error).message, '\nSQL:', sql.slice(0, 200));
@@ -190,7 +281,7 @@ export async function queryOne<T>(sql: string, params: unknown[] = []): Promise<
 export async function execute(sql: string, params: unknown[] = []): Promise<RunResult> {
   if (isBuildMode) return { changes: 0, lastInsertRowid: 0 };
   await ensureSchema();
-  const p = getPool();
+  const q = getExecutor();
   let converted = convertSql(sql);
 
   // For INSERT, add RETURNING id to get lastInsertRowid
@@ -200,7 +291,7 @@ export async function execute(sql: string, params: unknown[] = []): Promise<RunR
   }
 
   try {
-    const result = await p.query(converted, params);
+    const result = await q.query(converted, params);
     return {
       changes: result.rowCount || 0,
       lastInsertRowid: isInsert && result.rows[0]?.id ? result.rows[0].id : 0,
@@ -212,19 +303,23 @@ export async function execute(sql: string, params: unknown[] = []): Promise<RunR
 }
 
 /**
- * Run multiple statements inside a transaction.
+ * Run multiple statements inside a transaction. Queries issued via queryAll /
+ * queryOne / execute during `fn()` are routed to the same client via
+ * AsyncLocalStorage so they participate in the BEGIN/COMMIT boundary.
  */
 export async function transaction<T>(fn: () => T | Promise<T>): Promise<T> {
   if (isBuildMode) return fn();
+  // Nested transaction: reuse the outer client; outer COMMIT/ROLLBACK wraps us.
+  if (txStorage.getStore()) return fn();
   const p = getPool();
   const client = await p.connect();
   try {
     await client.query('BEGIN');
-    const result = await fn();
+    const result = await txStorage.run(client, async () => fn());
     await client.query('COMMIT');
     return result;
   } catch (err) {
-    await client.query('ROLLBACK');
+    try { await client.query('ROLLBACK'); } catch { /* ignore */ }
     throw err;
   } finally {
     client.release();

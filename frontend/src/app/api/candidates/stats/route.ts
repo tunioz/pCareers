@@ -40,7 +40,7 @@ export async function GET() {
        FROM candidates c
        LEFT JOIN jobs j ON c.job_id = j.id
        WHERE c.is_archived = 0
-       GROUP BY c.job_id
+       GROUP BY c.job_id, j.title
        ORDER BY count DESC`
     );
 

@@ -83,7 +83,7 @@ export async function GET(request: Request) {
        JOIN jobs j ON j.id = c.job_id
        JOIN candidate_history h ON h.candidate_id = c.id AND h.to_status = 'hired'
        WHERE c.status = 'hired' AND c.is_archived = 0 AND c.created_at >= ?
-       GROUP BY j.id
+       GROUP BY j.id, j.title
        ORDER BY hired_count DESC`,
       [dateFrom]
     );
@@ -230,7 +230,7 @@ export async function GET(request: Request) {
        FROM jobs j
        LEFT JOIN candidates c ON c.job_id = j.id AND c.is_archived = 0 AND c.created_at >= ?
        WHERE j.is_published = 1
-       GROUP BY j.id
+       GROUP BY j.id, j.title
        ORDER BY candidates DESC
        LIMIT 10`,
       [dateFrom]

@@ -30,7 +30,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const candidate = queryOne<Candidate>(
+    const candidate = await queryOne<Candidate>(
       'SELECT id FROM candidates WHERE id = ?',
       [candidateId]
     );
@@ -42,7 +42,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const history = queryAll<CandidateHistory>(
+    const history = await queryAll<CandidateHistory>(
       'SELECT * FROM candidate_history WHERE candidate_id = ? ORDER BY created_at DESC',
       [candidateId]
     );
