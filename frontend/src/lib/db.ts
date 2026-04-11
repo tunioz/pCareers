@@ -147,9 +147,15 @@ export interface RunResult {
  */
 export async function queryAll<T>(sql: string, params: unknown[] = []): Promise<T[]> {
   if (isBuildMode) return [];
+  await ensureSchema();
   const p = getPool();
-  const result = await p.query(convertSql(sql), params);
-  return result.rows as T[];
+  try {
+    const result = await p.query(convertSql(sql), params);
+    return result.rows as T[];
+  } catch (err) {
+    console.error('[db] queryAll error:', (err as Error).message, '\nSQL:', sql.slice(0, 200));
+    throw err;
+  }
 }
 
 /**
@@ -157,12 +163,18 @@ export async function queryAll<T>(sql: string, params: unknown[] = []): Promise<
  */
 export async function queryOne<T>(sql: string, params: unknown[] = []): Promise<T | undefined> {
   if (isBuildMode) return undefined;
+  await ensureSchema();
   const p = getPool();
   const converted = convertSql(sql);
   // Add LIMIT 1 if not already present and it's a SELECT
   const limited = /LIMIT\s+\d/i.test(converted) ? converted : converted.replace(/(;?\s*)$/, ' LIMIT 1$1');
-  const result = await p.query(limited, params);
-  return result.rows[0] as T | undefined;
+  try {
+    const result = await p.query(limited, params);
+    return result.rows[0] as T | undefined;
+  } catch (err) {
+    console.error('[db] queryOne error:', (err as Error).message, '\nSQL:', sql.slice(0, 200));
+    throw err;
+  }
 }
 
 /**
@@ -171,6 +183,7 @@ export async function queryOne<T>(sql: string, params: unknown[] = []): Promise<
  */
 export async function execute(sql: string, params: unknown[] = []): Promise<RunResult> {
   if (isBuildMode) return { changes: 0, lastInsertRowid: 0 };
+  await ensureSchema();
   const p = getPool();
   let converted = convertSql(sql);
 
@@ -180,11 +193,16 @@ export async function execute(sql: string, params: unknown[] = []): Promise<RunR
     converted = converted.replace(/(;?\s*)$/, ' RETURNING id$1');
   }
 
-  const result = await p.query(converted, params);
-  return {
-    changes: result.rowCount || 0,
-    lastInsertRowid: isInsert && result.rows[0]?.id ? result.rows[0].id : 0,
-  };
+  try {
+    const result = await p.query(converted, params);
+    return {
+      changes: result.rowCount || 0,
+      lastInsertRowid: isInsert && result.rows[0]?.id ? result.rows[0].id : 0,
+    };
+  } catch (err) {
+    console.error('[db] execute error:', (err as Error).message, '\nSQL:', sql.slice(0, 200));
+    throw err;
+  }
 }
 
 /**
