@@ -66,9 +66,7 @@ const navItems: NavItem[] = [
   { href: '/admin/posts', label: 'Posts', icon: <FileText size={20} />, section: 'Content' },
   { href: '/admin/categories', label: 'Categories', icon: <FolderOpen size={20} /> },
   { href: '/admin/tags', label: 'Tags', icon: <Tag size={20} /> },
-
-  // Pages
-  { href: '/admin/life-content', label: 'Life Content', icon: <Camera size={20} />, section: 'Pages' },
+  { href: '/admin/life-content', label: 'Life Content', icon: <Camera size={20} /> },
   { href: '/admin/legal', label: 'Legal Pages', icon: <Scale size={20} /> },
 
   // Other
