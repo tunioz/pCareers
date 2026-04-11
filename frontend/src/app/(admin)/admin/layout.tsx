@@ -61,6 +61,7 @@ const navItems: NavItem[] = [
   { href: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={20} />, section: 'Careers' },
   { href: '/admin/products', label: 'Products', icon: <Package size={20} /> },
   { href: '/admin/hiring-content', label: 'Hiring Content', icon: <ClipboardList size={20} /> },
+  { href: '/admin/tech-stacks', label: 'Tech Stacks', icon: <Cpu size={20} /> },
 
   // Content
   { href: '/admin/posts', label: 'Posts', icon: <FileText size={20} />, section: 'Content' },
@@ -71,7 +72,6 @@ const navItems: NavItem[] = [
 
   // Other
   { href: '/admin/team', label: 'Team', icon: <UserCircle size={20} />, section: 'Other' },
-  { href: '/admin/tech-stacks', label: 'Tech Stacks', icon: <Cpu size={20} /> },
 
   // System
   { href: '/admin/users', label: 'Admin Users', icon: <Shield size={20} />, section: 'System' },
