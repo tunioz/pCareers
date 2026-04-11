@@ -1,6 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -46,6 +53,12 @@ interface RichTextEditorProps {
   onChange: (html: string) => void;
   placeholder?: string;
   minHeight?: string;
+}
+
+export interface RichTextEditorHandle {
+  insertText: (text: string) => void;
+  insertImage: (url: string, alt?: string) => void;
+  focus: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -107,7 +120,7 @@ function LinkModal({
 }
 
 // ---------------------------------------------------------------------------
-// Image URL Modal (reuses same design)
+// Image Modal — upload a file or paste a URL
 // ---------------------------------------------------------------------------
 
 function ImageModal({
@@ -118,17 +131,68 @@ function ImageModal({
   onCancel: () => void;
 }) {
   const [url, setUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      if (!file.type.startsWith('image/')) {
+        setUploadError('Please choose an image file.');
+        return;
+      }
+      setUploading(true);
+      setUploadError(null);
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('subDir', 'images');
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success && data.data?.url) {
+          onConfirm(data.data.url);
+        } else {
+          setUploadError(data.error || 'Upload failed');
+        }
+      } catch {
+        setUploadError('Upload failed');
+      } finally {
+        setUploading(false);
+      }
+    },
+    [onConfirm]
+  );
 
   return (
     <div className={styles.linkModal} onClick={onCancel}>
       <div className={styles.linkModalCard} onClick={(e) => e.stopPropagation()}>
         <h3>Insert Image</h3>
+        <button
+          type="button"
+          className={styles.linkModalBtnSecondary}
+          style={{ width: '100%', marginBottom: 12 }}
+          disabled={uploading}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          {uploading ? 'Uploading…' : 'Upload from computer'}
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+            e.target.value = '';
+          }}
+        />
+        <div style={{ fontSize: 12, color: '#6b7280', margin: '4px 0 8px' }}>or paste a URL</div>
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://example.com/image.jpg"
-          autoFocus
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -137,12 +201,16 @@ function ImageModal({
             if (e.key === 'Escape') onCancel();
           }}
         />
+        {uploadError && (
+          <div style={{ color: '#dc2626', fontSize: 12, marginTop: 8 }}>{uploadError}</div>
+        )}
         <div className={styles.linkModalActions}>
           <button className={styles.linkModalBtnSecondary} onClick={onCancel}>
             Cancel
           </button>
           <button
             className={styles.linkModalBtnPrimary}
+            disabled={!url.trim() || uploading}
             onClick={() => {
               if (url.trim()) onConfirm(url.trim());
             }}
@@ -159,12 +227,12 @@ function ImageModal({
 // Main RichTextEditor
 // ---------------------------------------------------------------------------
 
-export default function RichTextEditor({
+const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(function RichTextEditor({
   value,
   onChange,
   placeholder = 'Start writing...',
   minHeight = '300px',
-}: RichTextEditorProps) {
+}, ref) {
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -204,6 +272,22 @@ export default function RichTextEditor({
     // Only run when value changes from outside, not on every keystroke
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      insertText: (text: string) => {
+        if (!editor) return;
+        editor.chain().focus().insertContent(text).run();
+      },
+      insertImage: (url: string, alt?: string) => {
+        if (!editor) return;
+        editor.chain().focus().setImage({ src: url, alt }).run();
+      },
+      focus: () => editor?.chain().focus().run(),
+    }),
+    [editor]
+  );
 
   // ---- Link handling ----
   const openLinkModal = useCallback(() => {
@@ -358,4 +442,6 @@ export default function RichTextEditor({
       )}
     </div>
   );
-}
+});
+
+export default RichTextEditor;

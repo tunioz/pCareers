@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Mail, Save, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/components/admin/Toast';
+import RichTextEditor, { type RichTextEditorHandle } from '@/components/admin/RichTextEditor';
 import styles from '@/styles/admin.module.scss';
 import type { EmailTemplate, EmailTemplateType } from '@/types';
 
@@ -65,6 +66,7 @@ export default function EmailTemplatesPage() {
   const [editingBody, setEditingBody] = useState('');
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const editorRef = useRef<RichTextEditorHandle>(null);
 
   const loadTemplates = useCallback(async () => {
     try {
@@ -228,7 +230,13 @@ export default function EmailTemplatesPage() {
                   <button
                     key={p}
                     type="button"
-                    onClick={() => setEditingBody(editingBody + p)}
+                    onClick={() => {
+                      if (editorRef.current) {
+                        editorRef.current.insertText(p);
+                      } else {
+                        setEditingBody(editingBody + p);
+                      }
+                    }}
                     style={{
                       padding: '3px 8px', borderRadius: '4px', border: '1px solid #e5e7eb',
                       background: '#f9fafb', fontSize: '11px', color: '#6b7280', cursor: 'pointer',
@@ -250,13 +258,13 @@ export default function EmailTemplatesPage() {
             </div>
           ) : (
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Body (HTML)</label>
-              <textarea
-                className={styles.formTextarea}
+              <label className={styles.formLabel}>Body</label>
+              <RichTextEditor
+                ref={editorRef}
                 value={editingBody}
-                onChange={(e) => setEditingBody(e.target.value)}
-                rows={16}
-                style={{ fontFamily: 'monospace', fontSize: '13px', minHeight: '300px' }}
+                onChange={setEditingBody}
+                placeholder="Write the email body. Use the Image button in the toolbar to add a signature image."
+                minHeight="320px"
               />
             </div>
           )}
