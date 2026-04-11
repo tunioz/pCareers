@@ -127,7 +127,7 @@ export default async function JobDetailPage({
     '@type': 'JobPosting',
     title: job.title,
     description: job.description || '',
-    datePosted: job.created_at?.slice(0, 10),
+    datePosted: job.created_at ? new Date(job.created_at).toISOString().slice(0, 10) : undefined,
     validThrough: undefined as string | undefined,
     employmentType: job.employment_type === 'Full-time' ? 'FULL_TIME'
       : job.employment_type === 'Part-time' ? 'PART_TIME'

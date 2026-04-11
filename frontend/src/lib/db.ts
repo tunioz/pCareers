@@ -1,6 +1,12 @@
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
 import path from 'node:path';
 import fs from 'node:fs';
+
+// Force PostgreSQL to return TIMESTAMP/DATE as ISO strings instead of Date objects.
+// This keeps compatibility with SQLite which always returned strings.
+types.setTypeParser(1114, (val: string) => val); // TIMESTAMP WITHOUT TZ
+types.setTypeParser(1184, (val: string) => val); // TIMESTAMP WITH TZ
+types.setTypeParser(1082, (val: string) => val); // DATE
 
 /**
  * PostgreSQL database layer for pCloud Employee Branding.
