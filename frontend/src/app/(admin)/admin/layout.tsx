@@ -187,10 +187,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const breadcrumbs = getBreadcrumbs(pathname);
 
-  const isActive = (href: string) => {
-    if (href === '/admin') return pathname === '/admin';
-    return pathname.startsWith(href);
-  };
+  // The active item is the nav entry whose href is the longest prefix of the
+  // current pathname. This prevents both "Analytics" (/admin/analytics) and
+  // "KPI Dashboard" (/admin/analytics/dashboard) from highlighting at once.
+  const activeHref = (() => {
+    let best: string | null = null;
+    for (const item of navItems) {
+      if (item.href === '/admin') {
+        if (pathname === '/admin') return '/admin';
+        continue;
+      }
+      if (pathname === item.href || pathname.startsWith(item.href + '/')) {
+        if (!best || item.href.length > best.length) best = item.href;
+      }
+    }
+    return best;
+  })();
+  const isActive = (href: string) => href === activeHref;
 
   const sidebarClasses = [
     styles.sidebar,
@@ -218,7 +231,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <aside className={sidebarClasses}>
           <div className={styles.sidebarBrand}>
             <img
-              src="/images/pcloud-logo-full.svg"
+              src="/images/pcloud-logo-white.svg"
               alt="pCloud"
               className={styles.sidebarLogo}
             />
