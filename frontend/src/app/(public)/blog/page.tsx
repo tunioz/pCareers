@@ -18,11 +18,23 @@ export default async function BlogPage() {
     'SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC'
   );
 
+  // Load tags for each post
+  const postTags = await queryAll<{ post_id: number; name: string }>(
+    `SELECT pt.post_id, t.name FROM post_tags pt JOIN tags t ON t.id = pt.tag_id`
+  );
+  const tagsByPost = new Map<number, string[]>();
+  for (const pt of postTags) {
+    if (!tagsByPost.has(pt.post_id)) tagsByPost.set(pt.post_id, []);
+    tagsByPost.get(pt.post_id)!.push(pt.name);
+  }
+  const postsWithTags = posts.map(p => ({ ...p, tags: tagsByPost.get(p.id) || [] }));
+
   const jobs = await queryAll<Job>(
     'SELECT * FROM jobs WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3'
   );
 
   const categories = [...new Set(posts.map((p) => p.category))];
+  const allTags = [...new Set(postTags.map(pt => pt.name))];
 
-  return <BlogPageClient posts={posts} categories={categories} jobs={jobs} />;
+  return <BlogPageClient posts={postsWithTags} categories={categories} jobs={jobs} allTags={allTags} />;
 }

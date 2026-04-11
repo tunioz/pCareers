@@ -6,7 +6,15 @@ import DOMPurify from 'isomorphic-dompurify';
 import { queryOne, queryAll } from '@/lib/db';
 import type { Post } from '@/types';
 import { ImageWithFallback } from '@/components/public/ImageWithFallback';
+import { ReadingProgressBar } from '@/components/public/blog/ReadingProgressBar';
 import styles from '@/components/public/blog/BlogPost.module.scss';
+
+function calculateReadTime(html: string): string {
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const words = text.split(' ').length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  return `${minutes} min read`;
+}
 
 export const revalidate = 60;
 
@@ -55,6 +63,7 @@ export default async function BlogPostPage({
   const title = post.title;
   const content = post.content;
   const excerpt = post.excerpt || '';
+  const readTime = calculateReadTime(content);
 
   const relatedPosts = await queryAll<Post>(
     'SELECT * FROM posts WHERE is_published = 1 AND category = ? AND slug != ? ORDER BY created_at DESC LIMIT 3',
@@ -63,6 +72,7 @@ export default async function BlogPostPage({
 
   return (
     <div className={styles.page}>
+      <ReadingProgressBar />
       <section className={styles.breadcrumb}>
         <div className={styles.breadcrumbInner}>
           <Link href="/blog">Blog</Link>
@@ -95,7 +105,7 @@ export default async function BlogPostPage({
               <span className={styles.authorSep} />
               <span className={styles.readTime}>
                 <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" /><path d="M8 4.5V8l2.5 1.5" /></svg>
-                {post.read_time || '5 min read'}
+                {readTime}
               </span>
             </div>
           </div>

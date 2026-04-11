@@ -250,6 +250,24 @@
   }
 }
 
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cardTag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #17BED0;
+  background: rgba(23, 190, 208, 0.08);
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
 .readLink {
   display: inline-flex;
   align-items: center;

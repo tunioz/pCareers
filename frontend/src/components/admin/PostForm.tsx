@@ -260,12 +260,29 @@ export default function PostForm({ post, postId }: PostFormProps) {
               />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Author Image URL</label>
-              <input
-                className={styles.formInput}
-                value={author_image}
-                onChange={(e) => setAuthorImage(e.target.value)}
-                placeholder="https://..."
+              <label className={styles.formLabel}>Author Photo</label>
+              {author_image && (
+                <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <img
+                    src={author_image}
+                    alt="Author"
+                    style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid #E5E7EB' }}
+                  />
+                  <button
+                    type="button"
+                    className={styles.btnSecondary}
+                    onClick={() => setAuthorImage('')}
+                    style={{ fontSize: '12px', padding: '4px 10px' }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              <FileUpload
+                value={author_image || null}
+                onChange={(url) => setAuthorImage(url || '')}
+                accept="image/*"
+                label={author_image ? 'Change photo' : 'Upload author photo'}
               />
             </div>
           </div>

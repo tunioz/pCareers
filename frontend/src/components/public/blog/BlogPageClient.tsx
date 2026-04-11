@@ -8,10 +8,15 @@ import { ImageWithFallback } from '../ImageWithFallback';
 import type { Post, Job } from '@/types';
 import styles from './BlogPage.module.scss';
 
+interface PostWithTags extends Post {
+  tags?: string[];
+}
+
 interface BlogPageClientProps {
-  posts: Post[];
+  posts: PostWithTags[];
   categories: string[];
   jobs: Job[];
+  allTags?: string[];
 }
 
 const catColorMap: Record<string, string> = {
@@ -43,7 +48,7 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps) {
+export function BlogPageClient({ posts, categories, jobs, allTags = [] }: BlogPageClientProps) {
   const heroRef = useRef(null);
   const isHeroInView = useInView(heroRef, { once: true, margin: '-100px' });
   const jobsRef = useRef(null);
@@ -169,6 +174,13 @@ export function BlogPageClient({ posts, categories, jobs }: BlogPageClientProps)
                           {post.read_time || '5 min read'}
                         </span>
                       </div>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className={styles.cardTags}>
+                          {post.tags.slice(0, 3).map(tag => (
+                            <span key={tag} className={styles.cardTag}>{tag}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </motion.div>
